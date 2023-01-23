@@ -1,12 +1,12 @@
 var express = require('express');
 var router = express.Router();
-const controller = require('../controllers/users.controller');
+const controller = require('../controllers/habitations.controller');
 
-/* GET users listing. */
+/* GET agents listing. */
 router.get('/', controller.findAll);
 router.get('/:id', controller.findOne);
 router.post('/', controller.create);
 router.patch('/:id', controller.updateOne);
-//router.delete('/:id', controller.deleteOne);
+router.delete('/:id', controller.deleteOne);
 
 module.exports = router;

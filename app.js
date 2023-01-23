@@ -10,10 +10,16 @@ const prettier = require('prettier');
 
 var indexRouter = require('./routes/index');
 var agentsRouter = require('./routes/agents');
-var usersRouter = require('./routes/users');
-var appointmentsRouter = require('./routes/appointments');
+var habitationsRouter = require('./routes/habitations');
+var validationsRouter = require('./routes/validations');
 
 var app = express();
+
+const mongoose = require('mongoose');
+mongoose.set('strictQuery', false);
+mongoose
+    .connect('mongodb://localhost:27017/gdp')
+    .catch((error) => handleError(error));
 
 app.use(bp.json());
 app.use(bp.urlencoded({ extended: true }));
@@ -30,8 +36,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/agents', agentsRouter);
-app.use('/users', usersRouter);
-app.use('/appointments', appointmentsRouter);
+app.use('/habitations', habitationsRouter);
+app.use('/validations', validationsRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

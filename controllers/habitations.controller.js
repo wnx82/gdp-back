@@ -1,31 +1,27 @@
 // const dbClient = require('../utils').dbClient;
 // const database = dbClient.db(process.env.MONGO_DB_DATABASE);
-// const collection = database.collection('agents');
-const Agent = require('../models/Agent');
+// const collection = database.collection('habitations');
+const Habitation = require('../models/Habitation');
 const catchAsync = require('../helpers/catchAsync');
-const { success } = require('../helpers/helper');
-const moment = require('moment');
 
 const findAll = catchAsync(async (req, res) => {
-    const message = 'Liste des agents';
-    const data = await Agent.find();
+    console.log('Liste contrôleur habitations');
+    const data = await Habitation.find();
     res.status(200).json(data);
-    // res.status(200).json(success(message, data));
 });
 
 const findOne = catchAsync(async (req, res) => {
-    const message = 'Liste des agents';
     const { id, lastname, firstname } = req.params;
 
     if (!id) {
         res.status(400).json({ message: 'No id provided' });
     }
-    const data = await Agent.findOne({ _id: id });
+    const data = await Habitation.findOne({ _id: id });
     if (!data) {
         res.status(404).json({ message: `No user found with id ${id}` });
     }
-    res.status(200).json(success(`Détails l'agent : `, data));
-    //res.status(200).json(data);
+
+    res.status(200).json(data);
 });
 const create = catchAsync(async (req, res) => {
     const { lastname, firstname, matricule, birthday, adresse, cp, tel } =
@@ -33,29 +29,22 @@ const create = catchAsync(async (req, res) => {
     try {
         //console.log(req.body);
         console.log(lastname, firstname, matricule);
-        console.log(
-            moment(new Date()).format('YYYY-MM-DD @ HH:mm') +
-                ` : Création Agent ${matricule}`
-        );
+        console.log(new Date() + ' : requete lancée');
 
         //console.log(req.body);
         if (!matricule) {
             res.status(403).json('Champ matricule vide!');
             //req.flash('error', 'Certains champs ne peuvent pas être vides!');
-            //res.redirect('/agents/create');
+            //res.redirect('/habitations/create');
             return;
         }
-        const data = await Agent.create({
-            lastname,
-            firstname,
-            matricule,
-            birthday,
-            adresse,
-            cp,
-            tel,
+        const data = await Habitation.create({
+            lastname: lastname,
+            firstname: firstname,
+            matricule: matricule,
         }).then(
             console.log(
-                `----------->L\'agent ${matricule} a bien été créé<-----------`
+                `----------->L\'habitation ${matricule} a bien été créé<-----------`
             )
         );
         res.status(201).json(data);
@@ -73,7 +62,7 @@ const deleteOne = catchAsync(async (req, res) => {
 
     if (force === undefined || parseInt(force, 10) === 0) {
         //suppression logique
-        const result = await Agent.updateOne(
+        const result = await Habitation.updateOne(
             {
                 _id: id, //filter
             },
@@ -85,7 +74,7 @@ const deleteOne = catchAsync(async (req, res) => {
     }
     if (parseInt(force, 10) === 1) {
         //suppression physique
-        const result = await Agent.deleteOne({ _id: id });
+        const result = await Habitation.deleteOne({ _id: id });
         // if (result.deletedCount === 1) {
         //     console.log('Successfully deleted');
         // }

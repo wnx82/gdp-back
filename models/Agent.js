@@ -1,10 +1,8 @@
 const mongoose = require('mongoose');
 
+
 const agentSchema = new mongoose.Schema(
     {
-        id: {
-            type: Number,
-        },
         lastname: {
             type: String,
         },
@@ -16,6 +14,7 @@ const agentSchema = new mongoose.Schema(
         },
         matricule: {
             type: String,
+            required: true,
         },
         adresse: {
             type: String,
@@ -35,7 +34,7 @@ const agentSchema = new mongoose.Schema(
     }
 );
 
-console.log('Schéma Agents chargé');
+console.log('Modèle Agents chargé');
 module.exports = mongoose.model('Agents', agentSchema);
 
 // const Sequelize = require('sequelize');
