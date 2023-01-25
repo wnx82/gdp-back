@@ -11,7 +11,7 @@ const findAll = catchAsync(async (req, res) => {
 });
 
 const findOne = catchAsync(async (req, res) => {
-    const { id, lastname, firstname } = req.params;
+    const { id, adresse, cp } = req.params;
 
     if (!id) {
         res.status(400).json({ message: 'No id provided' });
@@ -24,27 +24,46 @@ const findOne = catchAsync(async (req, res) => {
     res.status(200).json(data);
 });
 const create = catchAsync(async (req, res) => {
-    const { lastname, firstname, matricule, birthday, adresse, cp, tel } =
-        req.body;
+    const {
+        id,
+        adresse,
+        cp,
+        localite,
+        demandeur,
+        tel,
+        datedebut,
+        datefin,
+        mesures,
+        vehicule,
+        googlemap,
+    } = req.body;
     try {
         //console.log(req.body);
-        console.log(lastname, firstname, matricule);
+        console.log(adresse, localite);
         console.log(new Date() + ' : requete lancée');
 
         //console.log(req.body);
-        if (!matricule) {
-            res.status(403).json('Champ matricule vide!');
+        if (!adresse) {
+            res.status(403).json('Champ localite vide!');
             //req.flash('error', 'Certains champs ne peuvent pas être vides!');
             //res.redirect('/habitations/create');
             return;
         }
         const data = await Habitation.create({
-            lastname: lastname,
-            firstname: firstname,
-            matricule: matricule,
+            id: id,
+            adresse,
+            cp,
+            localite,
+            demandeur,
+            tel,
+            datedebut,
+            datefin,
+            mesures,
+            vehicule,
+            googlemap,
         }).then(
             console.log(
-                `----------->L\'habitation ${matricule} a bien été créé<-----------`
+                `----------->L\'habitation ${adresse} a bien été créé<-----------`
             )
         );
         res.status(201).json(data);

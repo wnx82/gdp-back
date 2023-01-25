@@ -14,18 +14,22 @@ const findAll = catchAsync(async (req, res) => {
 });
 
 const findOne = catchAsync(async (req, res) => {
-    const message = 'Liste des agents';
-    const { id, lastname, firstname } = req.params;
+    try {
+        const message = 'Liste des agents';
+        const { id, lastname, firstname } = req.params;
 
-    if (!id) {
-        res.status(400).json({ message: 'No id provided' });
+        if (!id) {
+            res.status(400).json({ message: 'No id provided' });
+        }
+        const data = await Agent.findOne({ _id: id.trim() });
+        if (!data) {
+            res.status(404).json({ message: `No user found with id ${id}` });
+        }
+        res.status(200).json(success(`Détails l'agent : `, data));
+        //res.status(200).json(data);
+    } catch (e) {
+        console.error(e);
     }
-    const data = await Agent.findOne({ _id: id });
-    if (!data) {
-        res.status(404).json({ message: `No user found with id ${id}` });
-    }
-    res.status(200).json(success(`Détails l'agent : `, data));
-    //res.status(200).json(data);
 });
 const create = catchAsync(async (req, res) => {
     const { lastname, firstname, matricule, birthday, adresse, cp, tel } =

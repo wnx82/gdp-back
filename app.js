@@ -1,4 +1,5 @@
 var createError = require('http-errors');
+var cors = require('cors');
 var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
@@ -23,6 +24,7 @@ mongoose
 
 app.use(bp.json());
 app.use(bp.urlencoded({ extended: true }));
+app.use(cors());
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));

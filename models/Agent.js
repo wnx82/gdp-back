@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 
-
 const agentSchema = new mongoose.Schema(
     {
         lastname: {
@@ -12,17 +11,29 @@ const agentSchema = new mongoose.Schema(
         birthday: {
             type: String,
         },
+        email: {
+            type: String,
+        },
         matricule: {
             type: String,
             required: true,
         },
         adresse: {
-            type: String,
+            rue: {
+                type: String,
+            },
+            cp: {
+                type: String,
+            },
+            localite: {
+                type: String,
+            },
         },
-        cp: {
-            type: String,
-        },
+
         tel: {
+            type: String,
+        },
+        password: {
             type: String,
         },
     },
@@ -34,6 +45,9 @@ const agentSchema = new mongoose.Schema(
     }
 );
 
+agentSchema.set('toJSON', {
+    virtuals: true,
+});
 console.log('Modèle Agents chargé');
 module.exports = mongoose.model('Agents', agentSchema);
 

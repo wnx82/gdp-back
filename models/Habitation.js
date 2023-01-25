@@ -3,32 +3,22 @@ const mongoose = require('mongoose');
 const habitationSchema = new mongoose.Schema(
     {
         adresse: {
-            type: String,
+            rue: { type: String },
+            cp: { type: Number },
+            localite: { type: String },
         },
-        cp: {
-            type: Number,
-        },
-        localite: {
-            type: Number,
-        },
+
         demandeur: {
-            type: String,
+            nom: { type: String },
+            tel: { type: String },
         },
-        datedebut: {
-            type: Date,
+        dates: {
+            debut: { type: Date },
+            fin: { type: Date },
         },
-        datefin: {
-            type: Date,
-        },
-        mesures: {
-            type: String,
-        },
-        vehicule: {
-            type: String,
-        },
-        googlemap: {
-            type: String,
-        },
+        mesures: { type: String },
+        vehicule: { type: String },
+        googlemap: { type: String },
     },
     {
         timestamps: true,
@@ -37,6 +27,8 @@ const habitationSchema = new mongoose.Schema(
         deleteAt: 'deletedAt',
     }
 );
-
+habitationSchema.set('toJSON', {
+    virtuals: true,
+});
 console.log('Modèle habitations chargé');
 module.exports = mongoose.model('Habitations', habitationSchema);

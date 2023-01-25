@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const validationSchema = new mongoose.Schema(
     {
-        adresse: {
+        habitation: {
             type: String,
         },
         agent: {
@@ -22,6 +22,8 @@ const validationSchema = new mongoose.Schema(
         deleteAt: 'deletedAt',
     }
 );
-
+validationSchema.set('toJSON', {
+    virtuals: true,
+});
 console.log('Modèle validations chargé');
 module.exports = mongoose.model('Validations', validationSchema);
