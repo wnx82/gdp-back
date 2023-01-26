@@ -3,9 +3,10 @@ require('dotenv').config({ path: '.env.config' });
 /**
  * Module dependencies.
  */
+const { dbClient } = require('../utils');
 
 var app = require('../app');
-var debug = require('debug')('habitations-back:server');
+var debug = require('debug')('gdp-back:server');
 var http = require('http');
 
 /**

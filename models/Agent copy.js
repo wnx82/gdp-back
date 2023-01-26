@@ -1,20 +1,41 @@
 const mongoose = require('mongoose');
-const Joi = require('joi');
+
 const agentSchema = new mongoose.Schema(
     {
-        lastname: Joi.string(),
-        firstname: Joi.string(),
-        birthday: Joi.date(),
-        email: Joi.string().email(),
-        matricule: Joi.string().required(),
+        lastname: {
+            type: String,
+        },
+        firstname: {
+            type: String,
+        },
+        birthday: {
+            type: String,
+        },
+        email: {
+            type: String,
+        },
+        matricule: {
+            type: String,
+            required: true,
+        },
         adresse: {
-            rue: Joi.string(),
-            cp: Joi.string(),
-            localite: Joi.string(),
+            rue: {
+                type: String,
+            },
+            cp: {
+                type: String,
+            },
+            localite: {
+                type: String,
+            },
         },
 
-        tel: Joi.string(),
-        password: Joi.string(),
+        tel: {
+            type: String,
+        },
+        password: {
+            type: String,
+        },
     },
     {
         timestamps: true,

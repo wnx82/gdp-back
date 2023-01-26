@@ -6,7 +6,7 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
 const { success } = require('./helpers/helper');
-const bp = require('body-parser');
+const bodyParser = require('body-parser');
 const prettier = require('prettier');
 
 var indexRouter = require('./routes/index');
@@ -16,14 +16,14 @@ var validationsRouter = require('./routes/validations');
 
 var app = express();
 
-const mongoose = require('mongoose');
-mongoose.set('strictQuery', false);
-mongoose
-    .connect('mongodb://localhost:27017/gdp')
-    .catch((error) => handleError(error));
+// const mongoose = require('mongoose');
+// mongoose.set('strictQuery', false);
+// mongoose
+//     .connect('mongodb://localhost:27017/gdp')
+//     .catch((error) => handleError(error));
 
-app.use(bp.json());
-app.use(bp.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
 
 // view engine setup

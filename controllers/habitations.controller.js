@@ -16,7 +16,7 @@ const findOne = catchAsync(async (req, res) => {
     if (!id) {
         res.status(400).json({ message: 'No id provided' });
     }
-    const data = await Habitation.findOne({ _id: id });
+    const data = await Habitation.findOne({ id: id });
     if (!data) {
         res.status(404).json({ message: `No user found with id ${id}` });
     }

@@ -2,6 +2,13 @@ var express = require('express');
 var router = express.Router();
 const controller = require('../controllers/agents.controller');
 
+// generic route handler
+const genericHandler = (req, res, next) => {
+    res.json({
+        status: 'success',
+        data: req.body,
+    });
+};
 /* GET agents listing. */
 router.get('/', controller.findAll);
 router.get('/:id', controller.findOne);
