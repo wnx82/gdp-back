@@ -1,12 +1,14 @@
-// const dbClient = require('../utils').dbClient;
-// const database = dbClient.db(process.env.MONGO_DB_DATABASE);
-// const collection = database.collection('habitations');
-const Habitation = require('../models/Habitation');
+const dbClient = require('../utils').dbClient;
+const database = dbClient.db(process.env.MONGO_DB_DATABASE);
+const collection = database.collection('habitations');
+
+// const Habitation = require('../models/Habitation');
 const catchAsync = require('../helpers/catchAsync');
 
 const findAll = catchAsync(async (req, res) => {
     console.log('Liste contrôleur habitations');
-    const data = await Habitation.find();
+    const data = await collection.find({}).toArray();
+    // const data = await Habitation.find({}).toArray();
     res.status(200).json(data);
 });
 
