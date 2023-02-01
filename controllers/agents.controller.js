@@ -1,6 +1,3 @@
-// const dbClient = require('../utils').dbClient;
-// const database = dbClient.db(process.env.MONGO_DB_DATABASE);
-// const collection = database.collection('agents');
 const dbClient = require('../utils/').dbClient;
 const database = dbClient.db(process.env.MONGO_DB_DATABASE);
 const collection = database.collection('agents');
@@ -8,6 +5,7 @@ const catchAsync = require('../helpers/catchAsync');
 const { success } = require('../helpers/helper');
 const moment = require('moment');
 const Joi = require('joi');
+var ObjectId = require('mongodb').ObjectID;
 
 const findAll = catchAsync(async (req, res) => {
     const message = 'Liste des agents';
@@ -19,26 +17,29 @@ const findAll = catchAsync(async (req, res) => {
 const findOne = catchAsync(async (req, res) => {
     try {
         const message = 'Liste des agents';
-        const { id, lastname, firstname } = req.params;
-
+        const { id } = req.params;
+        // console.log(id);
         if (!id) {
             res.status(400).json({ message: 'No id provided' });
         }
-        const data = await collection.findOne({ id: id });
+        const data = await collection.findOne({ _id: new ObjectId(id) });
+
+        // console.log(data);
         if (!data) {
             res.status(404).json({ message: `No agent found with id ${id}` });
         }
         res.status(200).json(success(`Détails l'agent : `, data));
-        //res.status(200).json(data);
+        // res.status(200).json(data);
     } catch (e) {
         console.error(e);
     }
 });
 const create = catchAsync(async (req, res) => {
     const schema = Joi.object({
-        lastname: Joi.string(),
         firstname: Joi.string(),
+        lastname: Joi.string(),
         birthday: Joi.date(),
+        tel: Joi.string(),
         email: Joi.string().email(),
         matricule: Joi.string().required(),
         adresse: {
@@ -46,9 +47,9 @@ const create = catchAsync(async (req, res) => {
             cp: Joi.string(),
             localite: Joi.string(),
         },
-
-        tel: Joi.string(),
         password: Joi.string(),
+        picture: Joi.string(),
+        formations: Joi.array(),
     });
     const { body } = req;
 

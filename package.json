@@ -3,7 +3,8 @@
     "version": "0.0.0",
     "private": true,
     "scripts": {
-        "start": "nodemon ./bin/www"
+        "start": "nodemon ./bin/www",
+        "start:debug": "nodemon --inspect=0.0.0.0:9229 ./bin/www"
     },
     "dependencies": {
         "@faker-js/faker": "^7.6.0",

@@ -5,6 +5,7 @@ const { faker } = require('@faker-js/faker');
 const dbClient = require('./utils/db-client.util');
 const bcrypt = require('bcrypt');
 const validators = require('./validators');
+const { string, array } = require('joi');
 
 const seed = (async () => {
     const db = dbClient.db(process.env.MONGO_DB_DATABASE);
@@ -12,11 +13,11 @@ const seed = (async () => {
     const collections = ['agents', 'habitations', 'validations'];
     const existingCollectionsCursor = db.listCollections();
     const existingcollections = await existingCollectionsCursor.toArray();
-    const names = existingcollections.map((c) => c.name);
+    const names = existingcollections.map(c => c.name);
     console.log(names);
 
     //on efface les données et on les recrée
-    collections.forEach(async (c) => {
+    collections.forEach(async c => {
         try {
             if (names.includes(c)) {
                 await db.dropCollection(c);
@@ -43,6 +44,9 @@ const seed = (async () => {
                     localite: faker.address.city(),
                 },
                 password: bcrypt.hashSync(faker.internet.password(), 10),
+                picture:
+                    'https://cdn-icons-png.flaticon.com/512/1946/1946392.png',
+                formation: faker.datatype.array(2),
                 createdAt: new Date(),
                 updatedAt: new Date(),
             };
@@ -52,7 +56,7 @@ const seed = (async () => {
     console.log(agentsDto);
 
     const createdAgents = await Promise.all(
-        agentsDto.map((u) => db.collection('agents').insertOne(u))
+        agentsDto.map(u => db.collection('agents').insertOne(u))
     );
     const habitationsDto = [...Array(5)].map(() => ({
         adresse: {
@@ -64,7 +68,7 @@ const seed = (async () => {
             nom: faker.name.lastName() + ' ' + faker.name.firstName(),
             tel: faker.phone.number('+32 47#/### ###'),
         },
-        dates: {
+        date: {
             debut: faker.date.past(),
             fin: faker.date.future(),
         },
@@ -84,7 +88,7 @@ const seed = (async () => {
     }));
     console.log(habitationsDto);
     const createdHabitations = await Promise.all(
-        habitationsDto.map((u) => db.collection('habitations').insertOne(u))
+        habitationsDto.map(u => db.collection('habitations').insertOne(u))
     );
     const validationsDto = [...Array(5)].map(() => ({
         agent: createdAgents[Math.floor(Math.random() * 4)].insertedId,
@@ -98,6 +102,6 @@ const seed = (async () => {
 
     console.log(validationsDto);
     await Promise.all(
-        validationsDto.map((u) => db.collection('validations').insertOne(u))
+        validationsDto.map(u => db.collection('validations').insertOne(u))
     );
 })();

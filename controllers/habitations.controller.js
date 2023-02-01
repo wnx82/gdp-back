@@ -1,9 +1,11 @@
 const dbClient = require('../utils').dbClient;
 const database = dbClient.db(process.env.MONGO_DB_DATABASE);
 const collection = database.collection('habitations');
-
-// const Habitation = require('../models/Habitation');
 const catchAsync = require('../helpers/catchAsync');
+const { success } = require('../helpers/helper');
+const moment = require('moment');
+const Joi = require('joi');
+var ObjectId = require('mongodb').ObjectID;
 
 const findAll = catchAsync(async (req, res) => {
     console.log('Liste contrôleur habitations');
@@ -13,17 +15,26 @@ const findAll = catchAsync(async (req, res) => {
 });
 
 const findOne = catchAsync(async (req, res) => {
-    const { id, adresse, cp } = req.params;
+    try {
+        const message = 'Liste des habitations';
+        const { id } = req.params;
+        // console.log(id);
+        if (!id) {
+            res.status(400).json({ message: 'No id provided' });
+        }
+        const data = await collection.findOne({ _id: new ObjectId(id) });
 
-    if (!id) {
-        res.status(400).json({ message: 'No id provided' });
+        // console.log(data);
+        if (!data) {
+            res.status(404).json({
+                message: `No habitation found with id ${id}`,
+            });
+        }
+        res.status(200).json(success(`Détails l'habitation : `, data));
+        // res.status(200).json(data);
+    } catch (e) {
+        console.error(e);
     }
-    const data = await Habitation.findOne({ id: id });
-    if (!data) {
-        res.status(404).json({ message: `No user found with id ${id}` });
-    }
-
-    res.status(200).json(data);
 });
 const create = catchAsync(async (req, res) => {
     const {
@@ -53,13 +64,19 @@ const create = catchAsync(async (req, res) => {
         }
         const data = await Habitation.create({
             id: id,
-            adresse,
-            cp,
-            localite,
-            demandeur,
-            tel,
-            datedebut,
-            datefin,
+            adresse: {
+                rue,
+                cp,
+                localite,
+            },
+            demandeur: {
+                nom,
+                tel,
+            },
+            date: {
+                datedebut,
+                datefin,
+            },
             mesures,
             vehicule,
             googlemap,

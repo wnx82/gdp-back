@@ -1,12 +1,12 @@
 module.exports = {
     validator: {
         $jsonSchema: {
-            required: ['location', 'end', 'start', 'subject'],
+            required: ['adresse', 'date.debut', 'date.fin', 'subject'],
             properties: {
-                end: {
+                start: {
                     bsonType: 'date',
                 },
-                start: {
+                end: {
                     bsonType: 'date',
                 },
                 subject: {
