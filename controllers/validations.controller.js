@@ -11,7 +11,7 @@ const findAll = catchAsync(async (req, res) => {
 });
 
 const findOne = catchAsync(async (req, res) => {
-    const { id, lastname, firstname } = req.params;
+    const { id } = req.params;
 
     if (!id) {
         res.status(400).json({ message: 'No id provided' });

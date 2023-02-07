@@ -72,7 +72,47 @@ const create = catchAsync(async (req, res) => {
         console.log(err);
     }
 });
-const updateOne = catchAsync(async (req, res) => {});
+const updateOne = catchAsync(async (req, res) => {
+    const { id } = req.params;
+    if (!id) {
+        res.status(400).json({ message: 'No id provided' });
+    }
+    const { body } = req;
+    const schema = Joi.object({
+        firstname: Joi.string(),
+        lastname: Joi.string(),
+        birthday: Joi.date(),
+        tel: Joi.string(),
+        email: Joi.string().email(),
+        matricule: Joi.string().required(),
+        adresse: {
+            rue: Joi.string(),
+            cp: Joi.string(),
+            localite: Joi.string(),
+        },
+        password: Joi.string(),
+        picture: Joi.string(),
+        formations: Joi.array(),
+    });
+
+    const { value, error } = schema.validateAsync(body);
+    if (error) {
+        res.status(400).json(error);
+    }
+    const data = await collection.findOneAndUpdate(
+        {
+            _id: new ObjectId(id),
+        },
+        {
+            $set: schema,
+        },
+        {
+            returnDocument: 'after',
+            // upsert:
+        }
+    );
+    res.status(200).json(data);
+});
 
 const deleteOne = catchAsync(async (req, res) => {
     const { id } = req.params;
@@ -85,23 +125,25 @@ const deleteOne = catchAsync(async (req, res) => {
         //suppression logique
         const result = await collection.updateOne(
             {
-                _id: id, //filter
+                _id: new ObjectId(id),
             },
             {
                 $set: { deleteAt: new Date() },
             }
         );
-        res.status(200).json(result);
+        res.status(200).json({
+            message: "L'agent a bien été supprimé",
+            result,
+        });
     }
     if (parseInt(force, 10) === 1) {
         //suppression physique
         const result = await collection.deleteOne({ _id: id });
-        // if (result.deletedCount === 1) {
-        //     console.log('Successfully deleted');
-        // }
-        res.status(204);
-    }
-    res.status(400).json({ message: 'Malformed parameter "force"' });
+        if (result.deletedCount === 1) {
+            console.log('Successfully deleted');
+        }
+        res.status(204).json(success(`Successfully deleted`));
+    } else res.status(400).json({ message: 'Malformed parameter "force"' });
 });
 
 module.exports = {

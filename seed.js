@@ -30,12 +30,12 @@ const seed = (async () => {
     //DTO = DATA TRANSFER OBJECT
 
     const agentsDto = await Promise.all(
-        [...Array(5)].map(async () => {
+        [...Array(10)].map(async () => {
             return {
                 firstname: faker.name.firstName(),
                 lastname: faker.name.lastName(),
                 birthday: faker.date.past(),
-                tel: faker.phone.phoneNumber('+32 47#######'), // '+48 91 463 61 70',
+                tel: faker.phone.number('+32 47#######'), // '+48 91 463 61 70',
                 email: faker.internet.email(),
                 matricule: 'A1' + faker.random.numeric(2),
                 adresse: {
@@ -66,7 +66,7 @@ const seed = (async () => {
         },
         demandeur: {
             nom: faker.name.lastName() + ' ' + faker.name.firstName(),
-            tel: faker.phone.number('+32 47#/### ###'),
+            tel: faker.phone.number('+32 47# ### ###'),
         },
         date: {
             debut: faker.date.past(),

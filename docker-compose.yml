@@ -1,14 +1,14 @@
 version: '3.7'
 services:
     mongo:
-        image: mongo
-        container_name: mongodb_6_gdp
-
+        image: mongo:latest
+        container_name: mongodb
+        restart: always
         environment:
             MONGO_INITDB_ROOT_USERNAME: root
             MONGO_INITDB_ROOT_PASSWORD: root
         ports:
             - 27021:27017
         volumes:
-            - ../db/mongodb_6_gdp/data/db:/data/db
-        restart: unless-stopped
+            - ./db/mongodb_6/:/data/db
+        # restart: unless-stopped
