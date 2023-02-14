@@ -30,7 +30,7 @@ const seed = (async () => {
     //DTO = DATA TRANSFER OBJECT
 
     const agentsDto = await Promise.all(
-        [...Array(10)].map(async () => {
+        [...Array(15)].map(async () => {
             return {
                 firstname: faker.name.firstName(),
                 lastname: faker.name.lastName(),
@@ -104,4 +104,5 @@ const seed = (async () => {
     await Promise.all(
         validationsDto.map(u => db.collection('validations').insertOne(u))
     );
+    process.exit(0);
 })();

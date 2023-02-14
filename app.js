@@ -9,8 +9,11 @@ const { success } = require('./helpers/helper');
 const bodyParser = require('body-parser');
 const prettier = require('prettier');
 
+const passport = require('passport');
+
 var indexRouter = require('./routes/index');
 var agentsRouter = require('./routes/agents');
+var authRouter = require('./routes/auth');
 var habitationsRouter = require('./routes/habitations');
 var validationsRouter = require('./routes/validations');
 
@@ -37,6 +40,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
+app.use('/', authRouter);
 app.use('/agents', agentsRouter);
 app.use('/habitations', habitationsRouter);
 app.use('/validations', validationsRouter);

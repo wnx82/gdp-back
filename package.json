@@ -3,6 +3,7 @@
     "version": "0.0.0",
     "private": true,
     "scripts": {
+        "seed": "nodemon seed.js",
         "start": "nodemon ./bin/www",
         "start:debug": "nodemon --inspect=0.0.0.0:9229 ./bin/www"
     },
@@ -18,11 +19,16 @@
         "express": "~4.16.1",
         "express-joi-validation": "^5.0.1",
         "http-errors": "~1.6.3",
+        "ioredis": "^5.3.0",
         "joi": "^17.7.0",
+        "jsonwebtoken": "^9.0.0",
         "moment": "^2.29.4",
         "mongodb": "^4.13.0",
         "mongoose": "^6.8.3",
         "morgan": "~1.9.1",
+        "passport": "^0.6.0",
+        "passport-jwt": "^4.0.1",
+        "passport-local": "^1.0.0",
         "prettier": "^2.8.2"
     }
 }

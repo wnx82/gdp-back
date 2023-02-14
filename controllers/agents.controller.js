@@ -1,6 +1,8 @@
-const dbClient = require('../utils/').dbClient;
+// const dbClient = require('../utils/').dbClient;
+const { dbClient, redisClient } = require('../utils/');
 const database = dbClient.db(process.env.MONGO_DB_DATABASE);
 const collection = database.collection('agents');
+const bcrypt = require('bcrypt');
 const catchAsync = require('../helpers/catchAsync');
 const { success } = require('../helpers/helper');
 const moment = require('moment');
@@ -59,9 +61,24 @@ const create = catchAsync(async (req, res) => {
         return res.status(400).json({ message: error });
     }
     try {
-        const { ...rest } = value;
+        const { email, password, ...rest } = value;
+        // Check for existing email
+        const existingUser = await collection.findOne({
+            email,
+        });
+
+        if (existingUser) {
+            return res.status(409).json({ message: 'Email already exists' });
+        }
+
+        //on efface le pwd
+        delete password;
+        const hash = await bcrypt.hash(password, 10);
+
         const data = await collection
             .insertOne({
+                password: hash,
+                email,
                 ...rest,
             })
             .then(
@@ -122,6 +139,8 @@ const deleteOne = catchAsync(async (req, res) => {
     const { force } = req.query;
 
     if (force === undefined || parseInt(force, 10) === 0) {
+        console.log(force);
+        console.log(id);
         //suppression logique
         const result = await collection.updateOne(
             {
@@ -138,10 +157,12 @@ const deleteOne = catchAsync(async (req, res) => {
     }
     if (parseInt(force, 10) === 1) {
         //suppression physique
-        const result = await collection.deleteOne({ _id: id });
+        console.log('suppression physique/valeur force:' + force);
+        const result = await collection.deleteOne({ _id: new ObjectId(id) });
         if (result.deletedCount === 1) {
             console.log('Successfully deleted');
         }
+        console.log(`Successfully deleted`);
         res.status(204).json(success(`Successfully deleted`));
     } else res.status(400).json({ message: 'Malformed parameter "force"' });
 });

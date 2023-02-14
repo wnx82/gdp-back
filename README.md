@@ -33,6 +33,8 @@ Backend pour GDP - Portal
 ### 🐉 Plus tard
 
 -   [**Git Emojis**](https://gitmoji.dev/)
+-   [**Listing Emojis**](emoji.md)
+
 -   [Tuto Get Data From server ✨](https://angular.io/tutorial/tour-of-heroes/toh-pt6)
 
 
@@ -46,6 +48,7 @@ Backend pour GDP - Portal
 
 -   [Nodejs](#)
 -   [Nodejs](https://github.com/geo6/geocoder-php-spw-provider)
+-   [JWT](https://medium.com/front-end-weekly/learn-using-jwt-with-passport-authentication-9761539c4314)
 
 
 

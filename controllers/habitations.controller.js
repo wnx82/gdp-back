@@ -10,7 +10,7 @@ var ObjectId = require('mongodb').ObjectID;
 const findAll = catchAsync(async (req, res) => {
     console.log('Liste contrôleur habitations');
     const data = await collection.find({}).toArray();
-    // const data = await Habitation.find({}).toArray();
+    // const data = await collection.find({}).toArray();
     res.status(200).json(data);
 });
 
@@ -62,29 +62,31 @@ const create = catchAsync(async (req, res) => {
             //res.redirect('/habitations/create');
             return;
         }
-        const data = await Habitation.create({
-            id: id,
-            adresse: {
-                rue,
-                cp,
-                localite,
-            },
-            demandeur: {
-                nom,
-                tel,
-            },
-            date: {
-                datedebut,
-                datefin,
-            },
-            mesures,
-            vehicule,
-            googlemap,
-        }).then(
-            console.log(
-                `----------->L\'habitation ${adresse} a bien été créé<-----------`
-            )
-        );
+        const data = await collection
+            .create({
+                id: id,
+                adresse: {
+                    rue,
+                    cp,
+                    localite,
+                },
+                demandeur: {
+                    nom,
+                    tel,
+                },
+                date: {
+                    datedebut,
+                    datefin,
+                },
+                mesures,
+                vehicule,
+                googlemap,
+            })
+            .then(
+                console.log(
+                    `----------->L\'habitation ${adresse} a bien été créé<-----------`
+                )
+            );
         res.status(201).json(data);
     } catch (err) {
         console.log(err);
@@ -100,25 +102,27 @@ const deleteOne = catchAsync(async (req, res) => {
 
     if (force === undefined || parseInt(force, 10) === 0) {
         //suppression logique
-        const result = await Habitation.updateOne(
+        const result = await collection.updateOne(
             {
-                _id: id, //filter
+                _id: new ObjectId(id), //filter
             },
             {
                 $set: { deleteAt: new Date() },
             }
         );
-        res.status(200).json(result);
+        res.status(200).json({
+            message: "L'agent a bien été supprimé",
+            result,
+        });
     }
     if (parseInt(force, 10) === 1) {
         //suppression physique
-        const result = await Habitation.deleteOne({ _id: id });
-        // if (result.deletedCount === 1) {
-        //     console.log('Successfully deleted');
-        // }
-        res.status(204);
-    }
-    res.status(400).json({ message: 'Malformed parameter "force"' });
+        const result = await collection.deleteOne({ _id: new ObjectId(id) });
+        if (result.deletedCount === 1) {
+            console.log('Successfully deleted');
+        }
+        return res.status(204).json(success(`Successfully deleted`));
+    } else res.status(400).json({ message: 'Malformed parameter "force"' });
 });
 
 module.exports = {
