@@ -8,7 +8,6 @@ const Joi = require('joi');
 var ObjectId = require('mongodb').ObjectID;
 
 const findAll = catchAsync(async (req, res) => {
-    console.log('Liste contrôleur habitations');
     const data = await collection.find({}).toArray();
     // const data = await collection.find({}).toArray();
     res.status(200).json(data);
@@ -16,7 +15,6 @@ const findAll = catchAsync(async (req, res) => {
 
 const findOne = catchAsync(async (req, res) => {
     try {
-        const message = 'Liste des habitations';
         const { id } = req.params;
         // console.log(id);
         if (!id) {
@@ -30,8 +28,8 @@ const findOne = catchAsync(async (req, res) => {
                 message: `No habitation found with id ${id}`,
             });
         }
-        res.status(200).json(success(`Détails l'habitation : `, data));
-        // res.status(200).json(data);
+        // res.status(200).json(success(`Détails l'habitation : `, data));
+        res.status(200).json(data);
     } catch (e) {
         console.error(e);
     }
@@ -121,7 +119,8 @@ const deleteOne = catchAsync(async (req, res) => {
         if (result.deletedCount === 1) {
             console.log('Successfully deleted');
         }
-        return res.status(204).json(success(`Successfully deleted`));
+        return res.status(200).json(`Successfully deleted`);
+        // return res.status(204).json(success(`Successfully deleted`));
     } else res.status(400).json({ message: 'Malformed parameter "force"' });
 });
 

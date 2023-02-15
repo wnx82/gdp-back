@@ -7,11 +7,12 @@ const catchAsync = require('../helpers/catchAsync');
 const { success } = require('../helpers/helper');
 const moment = require('moment');
 const Joi = require('joi');
-var ObjectId = require('mongodb').ObjectID;
+const ObjectId = require('mongodb').ObjectID;
 
 const findAll = catchAsync(async (req, res) => {
     const message = 'Liste des agents';
     const data = await collection.find({}).toArray();
+
     res.status(200).json(data);
     // res.status(200).json(success(message, data));
 });
@@ -20,18 +21,16 @@ const findOne = catchAsync(async (req, res) => {
     try {
         const message = 'Liste des agents';
         const { id } = req.params;
-        // console.log(id);
+
         if (!id) {
             res.status(400).json({ message: 'No id provided' });
         }
         const data = await collection.findOne({ _id: new ObjectId(id) });
-
-        // console.log(data);
         if (!data) {
             res.status(404).json({ message: `No agent found with id ${id}` });
         }
-        res.status(200).json(success(`Détails l'agent : `, data));
-        // res.status(200).json(data);
+        // res.status(200).json(success(`Détails l'agent : `, data));
+        res.status(200).json(data);
     } catch (e) {
         console.error(e);
     }
@@ -139,32 +138,34 @@ const deleteOne = catchAsync(async (req, res) => {
     const { force } = req.query;
 
     if (force === undefined || parseInt(force, 10) === 0) {
-        console.log(force);
-        console.log(id);
         //suppression logique
         const result = await collection.updateOne(
             {
                 _id: new ObjectId(id),
             },
             {
-                $set: { deleteAt: new Date() },
+                $set: { deletedAt: new Date() },
             }
         );
         res.status(200).json({
-            message: "L'agent a bien été supprimé",
+            message: "L'agent a bien été supprimé de manière logique.",
             result,
         });
-    }
-    if (parseInt(force, 10) === 1) {
+    } else if (parseInt(force, 10) === 1) {
         //suppression physique
         console.log('suppression physique/valeur force:' + force);
         const result = await collection.deleteOne({ _id: new ObjectId(id) });
         if (result.deletedCount === 1) {
             console.log('Successfully deleted');
+            res.status(200).json({
+                message: 'Successfully deleted physically',
+            });
+        } else {
+            res.status(404).json({ message: 'Failed to delete' });
         }
-        console.log(`Successfully deleted`);
-        res.status(204).json(success(`Successfully deleted`));
-    } else res.status(400).json({ message: 'Malformed parameter "force"' });
+    } else {
+        res.status(400).json({ message: 'Malformed parameter "force"' });
+    }
 });
 
 module.exports = {

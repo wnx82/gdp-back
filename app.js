@@ -42,6 +42,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/', authRouter);
 app.use('/agents', agentsRouter);
+app.use('/users', agentsRouter);
 app.use('/habitations', habitationsRouter);
 app.use('/validations', validationsRouter);
 
