@@ -1,20 +1,25 @@
-// const dbClient = require('../utils/').dbClient;
+// ./controllers/agents.controller.js
+
 const { dbClient, redisClient } = require('../utils/');
+// const dbClient = require('../utils/').dbClient;
 const database = dbClient.db(process.env.MONGO_DB_DATABASE);
 const collection = database.collection('agents');
 const bcrypt = require('bcrypt');
 const catchAsync = require('../helpers/catchAsync');
-const { success } = require('../helpers/helper');
+// const { success } = require('../helpers/helper');
 const moment = require('moment');
 const Joi = require('joi');
 const ObjectId = require('mongodb').ObjectID;
 
 const findAll = catchAsync(async (req, res) => {
-    const message = 'Liste des agents';
-    const data = await collection.find({}).toArray();
-
-    res.status(200).json(data);
-    // res.status(200).json(success(message, data));
+    const inCache = await redisClient.get('agents:all');
+    if (inCache) {
+        return res.status(200).json(JSON.parse(inCache));
+    } else {
+        const data = await collection.find({}).toArray();
+        redisClient.set('agents:all', JSON.stringify(data), 'EX', 600);
+        res.status(200).json(data);
+    }
 });
 
 const findOne = catchAsync(async (req, res) => {
@@ -25,12 +30,23 @@ const findOne = catchAsync(async (req, res) => {
         if (!id) {
             res.status(400).json({ message: 'No id provided' });
         }
+        if (!ObjectId.isValid(id)) {
+            res.status(400).json({
+                message: 'Invalid id provided',
+            });
+        }
         const data = await collection.findOne({ _id: new ObjectId(id) });
         if (!data) {
             res.status(404).json({ message: `No agent found with id ${id}` });
         }
+        const inCache = await redisClient.get(`agents:${id}`);
+        if (inCache) {
+            return res.status(200).json(JSON.parse(inCache));
+        } else {
+            redisClient.set(`agent:${id}`, JSON.stringify(data), 'EX', 600);
+            res.status(200).json(data);
+        }
         // res.status(200).json(success(`Détails l'agent : `, data));
-        res.status(200).json(data);
     } catch (e) {
         console.error(e);
     }
@@ -41,19 +57,25 @@ const create = catchAsync(async (req, res) => {
         lastname: Joi.string(),
         birthday: Joi.date(),
         tel: Joi.string(),
-        email: Joi.string().email(),
+        email: Joi.string().email().required(),
         matricule: Joi.string().required(),
         adresse: {
             rue: Joi.string(),
             cp: Joi.string(),
             localite: Joi.string(),
         },
-        password: Joi.string(),
+        password: Joi.string().required(),
         picture: Joi.string(),
         formations: Joi.array(),
     });
     const { body } = req;
+    if (!body.email) {
+        return res.status(400).json({ message: 'Email field is required' });
+    }
 
+    if (!body.password) {
+        return res.status(400).json({ message: 'Password field is required' });
+    }
     const { value, error } = schema.validate(body);
 
     if (error) {

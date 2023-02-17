@@ -1,14 +1,44 @@
-version: '3.7'
+version: '3.9'
+
 services:
-    mongo:
-        image: mongo:latest
-        container_name: mongodb
+    api:
         restart: always
-        environment:
-            MONGO_INITDB_ROOT_USERNAME: root
-            MONGO_INITDB_ROOT_PASSWORD: root
-        ports:
-            - 27021:27017
+        build:
+            context: ./server
+            dockerfile: Dockerfile.dev
+        container_name: api
         volumes:
-            - ./db/mongodb_6/:/data/db
-        # restart: unless-stopped
+            - /home/app/node_modules
+            - ./server:/home/app
+        ports:
+            - 8000:5000
+        depends_on:
+            - mongodb
+        environment:
+            NODE_ENV: ${NODE_ENV}
+            MONGO_URI: mongodb://${MONGO_ROOT_USERNAME}:${MONGO_ROOT_PASSWORD}@mongodb
+            CHOKIDAR_USEPOLLING: 'true'
+        networks:
+            - lib_api
+
+    mongodb:
+        image: mongo
+        env_file: .env
+        restart: always
+        ports:
+            - 27017:27017
+        environment:
+            MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
+            MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
+        volumes:
+            - mongodb-data:/data/db
+        networks:
+            - lib_api
+
+networks:
+    lib_api:
+        driver: bridge
+
+volumes:
+    mongodb-data:
+        driver: local

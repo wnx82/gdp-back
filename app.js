@@ -1,23 +1,27 @@
 var createError = require('http-errors');
 var cors = require('cors');
-var express = require('express');
+const express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+const passport = require('passport');
 
 const { success } = require('./helpers/helper');
 const bodyParser = require('body-parser');
 const prettier = require('prettier');
 
-const passport = require('passport');
+require('./passport');
+var app = express();
 
 var indexRouter = require('./routes/index');
-var agentsRouter = require('./routes/agents');
 var authRouter = require('./routes/auth');
+var agentsRouter = require('./routes/agents');
 var habitationsRouter = require('./routes/habitations');
 var validationsRouter = require('./routes/validations');
 
-var app = express();
+app.post('login', async (req, res) => {
+    res.json({ ok: 'ok' });
+});
 
 // const mongoose = require('mongoose');
 // mongoose.set('strictQuery', false);
@@ -40,9 +44,13 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
-app.use('/', authRouter);
+app.use('/login', authRouter);
 app.use('/agents', agentsRouter);
-app.use('/users', agentsRouter);
+app.use(
+    '/users',
+    passport.authenticate('jwt', { session: false }),
+    agentsRouter
+);
 app.use('/habitations', habitationsRouter);
 app.use('/validations', validationsRouter);
 

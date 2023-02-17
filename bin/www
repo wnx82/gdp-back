@@ -1,5 +1,6 @@
 #!/usr/bin/env node
-require('dotenv').config({ path: '.env.config' });
+require('dotenv').config();
+// require('dotenv').config({ path: '.env.config' });
 /**
  * Module dependencies.
  */

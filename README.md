@@ -30,6 +30,20 @@ Backend pour GDP - Portal
 
 ## A faire
 
+admin@admin.com
+123456789
+113
+
+
+// // generic route handler
+// const genericHandler = (req, res, next) => {
+//     res.json({
+//         status: 'success',
+//         data: req.body,
+//     });
+// };
+
+
 ### 🐉 Plus tard
 
 -   [**Git Emojis**](https://gitmoji.dev/)

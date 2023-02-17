@@ -3,7 +3,7 @@ const { string } = require('joi');
 module.exports = {
     validator: {
         $jsonSchema: {
-            required: ['email'],
+            required: ['email', 'matricule', 'password'],
 
             properties: {
                 name: {
