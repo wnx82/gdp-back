@@ -48,7 +48,7 @@ app.use('/login', authRouter);
 app.use('/agents', agentsRouter);
 app.use(
     '/users',
-    passport.authenticate('jwt', { session: false }),
+    // passport.authenticate('jwt', { session: false }),
     agentsRouter
 );
 app.use('/habitations', habitationsRouter);

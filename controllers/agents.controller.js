@@ -1,7 +1,7 @@
 // ./controllers/agents.controller.js
 
-const { dbClient, redisClient } = require('../utils/');
 // const dbClient = require('../utils/').dbClient;
+const { dbClient, redisClient } = require('../utils/');
 const database = dbClient.db(process.env.MONGO_DB_DATABASE);
 const collection = database.collection('agents');
 const bcrypt = require('bcrypt');
@@ -39,7 +39,7 @@ const findOne = catchAsync(async (req, res) => {
         if (!data) {
             res.status(404).json({ message: `No agent found with id ${id}` });
         }
-        const inCache = await redisClient.get(`agents:${id}`);
+        const inCache = await redisClient.get(`agent:${id}`);
         if (inCache) {
             return res.status(200).json(JSON.parse(inCache));
         } else {
