@@ -1,11 +1,14 @@
 //NOSONAR
 // seed.js (à la racine du projet)
 require('dotenv').config({ path: '.env.config' });
+const { dbClient, redisClient } = require('./utils/');
 const { faker } = require('@faker-js/faker');
-const dbClient = require('./utils/db-client.util');
+// const dbClient = require('./utils/db-client.util');
 const bcrypt = require('bcrypt');
 const validators = require('./validators');
 const { string, array } = require('joi');
+
+redisClient.del('agents:all');
 
 const seed = (async () => {
     const db = dbClient.db(process.env.MONGO_DB_DATABASE);
@@ -27,8 +30,22 @@ const seed = (async () => {
         }
     });
 
-    //DTO = DATA TRANSFER OBJECT
+    // DTO = DATA TRANSFER OBJECT
 
+    const admin = {
+        email: 'admin@admin.com',
+        matricule: 'A113',
+        adresse: {
+            rue: faker.address.streetAddress(),
+            cp: faker.address.zipCode(),
+            localite: faker.address.city(),
+        },
+        password: await bcrypt.hash('123456789', 10),
+        picture: 'https://cdn-icons-png.flaticon.com/512/1946/1946392.png',
+        // formations: faker.datatype.array(2),
+        createdAt: new Date(),
+        updatedAt: new Date(),
+    };
     const agentsDto = await Promise.all(
         [...Array(15)].map(async () => {
             return {
@@ -52,7 +69,7 @@ const seed = (async () => {
             };
         })
     );
-
+    db.collection('agents').insertOne(admin);
     console.log(agentsDto);
 
     const createdAgents = await Promise.all(
