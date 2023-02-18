@@ -2,16 +2,16 @@
 
 // const dbClient = require('../utils/').dbClient;
 const { dbClient, redisClient } = require('../utils/');
+const { catchAsync, success } = require('../helpers/');
 const database = dbClient.db(process.env.MONGO_DB_DATABASE);
 const collection = database.collection('agents');
 const bcrypt = require('bcrypt');
-const catchAsync = require('../helpers/catchAsync');
-// const { success } = require('../helpers/helper');
 const moment = require('moment');
 const Joi = require('joi');
-const ObjectId = require('mongodb').ObjectID;
+const ObjectId = require('mongodb').ObjectId;
 
 const findAll = catchAsync(async (req, res) => {
+    const message = 'Liste des agents';
     const inCache = await redisClient.get('agents:all');
     if (inCache) {
         return res.status(200).json(JSON.parse(inCache));
@@ -19,6 +19,8 @@ const findAll = catchAsync(async (req, res) => {
         const data = await collection.find({}).toArray();
         redisClient.set('agents:all', JSON.stringify(data), 'EX', 600);
         res.status(200).json(data);
+        // res.status(200).json({ message: message, data: data });
+        // res.status(200).json(success(message, data));
     }
 });
 
@@ -44,7 +46,7 @@ const findOne = catchAsync(async (req, res) => {
             return res.status(200).json(JSON.parse(inCache));
         } else {
             redisClient.set(`agent:${id}`, JSON.stringify(data), 'EX', 600);
-            res.status(200).json(data);
+            res.status(200).json({ message: message, data: data });
         }
         // res.status(200).json(success(`Détails l'agent : `, data));
     } catch (e) {

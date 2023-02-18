@@ -46,7 +46,7 @@ const seed = (async () => {
                 password: bcrypt.hashSync(faker.internet.password(), 10),
                 picture:
                     'https://cdn-icons-png.flaticon.com/512/1946/1946392.png',
-                formation: faker.datatype.array(2),
+                formations: faker.datatype.array(2),
                 createdAt: new Date(),
                 updatedAt: new Date(),
             };
