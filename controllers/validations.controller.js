@@ -1,13 +1,57 @@
-// const dbClient = require('../utils').dbClient;
-// const database = dbClient.db(process.env.MONGO_DB_DATABASE);
-// const collection = database.collection('validations');
-const Validation = require('../models/Validation');
-const catchAsync = require('../helpers/catchAsync');
+// ./controllers/validations.controller.js
+
+// const dbClient = require('../utils/').dbClient;
+const { dbClient, redisClient } = require('../utils/');
+const { catchAsync, success } = require('../helpers/');
+const database = dbClient.db(process.env.MONGO_DB_DATABASE);
+const collection = database.collection('validations');
+const moment = require('moment');
+const Joi = require('joi');
+const ObjectId = require('mongodb').ObjectId;
 
 const findAll = catchAsync(async (req, res) => {
-    console.log('Liste contrôleur validations');
-    const data = await Validation.find();
-    res.status(200).json(data);
+    const message = 'Liste des validations';
+    const pipeline = [
+        {
+            $lookup: {
+                from: 'agents',
+                localField: 'agent',
+                foreignField: '_id',
+                as: 'populatedAgent',
+            },
+        },
+        {
+            $project: {
+                agents: '$populatedAgent',
+                habitation: 1,
+                message: 1,
+                date: 1,
+                createdAt: 1,
+                updateAt: 1,
+            },
+        },
+        {
+            $lookup: {
+                from: 'habitations',
+                localField: 'habitation',
+                foreignField: '_id',
+                as: 'populatedHabitation',
+            },
+        },
+        {
+            $project: {
+                agents: 1,
+                habitation: '$populatedHabitation',
+                message: 1,
+                date: 1,
+                createdAt: 1,
+                updateAt: 1,
+            },
+        },
+    ];
+    const data = await collection.aggregate(pipeline).toArray();
+    redisClient.set('agents:all', JSON.stringify(data), 'EX', 600);
+    res.status(200).json(success(message, data));
 });
 
 const findOne = catchAsync(async (req, res) => {
@@ -24,8 +68,23 @@ const findOne = catchAsync(async (req, res) => {
     res.status(200).json(data);
 });
 const create = catchAsync(async (req, res) => {
-    const { lastname, firstname, matricule, birthday, adresse, cp, tel } =
-        req.body;
+    const message = `Création d'une validation`;
+    const schema = Joi.object({
+        firstname: Joi.string().max(25),
+        lastname: Joi.string(),
+        birthday: Joi.date(),
+        tel: Joi.string().max(30),
+        email: Joi.string().email().required().max(200),
+        matricule: Joi.string().required(),
+        adresse: {
+            rue: Joi.string(),
+            cp: Joi.string(),
+            localite: Joi.string(),
+        },
+        password: Joi.string().required(),
+        picture: Joi.string(),
+        formations: Joi.array(),
+    });
     try {
         //console.log(req.body);
         console.log(lastname, firstname, matricule);

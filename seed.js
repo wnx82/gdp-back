@@ -10,7 +10,7 @@ const { string, array } = require('joi');
 
 redisClient.del('agents:all');
 
-const seed = (async () => {
+(async () => {
     const db = dbClient.db(process.env.MONGO_DB_DATABASE);
 
     const collections = ['agents', 'habitations', 'validations'];
@@ -33,6 +33,8 @@ const seed = (async () => {
     // DTO = DATA TRANSFER OBJECT
 
     const admin = {
+        firstname: 'Administrator',
+        lastname: 'Administrator',
         email: 'admin@admin.com',
         matricule: 'A113',
         adresse: {
