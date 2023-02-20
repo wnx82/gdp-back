@@ -5,7 +5,6 @@ const { dbClient, redisClient } = require('../utils');
 const { catchAsync, success } = require('../helpers');
 const database = dbClient.db(process.env.MONGO_DB_DATABASE);
 const collection = database.collection('habitations');
-const bcrypt = require('bcrypt');
 const moment = require('moment');
 const Joi = require('joi');
 const ObjectId = require('mongodb').ObjectId;
@@ -32,7 +31,7 @@ const findOne = catchAsync(async (req, res) => {
         if (inCache) {
             return res.status(200).json(JSON.parse(inCache));
         } else {
-            const data = await collection.findOne({ _id: new ObjectId(id) });
+            data = await collection.findOne({ _id: new ObjectId(id) });
             redisClient.set(
                 `habitation:${id}`,
                 JSON.stringify(data),
@@ -67,7 +66,7 @@ const create = catchAsync(async (req, res) => {
             tel: Joi.string(),
         },
         date: {
-            debut: Joi.string().required(),
+            debut: Joi.date().required(),
             fin: Joi.date().greater(Joi.ref('debut')).required(),
         },
         mesures: Joi.array(),
@@ -163,7 +162,7 @@ const deleteOne = catchAsync(async (req, res) => {
         );
         res.status(200).json(success(message, data));
         redisClient.del('habitations:all');
-        redisClient.del(`agent:${id}`);
+        redisClient.del(`habitation:${id}`);
     } else if (parseInt(force, 10) === 1) {
         //suppression physique
         const message = `Suppression d'une habitation de manière physique`;
@@ -173,7 +172,7 @@ const deleteOne = catchAsync(async (req, res) => {
             console.log('Successfully deleted');
             res.status(200).json(success(message));
             redisClient.del('habitations:all');
-            redisClient.del(`agent:${id}`);
+            redisClient.del(`habitation:${id}`);
         } else {
             res.status(404).json({ message: 'Failed to delete' });
         }

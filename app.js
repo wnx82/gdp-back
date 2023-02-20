@@ -16,6 +16,7 @@ var app = express();
 var indexRouter = require('./routes/index');
 var authRouter = require('./routes/auth');
 var agentsRouter = require('./routes/agents');
+var constatsRouter = require('./routes/constats');
 var habitationsRouter = require('./routes/habitations');
 var validationsRouter = require('./routes/validations');
 
@@ -51,6 +52,7 @@ app.use(
     passport.authenticate('jwt', { session: false }),
     agentsRouter
 );
+app.use('/constats', constatsRouter);
 app.use('/habitations', habitationsRouter);
 app.use('/validations', validationsRouter);
 
