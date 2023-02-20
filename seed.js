@@ -7,13 +7,14 @@ const { faker } = require('@faker-js/faker');
 const bcrypt = require('bcrypt');
 const validators = require('./validators');
 const { string, array } = require('joi');
+const ObjectId = require('mongodb').ObjectId;
 
 redisClient.del('agents:all');
 
 (async () => {
     const db = dbClient.db(process.env.MONGO_DB_DATABASE);
 
-    const collections = ['agents', 'habitations', 'validations'];
+    const collections = ['agents', 'constats', 'habitations', 'validations'];
     const existingCollectionsCursor = db.listCollections();
     const existingcollections = await existingCollectionsCursor.toArray();
     const names = existingcollections.map(c => c.name);
@@ -73,11 +74,11 @@ redisClient.del('agents:all');
     );
     db.collection('agents').insertOne(admin);
     console.log(agentsDto);
-
+    console.log('agents ok ------------------------------------');
     const createdAgents = await Promise.all(
         agentsDto.map(u => db.collection('agents').insertOne(u))
     );
-    const habitationsDto = [...Array(5)].map(() => ({
+    const habitationsDto = [...Array(15)].map(() => ({
         adresse: {
             rue: faker.address.streetAddress(),
             cp: faker.address.zipCode(),
@@ -109,12 +110,14 @@ redisClient.del('agents:all');
     const createdHabitations = await Promise.all(
         habitationsDto.map(u => db.collection('habitations').insertOne(u))
     );
-    const validationsDto = [...Array(5)].map(() => ({
-        agent: createdAgents[Math.floor(Math.random() * 4)].insertedId,
+
+    console.log('habitations ok ------------------------------------');
+    const validationsDto = [...Array(15)].map(() => ({
+        agent: createdAgents[Math.floor(Math.random() * 15)].insertedId,
         habitation:
-            createdHabitations[Math.floor(Math.random() * 4)].insertedId,
+            createdHabitations[Math.floor(Math.random() * 15)].insertedId,
         message: faker.lorem.words(),
-        date: faker.date.past(),
+        date: faker.date.recent(),
         createdAt: new Date(),
         updatedAt: new Date(),
     }));
@@ -123,5 +126,38 @@ redisClient.del('agents:all');
     await Promise.all(
         validationsDto.map(u => db.collection('validations').insertOne(u))
     );
+
+    console.log('validations ok ------------------------------------');
+
+    const constatsDto = [...Array(25)].map(() => ({
+        agents: [
+            createdAgents[Math.floor(Math.random() * 15)].insertedId,
+            createdAgents[Math.floor(Math.random() * 15)].insertedId,
+        ],
+        date: faker.date.recent(),
+        vehicule: {
+            marque: faker.vehicle.manufacturer(),
+            modele: faker.vehicle.model(),
+            couleur: faker.vehicle.color(),
+            type: faker.vehicle.type(),
+            immatriculation: faker.vehicle.vrm(),
+        },
+        adresse: {
+            rue: faker.address.streetAddress(),
+            cp: faker.address.zipCode(),
+            localite: faker.address.city(),
+        },
+        infraction: [faker.lorem.words(), faker.lorem.words()],
+        pv: faker.datatype.boolean(),
+        message: faker.lorem.words(),
+        createdAt: new Date(),
+        updatedAt: new Date(),
+    }));
+
+    console.log(constatsDto);
+    await Promise.all(
+        constatsDto.map(u => db.collection('constats').insertOne(u))
+    );
+    console.log('constats ok ------------------------------------');
     process.exit(0);
 })();

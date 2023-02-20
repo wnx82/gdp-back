@@ -154,12 +154,20 @@ const updateOne = catchAsync(async (req, res) => {
     if (error) {
         res.status(400).json(error);
     }
+
+    // Remove any properties with null values
+    if (value) {
+        Object.keys(value).forEach(
+            key => value[key] === null && delete value[key]
+        );
+    }
+
     const data = await collection.findOneAndUpdate(
         {
             _id: new ObjectId(id),
         },
         {
-            $set: schema,
+            $set: value, // use the validated object
         },
         {
             returnDocument: 'after',
@@ -170,6 +178,44 @@ const updateOne = catchAsync(async (req, res) => {
     redisClient.del(`agent:${id}`);
     // res.status(200).json(data);
 });
+
+// const updateOne = catchAsync(async (req, res) => {
+//     const message = `Modification d'un agent`;
+//     const { id } = req.params;
+//     const { body } = req;
+//     const schema = Joi.object({
+//         firstname: Joi.string(),
+//         lastname: Joi.string(),
+//         birthday: Joi.date(),
+//         tel: Joi.string(),
+//         email: Joi.string().email(),
+//         matricule: Joi.string().required(),
+//         adresse: {
+//             rue: Joi.string(),
+//             cp: Joi.string(),
+//             localite: Joi.string(),
+//         },
+//         password: Joi.string(),
+//         picture: Joi.string(),
+//         formations: Joi.array(),
+//     });
+
+//     const { value, error } = schema.validateAsync(body);
+//     if (error) {
+//         res.status(400).json(error);
+//     }
+
+//     const pipeline = [
+//         { $match: { _id: ObjectId(id) } },
+//         { $set: value },
+//         { $set: { updated_at: new Date() } },
+//         { $project: { _id: 1 } },
+//     ];
+
+//     const [updatedDoc] = await collection.aggregate(pipeline).toArray();
+//     res.status(200).json(success(message, updatedDoc));
+//     redisClient.del(`agent:${id}`);
+// });
 
 const deleteOne = catchAsync(async (req, res) => {
     const { id } = req.params;

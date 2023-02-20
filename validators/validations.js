@@ -6,12 +6,12 @@ module.exports = {
             properties: {
                 _id: {},
                 agent: {
-                    bsonType: ['object'],
-                    description: ' must be a object and is required',
+                    bsonType: ['objectId'],
+                    description: ' must be a string and is required',
                 },
                 habitation: {
-                    bsonType: ['object'],
-                    description: ' must be a object and is required',
+                    bsonType: ['objectId'],
+                    description: ' must be a string and is required',
                 },
                 message: {
                     bsonType: ['string'],
@@ -19,7 +19,7 @@ module.exports = {
                 },
                 date: {
                     bsonType: ['date'],
-                    description: ' must be a string and is required',
+                    description: ' must be a date and is required',
                 },
             },
         },

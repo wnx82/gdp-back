@@ -133,19 +133,17 @@ const updateOne = catchAsync(async (req, res) => {
     if (error) {
         res.status(400).json(error);
     }
-    const data = await collection.findOneAndUpdate(
-        {
-            _id: new ObjectId(id),
-        },
-        {
-            $set: schema,
-        },
-        {
-            returnDocument: 'after',
-            // upsert:
-        }
-    );
-    res.status(200).json(success(message, data));
+
+    const pipeline = [
+        { $match: { _id: ObjectId(id) } },
+        { $set: body },
+        { $set: { updated_at: new Date() } },
+        { $project: { _id: 1 } },
+    ];
+
+    const data = await collection.aggregate(pipeline).toArray();
+    const updatedDoc = await collection.findOne({ _id: ObjectId(id) });
+    res.status(200).json(success(message, updatedDoc));
     redisClient.del(`habitation:${id}`);
 });
 
