@@ -5,8 +5,6 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const passport = require('passport');
-
-const { success } = require('./helpers/helper');
 const bodyParser = require('body-parser');
 const prettier = require('prettier');
 
@@ -23,12 +21,6 @@ var validationsRouter = require('./routes/validations');
 app.post('login', async (req, res) => {
     res.json({ ok: 'ok' });
 });
-
-// const mongoose = require('mongoose');
-// mongoose.set('strictQuery', false);
-// mongoose
-//     .connect('mongodb://localhost:27017/gdp')
-//     .catch((error) => handleError(error));
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));

@@ -1,6 +1,7 @@
 // ./controllers/validations.controller.js
 
 // const dbClient = require('../utils/').dbClient;
+
 const { dbClient, redisClient } = require('../utils');
 const { catchAsync, success } = require('../helpers');
 const database = dbClient.db(process.env.MONGO_DB_DATABASE);
@@ -103,12 +104,8 @@ const create = catchAsync(async (req, res) => {
             .required(),
         date: Joi.date().required(),
         note: Joi.string(),
-        // agent: Joi.objectId().required(),
-        // habitation: Joi.objectId().required(),
     });
-    // if (!body.adresse) {
-    //     return res.status(400).json({ message: 'adresse field is required' });
-    // }
+
     const { body } = req;
     const { value, error } = schema.validate(body);
 
@@ -120,13 +117,14 @@ const create = catchAsync(async (req, res) => {
             return new ObjectId(p);
         });
         value.agent = agentsID;
+
         const habitationsID = value.habitation.map(p => {
             return new ObjectId(p);
         });
-        value.habitation = agentsID;
+        value.habitation = habitationsID;
+
         const { ...rest } = value;
-        // value.agent = new ObjectId(value.agent);
-        // value.habitation = new ObjectId(value.habitation);
+
         const createdAt = new Date();
         const updatedAt = new Date();
         const data = await collection
@@ -140,9 +138,89 @@ const create = catchAsync(async (req, res) => {
                     `----------->La validation a bien été créé<-----------`
                 )
             );
-        res.status(201).json(success(message, data));
-        console.log('on efface le redis');
+        // Récupérer l'insertedId
+        const insertedId = data.insertedId;
+        response = res.status(201).json(success(message, data));
+
         redisClient.del('validations:all');
+        //
+        console.log(insertedId);
+        const { agentData, habitationData, note } = await collection
+            .aggregate([
+                {
+                    $match: {
+                        _id: new ObjectId('63f61c68aa29b305523638ba'),
+                    },
+                },
+                {
+                    $lookup: {
+                        from: 'agents',
+                        localField: 'agent',
+                        foreignField: '_id',
+                        as: 'agentData',
+                    },
+                },
+                {
+                    $unwind: {
+                        path: '$agentData',
+                    },
+                },
+                {
+                    $project: {
+                        'agentData.matricule': 1,
+                        habitation: 1,
+                        note: 1,
+                    },
+                },
+                {
+                    $lookup: {
+                        from: 'habitations',
+                        localField: 'habitation',
+                        foreignField: '_id',
+                        as: 'habitationData',
+                    },
+                },
+                {
+                    $unwind: {
+                        path: '$habitationData',
+                    },
+                },
+                {
+                    $project: {
+                        'agentData.matricule': 1,
+                        'habitationData.adresse.rue': 1,
+                        note: 1,
+                    },
+                },
+            ])
+            .next();
+
+        console.log(
+            'matricule:' + agentData.matricule,
+            'habitation:' + habitationData.adresse.rue,
+            'note:' + note
+        );
+
+        const SendMail = require('../helpers/sendMail');
+        // Utilisation de la fonction SendMail pour envoyer un mail
+        const dataSubject =
+            'Nouvelle entrée pour ' + habitationData.adresse.rue;
+        const dataMessage = '';
+        const dataHTML =
+            'Ce ' +
+            moment(new Date()).format('YYYY/MM/DD à HH:mm') +
+            ' A' +
+            agentData.matricule +
+            ", agent GDP, s'est rendu à l'habitation " +
+            habitationData.adresse.rue +
+            ' et a communiqué le commentaire suivant :' +
+            note;
+
+        SendMail(dataSubject, dataMessage, dataHTML)
+            .then(() => console.log('Mail envoyé avec succès'))
+            .catch(err =>
+                console.error("Erreur lors de l'envoi du mail:", err)
+            );
     } catch (err) {
         console.log(err);
     }

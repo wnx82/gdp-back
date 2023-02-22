@@ -34,9 +34,18 @@ Backend pour GDP - Portal
 [GDP Back](https://github.com/winnux82/gdp-back)
 [GDP Front](https://github.com/winnux82/gdp-front)
 
-## A faire
+## A faire:
 
-Importer dans Postman la collection GDP back via le fichier GDP Back.postman_collection.json
+Importer dans Postman la collection GDP back via le fichier GDP Back.
+
+Fichier dispo dossier racine: postman_collection.json
+
+## Addons
+
+Jwt on /users 
+
+ValidateId on routes
+
 
 
 ### 🐉 Plus tard

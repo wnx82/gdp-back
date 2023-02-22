@@ -258,12 +258,14 @@ const addAgent = async (req, res) => {
         return;
     }
 
+    const agentId = new ObjectId(body.agentId);
     const data = await collection.findOneAndUpdate(
         {
             _id: new ObjectId(id),
+            agents: { $ne: agentId }, // check if agentId is not already in the agents array
         },
         {
-            $push: { agents: new ObjectId(body.agentId) },
+            $push: { agents: agentId },
         },
         {
             returnDocument: 'after',

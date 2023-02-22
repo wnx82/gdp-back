@@ -170,6 +170,85 @@
 			"response": []
 		},
 		{
+			"name": "Get Constats - Agents",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3003/constats/63f5f540ea3970f57e2760be/agents",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3003",
+					"path": [
+						"constats",
+						"63f5f540ea3970f57e2760be",
+						"agents"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Constats - Post Agent",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"agentId\":\"63f5f53fea3970f57e276090\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3003/constats/63f5f540ea3970f57e2760be/agents",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3003",
+					"path": [
+						"constats",
+						"63f5f540ea3970f57e2760be",
+						"agents"
+					],
+					"query": [
+						{
+							"key": "agentId",
+							"value": "63f5f53fea3970f57e276090",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Constats - Agent Remove",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3003/constats/63f5f540ea3970f57e2760be/63f5f540ea3970f57e2760be",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3003",
+					"path": [
+						"constats",
+						"63f5f540ea3970f57e2760be",
+						"63f5f540ea3970f57e2760be"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "Get Habitations",
 			"request": {
 				"method": "GET",

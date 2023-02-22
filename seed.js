@@ -6,8 +6,8 @@ const { faker } = require('@faker-js/faker');
 // const dbClient = require('./utils/db-client.util');
 const bcrypt = require('bcrypt');
 const validators = require('./validators');
-const { string, array } = require('joi');
-const ObjectId = require('mongodb').ObjectId;
+// const { string, array } = require('joi');
+// const ObjectId = require('mongodb').ObjectId;
 
 redisClient.del('agents:all');
 
@@ -24,10 +24,15 @@ redisClient.del('agents:all');
     collections.forEach(async c => {
         try {
             if (names.includes(c)) {
+                console.log(`Dropping collection: ${c}`);
                 await db.dropCollection(c);
-            } else await db.createCollection(c, validators[c] ?? null);
+            } else console.log(`Creating collection: ${c}`);
+            await db.createCollection(c, validators[c] ?? null);
         } catch (e) {
-            console.error(c);
+            console.error(`Failed to connect to MongoDB: ${e}`);
+            process.exit(1);
+        } finally {
+            // await client.close();
         }
     });
 
@@ -74,7 +79,9 @@ redisClient.del('agents:all');
     );
     db.collection('agents').insertOne(admin);
     console.log(agentsDto);
-    console.log('agents ok ------------------------------------');
+    console.log(
+        '\u001b[1;31m----------------- Collection agents créée ------------------------------------\u001b[0m '
+    );
     const createdAgents = await Promise.all(
         agentsDto.map(u => db.collection('agents').insertOne(u))
     );
@@ -111,7 +118,9 @@ redisClient.del('agents:all');
         habitationsDto.map(u => db.collection('habitations').insertOne(u))
     );
 
-    console.log('habitations ok ------------------------------------');
+    console.log(
+        '\u001b[1;31m----------------- Collection habitations créée ------------------------------------\u001b[0m '
+    );
     const validationsDto = [...Array(15)].map(() => ({
         agent: [createdAgents[Math.floor(Math.random() * 15)].insertedId],
         habitation: [
@@ -128,7 +137,9 @@ redisClient.del('agents:all');
         validationsDto.map(u => db.collection('validations').insertOne(u))
     );
 
-    console.log('validations ok ------------------------------------');
+    console.log(
+        '----------------- Collection validations créée ------------------------------------\u001b[0m '
+    );
 
     const constatsDto = [...Array(25)].map(() => ({
         agents: [
@@ -159,6 +170,8 @@ redisClient.del('agents:all');
     await Promise.all(
         constatsDto.map(u => db.collection('constats').insertOne(u))
     );
-    console.log('constats ok ------------------------------------');
+    console.log(
+        '\u001b[1;31m----------------- Collection constats créée ------------------------------------\u001b[0m '
+    );
     process.exit(0);
 })();
