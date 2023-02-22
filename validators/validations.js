@@ -4,22 +4,33 @@ module.exports = {
             bsonType: 'object',
             required: ['agent', 'habitation', 'date'],
             properties: {
-                _id: {},
+                _id: {
+                    bsonType: 'objectId',
+                },
                 agent: {
-                    bsonType: ['objectId'],
-                    description: ' must be a string and is required',
+                    // agent et habitation sont maintenant des tableaux d'objectId
+                    bsonType: 'array',
+                    items: {
+                        bsonType: ['objectId'],
+                    },
+                    description:
+                        'Agent must be an array of objectIds and is required',
                 },
                 habitation: {
-                    bsonType: ['objectId'],
-                    description: ' must be a string and is required',
+                    bsonType: 'array',
+                    items: {
+                        bsonType: ['objectId'],
+                    },
+                    description:
+                        'Habitation must be an array of objectIds and is required',
                 },
-                message: {
-                    bsonType: ['string'],
-                    description: ' must be a string and is not required',
+                note: {
+                    bsonType: 'string',
+                    description: 'Note must be a string and is not required',
                 },
                 date: {
-                    bsonType: ['date'],
-                    description: ' must be a date and is required',
+                    bsonType: 'date',
+                    description: 'Date must be a date and is required',
                 },
             },
         },

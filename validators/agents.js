@@ -9,35 +9,35 @@ module.exports = {
             properties: {
                 _id: {},
                 firstname: {
-                    bsonType: ['string'],
+                    bsonType: 'string',
                     description: 'firstname must be a string',
                 },
                 lastname: {
-                    bsonType: ['string'],
+                    bsonType: 'string',
                     description: 'lastname must be a string',
                 },
                 birthday: {
-                    bsonType: ['date'],
+                    bsonType: 'date',
                     description: 'must be a date',
                 },
                 tel: {
-                    bsonType: ['string'],
+                    bsonType: 'string',
                     description: 'must be a string',
                 },
                 email: {
-                    bsonType: ['string'],
+                    bsonType: 'string',
                     description: ' must be a string and is required',
                 },
                 password: {
-                    bsonType: ['string'],
+                    bsonType: 'string',
                     description: 'must be a string and is required',
                 },
                 matricule: {
-                    bsonType: ['string'],
+                    bsonType: 'string',
                     description: 'must be a string and is required',
                 },
                 adresse: {
-                    bsonType: ['object'],
+                    bsonType: 'object',
                     required: ['rue', 'cp', 'localite'],
                     properties: {
                         rue: { bsonType: 'string' },
@@ -46,11 +46,11 @@ module.exports = {
                     },
                 },
                 picture: {
-                    bsonType: ['string'],
+                    bsonType: 'string',
                     description: 'must be a string and is required',
                 },
                 formations: {
-                    bsonType: ['array'],
+                    bsonType: 'array',
                     description: 'must be an array and is required',
                 },
             },

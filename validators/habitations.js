@@ -6,7 +6,7 @@ module.exports = {
             properties: {
                 _id: {},
                 adresse: {
-                    bsonType: ['object'],
+                    bsonType: 'object',
                     required: ['rue', 'cp', 'localite'],
                     description: ' must be a object and is required',
                     properties: {
@@ -16,7 +16,7 @@ module.exports = {
                     },
                 },
                 demandeur: {
-                    bsonType: ['object'],
+                    bsonType: 'object',
                     required: ['nom'],
                     description: ' must be a object and is not required',
                     properties: {
@@ -25,7 +25,7 @@ module.exports = {
                     },
                 },
                 date: {
-                    bsonType: ['object'],
+                    bsonType: 'object',
                     required: ['debut', 'fin'],
                     description: ' must be a object and is required',
                     properties: {
@@ -34,15 +34,15 @@ module.exports = {
                     },
                 },
                 mesures: {
-                    bsonType: ['array'],
+                    bsonType: 'array',
                     description: ' must be a array and is not required',
                 },
                 vehicule: {
-                    bsonType: ['string'],
+                    bsonType: 'string',
                     description: ' must be a string and is not required',
                 },
                 googlemap: {
-                    bsonType: ['string'],
+                    bsonType: 'string',
                     description: ' must be a string and is not required',
                 },
             },

@@ -26,7 +26,7 @@ const findAll = catchAsync(async (req, res) => {
             },
             {
                 $project: {
-                    agents: '$populatedAgent',
+                    agent: '$populatedAgent',
                     habitation: 1,
                     message: 1,
                     date: 1,
@@ -44,7 +44,7 @@ const findAll = catchAsync(async (req, res) => {
             },
             {
                 $project: {
-                    agents: 1,
+                    agent: 1,
                     habitation: '$populatedHabitation',
                     message: 1,
                     date: 1,
@@ -93,22 +93,40 @@ const findOne = catchAsync(async (req, res) => {
 const create = catchAsync(async (req, res) => {
     const message = `Création d'une validation`;
     const schema = Joi.object({
-        message: Joi.string(),
+        agent: Joi.array()
+            .items(Joi.string().regex(/^[0-9a-fA-F]{24}$/))
+            .min(1)
+            .required(),
+        habitation: Joi.array()
+            .items(Joi.string().regex(/^[0-9a-fA-F]{24}$/))
+            .min(1)
+            .required(),
         date: Joi.date().required(),
-        agent: Joi.objectId().required(),
-        habitation: Joi.objectId().required(),
+        note: Joi.string(),
+        // agent: Joi.objectId().required(),
+        // habitation: Joi.objectId().required(),
     });
-    if (!body.adresse) {
-        return res.status(400).json({ message: 'adresse field is required' });
-    }
-
+    // if (!body.adresse) {
+    //     return res.status(400).json({ message: 'adresse field is required' });
+    // }
+    const { body } = req;
     const { value, error } = schema.validate(body);
 
     if (error) {
         return res.status(400).json({ message: error });
     }
     try {
+        const agentsID = value.agent.map(p => {
+            return new ObjectId(p);
+        });
+        value.agent = agentsID;
+        const habitationsID = value.habitation.map(p => {
+            return new ObjectId(p);
+        });
+        value.habitation = agentsID;
         const { ...rest } = value;
+        // value.agent = new ObjectId(value.agent);
+        // value.habitation = new ObjectId(value.habitation);
         const createdAt = new Date();
         const updatedAt = new Date();
         const data = await collection
@@ -130,32 +148,50 @@ const create = catchAsync(async (req, res) => {
     }
 });
 const updateOne = catchAsync(async (req, res) => {
-    const message = `Modification d'une validation`;
     const { id } = req.params;
-    const { body } = req;
+    if (!id) {
+        return res.status(400).json({ message: 'No id provided' });
+    }
+    const message = `Mise à jour de la validation ${id}`;
     const schema = Joi.object({
-        message: Joi.string(),
+        agent: Joi.array()
+            .items(Joi.string().regex(/^[0-9a-fA-F]{24}$/))
+            .min(1)
+            .required(),
+        habitation: Joi.array()
+            .items(Joi.string().regex(/^[0-9a-fA-F]{24}$/))
+            .min(1)
+            .required(),
         date: Joi.date().required(),
-        agent: Joi.objectId().required(),
-        habitation: Joi.objectId().required(),
+        note: Joi.string(),
+        // agent: Joi.objectId().required(),
+        // habitation: Joi.objectId().required(),
     });
 
-    const { value, error } = schema.validateAsync(body);
+    const { body } = req;
+
+    const { value, error } = schema.validate(body);
     if (error) {
-        res.status(400).json(error);
+        return res.status(400).json({ message: error.details[0].message });
     }
 
-    const pipeline = [
-        { $match: { _id: ObjectId(id) } },
-        { $set: body },
-        { $set: { updated_at: new Date() } },
-        { $project: { _id: 1 } },
-    ];
-
-    const data = await collection.aggregate(pipeline).toArray();
-    const updatedDoc = await collection.findOne({ _id: ObjectId(id) });
-    res.status(200).json(success(message, updatedDoc));
-    redisClient.del(`validation:${id}`);
+    try {
+        const updatedAt = new Date();
+        const { modifiedCount } = await collection.updateOne(
+            { _id: ObjectId(id) },
+            { $set: { ...value, updatedAt } },
+            { returnDocument: 'after' }
+        );
+        if (modifiedCount === 0) {
+            return res.status(404).json({ message: 'Validation not found' });
+        }
+        res.status(200).json(success(message, value));
+        redisClient.del('validations:all');
+        redisClient.del(`validation:${id}`);
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ message: 'Server error' });
+    }
 });
 
 const deleteOne = catchAsync(async (req, res) => {

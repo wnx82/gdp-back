@@ -106,9 +106,11 @@ const create = catchAsync(async (req, res) => {
     }
 });
 const updateOne = catchAsync(async (req, res) => {
-    const message = `Modification d'une habitation`;
     const { id } = req.params;
-    const { body } = req;
+    if (!id) {
+        return res.status(400).json({ message: 'No id provided' });
+    }
+    const message = `Mise à jour de l'habitation ${id}`;
     const schema = Joi.object({
         adresse: {
             rue: Joi.string(),
@@ -128,22 +130,30 @@ const updateOne = catchAsync(async (req, res) => {
         googlemap: Joi.string(),
     });
 
-    const { value, error } = schema.validateAsync(body);
+    const { body } = req;
+
+    const { value, error } = schema.validate(body);
     if (error) {
-        res.status(400).json(error);
+        return res.status(400).json({ message: error.details[0].message });
     }
 
-    const pipeline = [
-        { $match: { _id: ObjectId(id) } },
-        { $set: body },
-        { $set: { updated_at: new Date() } },
-        { $project: { _id: 1 } },
-    ];
-
-    const data = await collection.aggregate(pipeline).toArray();
-    const updatedDoc = await collection.findOne({ _id: ObjectId(id) });
-    res.status(200).json(success(message, updatedDoc));
-    redisClient.del(`habitation:${id}`);
+    try {
+        const updatedAt = new Date();
+        const { modifiedCount } = await collection.updateOne(
+            { _id: ObjectId(id) },
+            { $set: { ...value, updatedAt } },
+            { returnDocument: 'after' }
+        );
+        if (modifiedCount === 0) {
+            return res.status(404).json({ message: 'Habitation not found' });
+        }
+        res.status(200).json(success(message, value));
+        redisClient.del('habitations:all');
+        redisClient.del(`habitation:${id}`);
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ message: 'Server error' });
+    }
 });
 
 const deleteOne = catchAsync(async (req, res) => {

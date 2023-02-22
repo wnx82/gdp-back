@@ -6,7 +6,8 @@ const { catchAsync, success } = require('../helpers');
 const database = dbClient.db(process.env.MONGO_DB_DATABASE);
 const collection = database.collection('constats');
 const moment = require('moment');
-const Joi = require('joi');
+// const Joi = require('joi');
+const Joi = require('joi-oid');
 const ObjectId = require('mongodb').ObjectId;
 
 const findAll = catchAsync(async (req, res) => {
@@ -49,24 +50,31 @@ const findOne = catchAsync(async (req, res) => {
 });
 
 const create = catchAsync(async (req, res) => {
-    const message = `Création d'une constat`;
+    const message = `Création d'un constat`;
     const schema = Joi.object({
-        adresse: {
+        agents: Joi.array()
+            .items(Joi.string().regex(/^[0-9a-fA-F]{24}$/))
+            .min(1)
+            .required(),
+        // agents: Joi.array().items(Joi.string()).required(),
+        date: Joi.date().required(),
+        vehicule: Joi.object({
+            marque: Joi.string(),
+            modele: Joi.string(),
+            couleur: Joi.string(),
+            type: Joi.string(),
+            immatriculation: Joi.string(),
+        }),
+
+        adresse: Joi.object({
             rue: Joi.string(),
             cp: Joi.string(),
             localite: Joi.string(),
-        },
-        demandeur: {
-            nom: Joi.string(),
-            tel: Joi.string(),
-        },
-        date: {
-            debut: Joi.date().required(),
-            fin: Joi.date().greater(Joi.ref('debut')).required(),
-        },
-        mesures: Joi.array(),
-        vehicule: Joi.string(),
-        googlemap: Joi.string(),
+        }),
+
+        infraction: Joi.array().items(Joi.string()).required(),
+        pv: Joi.boolean().required(),
+        note: Joi.string(),
     });
     const { body } = req;
     if (!body.adresse) {
@@ -76,9 +84,17 @@ const create = catchAsync(async (req, res) => {
     const { value, error } = schema.validate(body);
 
     if (error) {
-        return res.status(400).json({ message: error });
+        return res.status(400).json({
+            message: error.details.map(err => err.message).join(', '),
+        });
     }
+
     try {
+        const agentsID = value.agents.map(p => {
+            return new ObjectId(p);
+        });
+        value.agents = agentsID;
+
         const { ...rest } = value;
         const createdAt = new Date();
         const updatedAt = new Date();
@@ -94,6 +110,7 @@ const create = catchAsync(async (req, res) => {
                 )
             );
         res.status(201).json(success(message, data));
+        //on efface le redis
         console.log('on efface le redis');
         redisClient.del('constats:all');
     } catch (err) {
@@ -101,46 +118,61 @@ const create = catchAsync(async (req, res) => {
     }
 });
 const updateOne = catchAsync(async (req, res) => {
-    const message = `Modification d'une constat`;
     const { id } = req.params;
-    const { body } = req;
+    if (!id) {
+        return res.status(400).json({ message: 'No id provided' });
+    }
+    const message = `Mise à jour du constat ${id}`;
+
     const schema = Joi.object({
-        adresse: {
+        agents: Joi.array()
+            .items(Joi.string().regex(/^[0-9a-fA-F]{24}$/))
+            .min(1)
+            .required(),
+
+        date: Joi.date().required(),
+        vehicule: Joi.object({
+            marque: Joi.string(),
+            modele: Joi.string(),
+            couleur: Joi.string(),
+            type: Joi.string(),
+            immatriculation: Joi.string(),
+        }),
+
+        adresse: Joi.object({
             rue: Joi.string(),
             cp: Joi.string(),
             localite: Joi.string(),
-        },
-        demandeur: {
-            nom: Joi.string(),
-            tel: Joi.string(),
-        },
-        date: {
-            debut: Joi.string(),
-            fin: Joi.string(),
-        },
-        mesures: Joi.array(),
-        vehicule: Joi.string(),
-        googlemap: Joi.string(),
+        }),
+
+        infraction: Joi.array().items(Joi.string()).required(),
+        pv: Joi.boolean().required(),
+        note: Joi.string(),
     });
+    const { body } = req;
 
-    const { value, error } = schema.validateAsync(body);
+    const { value, error } = schema.validate(body);
     if (error) {
-        res.status(400).json(error);
+        return res.status(400).json({ message: error.details[0].message });
     }
-
-    const pipeline = [
-        { $match: { _id: ObjectId(id) } },
-        { $set: body },
-        { $set: { updated_at: new Date() } },
-        { $project: { _id: 1 } },
-    ];
-
-    const data = await collection.aggregate(pipeline).toArray();
-    const updatedDoc = await collection.findOne({ _id: ObjectId(id) });
-    res.status(200).json(success(message, updatedDoc));
-    redisClient.del(`constat:${id}`);
+    try {
+        const updatedAt = new Date();
+        const { modifiedCount } = await collection.updateOne(
+            { _id: ObjectId(id) },
+            { $set: { ...value, updatedAt } },
+            { returnDocument: 'after' }
+        );
+        if (modifiedCount === 0) {
+            return res.status(404).json({ message: 'Constat not found' });
+        }
+        res.status(200).json(success(message, value));
+        redisClient.del('constats:all');
+        redisClient.del(`constat:${id}`);
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ message: 'Server error' });
+    }
 });
-
 const deleteOne = catchAsync(async (req, res) => {
     const { id } = req.params;
     const { force } = req.query;

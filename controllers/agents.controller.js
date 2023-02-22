@@ -83,14 +83,21 @@ const create = catchAsync(async (req, res) => {
         formations: Joi.array(),
     });
     const { body } = req;
+    console.log(body.email);
+    if (typeof body.email === 'undefined') {
+        return res.status(400).json({ message: 'Email field is required' });
+    }
     if (!body.email) {
         return res.status(400).json({ message: 'Email field is required' });
     }
-
     if (!body.password) {
         return res.status(400).json({ message: 'Password field is required' });
     }
     const { value, error } = schema.validate(body);
+    // Handle validation errors
+    if (error) {
+        return res.status(400).json({ message: error.details[0].message });
+    }
 
     if (error) {
         return res.status(400).json({ message: error });
@@ -129,93 +136,55 @@ const create = catchAsync(async (req, res) => {
         console.log(err);
     }
 });
+
 const updateOne = catchAsync(async (req, res) => {
-    const message = `Modification d'un agent`;
     const { id } = req.params;
-    const { body } = req;
+    if (!id) {
+        return res.status(400).json({ message: 'No id provided' });
+    }
+    const message = `Mise à jour de l'agent ${id}`;
     const schema = Joi.object({
-        firstname: Joi.string(),
+        firstname: Joi.string().max(50),
         lastname: Joi.string(),
         birthday: Joi.date(),
-        tel: Joi.string(),
-        email: Joi.string().email(),
+        tel: Joi.string().max(30),
+        email: Joi.string().email().required().max(200),
         matricule: Joi.string().required(),
+        password: Joi.string().max(30),
         adresse: {
             rue: Joi.string(),
             cp: Joi.string(),
             localite: Joi.string(),
         },
-        password: Joi.string(),
         picture: Joi.string(),
         formations: Joi.array(),
     });
-
-    const { value, error } = schema.validateAsync(body);
+    const { body } = req;
+    if (!body.email) {
+        return res.status(400).json({ message: 'Email field is required' });
+    }
+    const { value, error } = schema.validate(body);
     if (error) {
-        res.status(400).json(error);
+        return res.status(400).json({ message: error.details[0].message });
     }
-
-    // Remove any properties with null values
-    if (value) {
-        Object.keys(value).forEach(
-            key => value[key] === null && delete value[key]
+    try {
+        const updatedAt = new Date();
+        const { modifiedCount } = await collection.updateOne(
+            { _id: ObjectId(id) },
+            { $set: { ...value, updatedAt } },
+            { returnDocument: 'after' }
         );
-    }
-
-    const data = await collection.findOneAndUpdate(
-        {
-            _id: new ObjectId(id),
-        },
-        {
-            $set: value, // use the validated object
-        },
-        {
-            returnDocument: 'after',
-            // upsert:
+        if (modifiedCount === 0) {
+            return res.status(404).json({ message: 'Agent not found' });
         }
-    );
-    res.status(200).json(success(message, data));
-    redisClient.del(`agent:${id}`);
-    // res.status(200).json(data);
+        res.status(200).json(success(message, value));
+        redisClient.del('agents:all');
+        redisClient.del(`agent:${id}`);
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ message: 'Server error' });
+    }
 });
-
-// const updateOne = catchAsync(async (req, res) => {
-//     const message = `Modification d'un agent`;
-//     const { id } = req.params;
-//     const { body } = req;
-//     const schema = Joi.object({
-//         firstname: Joi.string(),
-//         lastname: Joi.string(),
-//         birthday: Joi.date(),
-//         tel: Joi.string(),
-//         email: Joi.string().email(),
-//         matricule: Joi.string().required(),
-//         adresse: {
-//             rue: Joi.string(),
-//             cp: Joi.string(),
-//             localite: Joi.string(),
-//         },
-//         password: Joi.string(),
-//         picture: Joi.string(),
-//         formations: Joi.array(),
-//     });
-
-//     const { value, error } = schema.validateAsync(body);
-//     if (error) {
-//         res.status(400).json(error);
-//     }
-
-//     const pipeline = [
-//         { $match: { _id: ObjectId(id) } },
-//         { $set: value },
-//         { $set: { updated_at: new Date() } },
-//         { $project: { _id: 1 } },
-//     ];
-
-//     const [updatedDoc] = await collection.aggregate(pipeline).toArray();
-//     res.status(200).json(success(message, updatedDoc));
-//     redisClient.del(`agent:${id}`);
-// });
 
 const deleteOne = catchAsync(async (req, res) => {
     const { id } = req.params;

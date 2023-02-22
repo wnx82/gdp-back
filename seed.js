@@ -113,10 +113,11 @@ redisClient.del('agents:all');
 
     console.log('habitations ok ------------------------------------');
     const validationsDto = [...Array(15)].map(() => ({
-        agent: createdAgents[Math.floor(Math.random() * 15)].insertedId,
-        habitation:
+        agent: [createdAgents[Math.floor(Math.random() * 15)].insertedId],
+        habitation: [
             createdHabitations[Math.floor(Math.random() * 15)].insertedId,
-        message: faker.lorem.words(),
+        ],
+        note: faker.lorem.words(),
         date: faker.date.recent(),
         createdAt: new Date(),
         updatedAt: new Date(),
@@ -149,7 +150,7 @@ redisClient.del('agents:all');
         },
         infraction: [faker.lorem.words(), faker.lorem.words()],
         pv: faker.datatype.boolean(),
-        message: faker.lorem.words(),
+        note: faker.lorem.words(),
         createdAt: new Date(),
         updatedAt: new Date(),
     }));
