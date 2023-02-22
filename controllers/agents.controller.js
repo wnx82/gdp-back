@@ -9,10 +9,9 @@ const bcrypt = require('bcrypt');
 const moment = require('moment');
 const Joi = require('joi');
 const ObjectId = require('mongodb').ObjectId;
-const agentsValidator = require('../validators/agents');
 
 const findAll = catchAsync(async (req, res) => {
-    const message = 'Liste des agents';
+    const message = '📄 Liste des agents';
     const inCache = await redisClient.get('agents:all');
     if (inCache) {
         return res.status(200).json(JSON.parse(inCache));
@@ -29,21 +28,10 @@ const findAll = catchAsync(async (req, res) => {
         res.status(200).json(success(message, data));
     }
 });
-// const findAll = catchAsync(async (req, res) => {
-//     const message = 'Liste des agents';
-//     const inCache = await redisClient.get('agents:all');
-//     if (inCache) {
-//         return res.status(200).json(JSON.parse(inCache));
-//     } else {
-//         const data = await collection.find({}).toArray();
-//         redisClient.set('agents:all', JSON.stringify(data), 'EX', 600);
-//         res.status(200).json(success(message, data));
-//     }
-// });
 
 const findOne = catchAsync(async (req, res) => {
     try {
-        const message = `Détails de l'agent`;
+        const message = `📄 Détails de l'agent`;
         const { id } = req.params;
         let data = null;
         const inCache = await redisClient.get(`agent:${id}`);
@@ -65,7 +53,7 @@ const findOne = catchAsync(async (req, res) => {
 });
 
 const create = catchAsync(async (req, res) => {
-    const message = `Création d'un agent`;
+    const message = `✏️ Création d'un agent`;
     const schema = Joi.object({
         firstname: Joi.string().max(25),
         lastname: Joi.string(),
@@ -142,7 +130,7 @@ const updateOne = catchAsync(async (req, res) => {
     if (!id) {
         return res.status(400).json({ message: 'No id provided' });
     }
-    const message = `Mise à jour de l'agent ${id}`;
+    const message = `📝 Mise à jour de l'agent ${id}`;
     const schema = Joi.object({
         firstname: Joi.string().max(50),
         lastname: Joi.string(),
@@ -192,7 +180,7 @@ const deleteOne = catchAsync(async (req, res) => {
 
     if (force === undefined || parseInt(force, 10) === 0) {
         //suppression logique
-        const message = `Suppression d'un agent de manière logique`;
+        const message = `🗑️ Suppression d'un agent de manière logique`;
         const data = await collection.updateOne(
             {
                 _id: new ObjectId(id),
@@ -210,7 +198,7 @@ const deleteOne = catchAsync(async (req, res) => {
         // });
     } else if (parseInt(force, 10) === 1) {
         //suppression physique
-        const message = `Suppression d'un agent de manière physique`;
+        const message = `🗑️ Suppression d'un agent de manière physique`;
         console.log('suppression physique/valeur force:' + force);
         const result = await collection.deleteOne({ _id: new ObjectId(id) });
         if (result.deletedCount === 1) {

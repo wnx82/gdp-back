@@ -1,7 +1,5 @@
 // ./controllers/validations.controller.js
 
-// const dbClient = require('../utils/').dbClient;
-
 const { dbClient, redisClient } = require('../utils');
 const { catchAsync, success } = require('../helpers');
 const database = dbClient.db(process.env.MONGO_DB_DATABASE);
@@ -11,7 +9,7 @@ const Joi = require('joi');
 const ObjectId = require('mongodb').ObjectId;
 
 const findAll = catchAsync(async (req, res) => {
-    const message = 'Liste des validations';
+    const message = '📄 Liste des validations';
     const inCache = await redisClient.get('validations:all');
     if (inCache) {
         return res.status(200).json(JSON.parse(inCache));
@@ -62,7 +60,7 @@ const findAll = catchAsync(async (req, res) => {
 
 const findOne = catchAsync(async (req, res) => {
     try {
-        const message = `Détails de la validation`;
+        const message = `📄 Détails de la validation`;
         const { id } = req.params;
         let data = null;
         const inCache = await redisClient.get(`validation:${id}`);
@@ -92,7 +90,7 @@ const findOne = catchAsync(async (req, res) => {
     }
 });
 const create = catchAsync(async (req, res) => {
-    const message = `Création d'une validation`;
+    const message = `✏️ Création d'une validation`;
     const schema = Joi.object({
         agent: Joi.array()
             .items(Joi.string().regex(/^[0-9a-fA-F]{24}$/))
@@ -204,20 +202,22 @@ const create = catchAsync(async (req, res) => {
         const SendMail = require('../helpers/sendMail');
         // Utilisation de la fonction SendMail pour envoyer un mail
         const dataSubject =
-            'Nouvelle entrée pour ' + habitationData.adresse.rue;
+            '✅ Nouvelle entrée pour ' + habitationData.adresse.rue;
         const dataMessage = '';
-        const dataHTML =
-            'Ce ' +
-            moment(new Date()).format('YYYY/MM/DD à HH:mm') +
-            ' A' +
-            agentData.matricule +
-            ", agent GDP, s'est rendu à l'habitation " +
-            habitationData.adresse.rue +
-            ' et a communiqué le commentaire suivant :' +
-            note;
+        const dataHTML = `
+Ce <strong>${moment(new Date()).format(
+            'YYYY/MM/DD à HH:mm'
+        )}</strong>, l'agent GDP <strong>${
+            agentData.matricule
+        }</strong>, s'est rendu à l'habitation : 
+<strong>${
+            habitationData.adresse.rue
+        }</strong> et a communiqué le commentaire suivant :
+<strong>${note}</strong>
+`;
 
         SendMail(dataSubject, dataMessage, dataHTML)
-            .then(() => console.log('Mail envoyé avec succès'))
+            .then(() => console.log('📄 Mail envoyé avec succès'))
             .catch(err =>
                 console.error("Erreur lors de l'envoi du mail:", err)
             );
@@ -230,7 +230,7 @@ const updateOne = catchAsync(async (req, res) => {
     if (!id) {
         return res.status(400).json({ message: 'No id provided' });
     }
-    const message = `Mise à jour de la validation ${id}`;
+    const message = `📝 Mise à jour de la validation ${id}`;
     const schema = Joi.object({
         agent: Joi.array()
             .items(Joi.string().regex(/^[0-9a-fA-F]{24}$/))
@@ -277,7 +277,7 @@ const deleteOne = catchAsync(async (req, res) => {
     const { force } = req.query;
     if (force === undefined || parseInt(force, 10) === 0) {
         //suppression logique
-        const message = `Suppression d'une validation de manière logique`;
+        const message = `🗑️ Suppression d'une validation de manière logique`;
         const data = await collection.updateOne(
             {
                 _id: new ObjectId(id),
@@ -291,7 +291,7 @@ const deleteOne = catchAsync(async (req, res) => {
         redisClient.del(`validation:${id}`);
     } else if (parseInt(force, 10) === 1) {
         //suppression physique
-        const message = `Suppression d'une validation de manière physique`;
+        const message = `🗑️ Suppression d'une validation de manière physique`;
         console.log('suppression physique/valeur force:' + force);
         const result = await collection.deleteOne({ _id: new ObjectId(id) });
         if (result.deletedCount === 1) {

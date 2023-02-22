@@ -11,7 +11,7 @@ const Joi = require('joi-oid');
 const ObjectId = require('mongodb').ObjectId;
 
 const findAll = catchAsync(async (req, res) => {
-    const message = 'Liste des constats';
+    const message = '📄 Liste des constats';
     const inCache = await redisClient.get('constats:all');
     if (inCache) {
         return res.status(200).json(JSON.parse(inCache));
@@ -24,7 +24,7 @@ const findAll = catchAsync(async (req, res) => {
 
 const findOne = catchAsync(async (req, res) => {
     try {
-        const message = `Détails du constat`;
+        const message = `📄 Détails du constat`;
         const { id } = req.params;
         let data = null;
         const inCache = await redisClient.get(`constat:${id}`);
@@ -50,7 +50,7 @@ const findOne = catchAsync(async (req, res) => {
 });
 
 const create = catchAsync(async (req, res) => {
-    const message = `Création d'un constat`;
+    const message = `✏️ Création d'un constat`;
     const schema = Joi.object({
         agents: Joi.array()
             .items(Joi.string().regex(/^[0-9a-fA-F]{24}$/))
@@ -122,7 +122,7 @@ const updateOne = catchAsync(async (req, res) => {
     if (!id) {
         return res.status(400).json({ message: 'No id provided' });
     }
-    const message = `Mise à jour du constat ${id}`;
+    const message = `📝 Mise à jour du constat ${id}`;
 
     const schema = Joi.object({
         agents: Joi.array()
@@ -178,7 +178,7 @@ const deleteOne = catchAsync(async (req, res) => {
     const { force } = req.query;
     if (force === undefined || parseInt(force, 10) === 0) {
         //suppression logique
-        const message = `Suppression d'un constat de manière logique`;
+        const message = `🗑️ Suppression d'un constat de manière logique`;
         const data = await collection.updateOne(
             {
                 _id: new ObjectId(id),
@@ -192,7 +192,7 @@ const deleteOne = catchAsync(async (req, res) => {
         redisClient.del(`constat:${id}`);
     } else if (parseInt(force, 10) === 1) {
         //suppression physique
-        const message = `Suppression d'un constat de manière physique`;
+        const message = `🗑️ Suppression d'un constat de manière physique`;
         console.log('suppression physique/valeur force:' + force);
         const result = await collection.deleteOne({ _id: new ObjectId(id) });
         if (result.deletedCount === 1) {
@@ -298,7 +298,7 @@ const removeAgent = async (req, res) => {
             returnDocument: 'after',
         }
     );
-    res.status(201).json({ message: 'Agent removed' });
+    res.status(201).json({ message: '🗑️ Agent removed' });
 };
 
 module.exports = {

@@ -10,7 +10,7 @@ const Joi = require('joi');
 const ObjectId = require('mongodb').ObjectId;
 
 const findAll = catchAsync(async (req, res) => {
-    const message = 'Liste des habitations';
+    const message = '📄 Liste des habitations';
     const inCache = await redisClient.get('habitations:all');
     if (inCache) {
         return res.status(200).json(JSON.parse(inCache));
@@ -23,7 +23,7 @@ const findAll = catchAsync(async (req, res) => {
 
 const findOne = catchAsync(async (req, res) => {
     try {
-        const message = `Détails de l'habitation`;
+        const message = `📄 Détails de l'habitation`;
         const { id } = req.params;
         let data = null;
         const inCache = await redisClient.get(`habitation:${id}`);
@@ -54,7 +54,7 @@ const findOne = catchAsync(async (req, res) => {
     }
 });
 const create = catchAsync(async (req, res) => {
-    const message = `Création d'une habitation`;
+    const message = `✏️ Création d'une habitation`;
     const schema = Joi.object({
         adresse: {
             rue: Joi.string(),
@@ -110,7 +110,7 @@ const updateOne = catchAsync(async (req, res) => {
     if (!id) {
         return res.status(400).json({ message: 'No id provided' });
     }
-    const message = `Mise à jour de l'habitation ${id}`;
+    const message = `📝 Mise à jour de l'habitation ${id}`;
     const schema = Joi.object({
         adresse: {
             rue: Joi.string(),
@@ -161,7 +161,7 @@ const deleteOne = catchAsync(async (req, res) => {
     const { force } = req.query;
     if (force === undefined || parseInt(force, 10) === 0) {
         //suppression logique
-        const message = `Suppression d'une habitation de manière logique`;
+        const message = `🗑️ Suppression d'une habitation de manière logique`;
         const data = await collection.updateOne(
             {
                 _id: new ObjectId(id),
@@ -175,7 +175,7 @@ const deleteOne = catchAsync(async (req, res) => {
         redisClient.del(`habitation:${id}`);
     } else if (parseInt(force, 10) === 1) {
         //suppression physique
-        const message = `Suppression d'une habitation de manière physique`;
+        const message = `🗑️ Suppression d'une habitation de manière physique`;
         console.log('suppression physique/valeur force:' + force);
         const result = await collection.deleteOne({ _id: new ObjectId(id) });
         if (result.deletedCount === 1) {
