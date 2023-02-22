@@ -208,10 +208,104 @@ const deleteOne = catchAsync(async (req, res) => {
     }
 });
 
+const findAgents = async (req, res) => {
+    const { id } = req.params;
+
+    // const data = await collection.findOne({ _id: new ObjectId(id) });
+
+    //gestion des erreurs
+    const data = await collection
+        .aggregate([
+            {
+                $match: {
+                    _id: new ObjectId(id),
+                },
+            },
+            {
+                $project: {
+                    agents: 1,
+                },
+            },
+            {
+                $lookup: {
+                    from: 'agents',
+                    localField: 'agents',
+                    foreignField: '_id',
+                    as: 'result',
+                },
+            },
+            {
+                $project: {
+                    agents: '$result',
+                },
+            },
+        ])
+        .toArray();
+    if (data.length === 0) {
+        res.status(404).json({
+            message: 'No constat found with these parameters',
+        });
+    } else {
+        res.status(200).json(data);
+    }
+};
+const addAgent = async (req, res) => {
+    const { id } = req.params;
+    const { body } = req;
+
+    if (!id) {
+        res.status(400).json({ message: 'No id provided' });
+        return;
+    }
+
+    const data = await collection.findOneAndUpdate(
+        {
+            _id: new ObjectId(id),
+        },
+        {
+            $push: { agents: new ObjectId(body.agentId) },
+        },
+        {
+            returnDocument: 'after',
+        }
+    );
+
+    if (data && data.value) {
+        res.status(201).json({ message: 'Agent added' });
+    } else {
+        res.status(500).json({ message: 'Failed to add agent' });
+    }
+};
+
+const removeAgent = async (req, res) => {
+    const { id, agentId } = req.params;
+    //gestion des erreurs
+    const data = await collection.findOneAndUpdate(
+        {
+            //filtre
+            _id: new ObjectId(id),
+        },
+        {
+            //comment faire
+            $pull: {
+                agents: { $in: [new ObjectId(agentId)] },
+            },
+        },
+        {
+            //options mongos
+            returnDocument: 'after',
+        }
+    );
+    res.status(201).json({ message: 'Agent removed' });
+};
+
 module.exports = {
     findAll,
     findOne,
     create,
     updateOne,
     deleteOne,
+    findAgents,
+    addAgent,
+    removeAgent,
 };

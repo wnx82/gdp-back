@@ -1,0 +1,546 @@
+{
+	"info": {
+		"_postman_id": "7d291766-557b-4f86-934f-fd7ed45961b9",
+		"name": "GDP Back",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "24891427"
+	},
+	"item": [
+		{
+			"name": "Add admin",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"firstname\": \"Administrator\",\r\n    \"lastname\": \"Administrator\",\r\n    \"email\": \"admin@admin.com\",\r\n    \"matricule\": \"A113\",\r\n    \"adresse\": {\r\n        \"rue\": \"74288 Keven Pass\",\r\n        \"cp\": \"93999-7873\",\r\n        \"localite\": \"O'Connerfurt\"\r\n    },\r\n    \"picture\": \"https://cdn-icons-png.flaticon.com/512/1946/1946392.png\",\r\n    \"password\": \"123456789\"\r\n\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3003/agents",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3003",
+					"path": [
+						"agents"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:3003/login",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "email",
+							"value": "admin@admin.com",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "123456789",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:3003/login",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3003",
+					"path": [
+						"login"
+					],
+					"query": [
+						{
+							"key": "email",
+							"value": "admin@admin.com",
+							"disabled": true
+						},
+						{
+							"key": "password",
+							"value": "123456789",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Users with token",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2M2Y1ZGEyYTQ4ZWJkMDJjNzlhNzE2YTMiLCJmaXJzdG5hbWUiOiJBZG1pbmlzdHJhdG9yIiwibGFzdG5hbWUiOiJBZG1pbmlzdHJhdG9yIiwiZW1haWwiOiJhZG1pbkBhZG1pbi5jb20iLCJtYXRyaWN1bGUiOiJBMTEzIiwiYWRyZXNzZSI6eyJydWUiOiI3NDI4OCBLZXZlbiBQYXNzIiwiY3AiOiI5Mzk5OS03ODczIiwibG9jYWxpdGUiOiJPJ0Nvbm5lcmZ1cnQifSwicGljdHVyZSI6Imh0dHBzOi8vY2RuLWljb25zLXBuZy5mbGF0aWNvbi5jb20vNTEyLzE5NDYvMTk0NjM5Mi5wbmciLCJjcmVhdGVkQXQiOiIyMDIzLTAyLTIyVDA5OjAyOjM0LjM1NloiLCJ1cGRhdGVkQXQiOiIyMDIzLTAyLTIyVDA5OjAyOjM0LjM1NloiLCJpYXQiOjE2NzcwNTc3MjR9.J7pOB6BBXl73KXW0NqW54zEkfYNkG9J3O5zIej_ak0Q",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3003/users",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3003",
+					"path": [
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Agents",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3003/agents/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3003",
+					"path": [
+						"agents",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get 1 Agent",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3003/agents/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3003",
+					"path": [
+						"agents",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Constats",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3003/constats/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3003",
+					"path": [
+						"constats",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Habitations",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3003/habitations",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3003",
+					"path": [
+						"habitations"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Validations",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3003/validations",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3003",
+					"path": [
+						"validations"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "New Agent",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "    {\r\n        \"firstname\": \"COCO\",\r\n        \"lastname\": \"CHannel\",\r\n        \"birthday\": \"1982-04-26T12:08:38.266Z\",\r\n        \"tel\": \"+32 470432093\",\r\n        \"email\": \"Zaria_Rauqdfqsfd125@gmail.com\",\r\n        \"matricule\": \"A188\",\r\n        \"adresse\": {\r\n            \"rue\": \"77838 Wilmer Walks\",\r\n            \"cp\": \"84057\",\r\n            \"localite\": \"Lake Orion\"\r\n        },\r\n        \"password\": \"password\",\r\n        \"picture\": \"https://cdn-icons-png.flaticon.com/512/1946/1946392.png\",\r\n        \"formations\": [\r\n            858,\r\n            \"AK/eoq63b(\"\r\n        ]\r\n    }",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3003/agents",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3003",
+					"path": [
+						"agents"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "New Constat",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n        \"agents\": [\r\n            \"63f5da2b48ebd02c79a716ad\",\r\n            \"63f5da2b48ebd02c79a716a9\"\r\n        ],\r\n        \"date\": \"2023-02-21T23:58:58.153Z\",\r\n        \"vehicule\": {\r\n            \"marque\": \"Volkswagen\",\r\n            \"modele\": \"Wrangler\",\r\n            \"couleur\": \"turquoise\",\r\n            \"type\": \"Cargo Van\",\r\n            \"immatriculation\": \"CD57WYA\"\r\n        },\r\n        \"adresse\": {\r\n            \"rue\": \"33854 Gilda Rapids\",\r\n            \"cp\": \"48084-3064\",\r\n            \"localite\": \"Lake Bransonport\"\r\n        },\r\n        \"infraction\": [\r\n            \"aut incidunt eaque\",\r\n            \"at adipisci quia\"\r\n        ],\r\n        \"pv\": false,\r\n        \"note\": \"porro voluptatibus minima\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3003/constats/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3003",
+					"path": [
+						"constats",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "New Habitation",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"adresse\": {\r\n        \"rue\": \"222222222222222222222\",\r\n        \"cp\": \"222222222222222222222\",\r\n        \"localite\": \"222222222222222222222\"\r\n    },\r\n    \"demandeur\": {\r\n        \"nom\": \"Harber Braeden\",\r\n        \"tel\": \"+32 478 767 096\"\r\n    },\r\n    \"date\": {\r\n        \"debut\": \"2023-01-08T17:57:01.451Z\",\r\n        \"fin\": \"2024-01-08T22:34:10.412Z\"\r\n    },\r\n    \"mesures\": [\r\n        \"Système d'alarme : Oui\",\r\n        \"Eclairage extérieur : Oui\",\r\n        \"Minuterie d'éclairage : Oui\",\r\n        \"Société gardiennage : Non\",\r\n        \"Chien : Non\",\r\n        \"Présence d'un tiers : Non\",\r\n        \"Autres : volets roulants programmables, éclairage programmé entrée et chambres\"\r\n    ],\r\n    \"vehicule\": \"Impala\",\r\n    \"googlemap\": \"https://true-mailer.name\"\r\n\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3003/habitations",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3003",
+					"path": [
+						"habitations"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "New Validations",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "    {\r\n\r\n        \"date\": \"2023-02-21T19:40:53.214Z\",\r\n\r\n        \"agent\" : [\"63f5c7b4f3f90d575d769050\"],\r\n        \"habitation\":[\"63f5c7b4f3f90d575d769061\"],\r\n        \"note\": \"explicabo repellat minus\"\r\n\r\n    }",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3003/validations",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3003",
+					"path": [
+						"validations"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Agent",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3003/agents/63f5da2a48ebd02c79a716a5",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3003",
+					"path": [
+						"agents",
+						"63f5da2a48ebd02c79a716a5"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Constat",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3003/constats/63f5da2b48ebd02c79a716d2",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3003",
+					"path": [
+						"constats",
+						"63f5da2b48ebd02c79a716d2"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete habitation",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3003/habitations/63f5da2b48ebd02c79a716b3",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3003",
+					"path": [
+						"habitations",
+						"63f5da2b48ebd02c79a716b3"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete validation",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3003/validations/63f5da2b48ebd02c79a716c4",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3003",
+					"path": [
+						"validations",
+						"63f5da2b48ebd02c79a716c4"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Agent force",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3003/agents/63f5da2a48ebd02c79a716a5?force=1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3003",
+					"path": [
+						"agents",
+						"63f5da2a48ebd02c79a716a5"
+					],
+					"query": [
+						{
+							"key": "force",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Patch Agent",
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "    {\r\n        \"firstname\": \"aaaaaaaaaaaa\",\r\n        \"lastname\": \"bbbbbbbbbbbb\",\r\n        \"birthday\": \"1982-04-26T12:08:38.266Z\",\r\n        \"tel\": \"+32 470432093\",\r\n        \"email\": \"qdf@gmail.com\",\r\n        \"matricule\": \"A188\",\r\n        \"adresse\": {\r\n            \"rue\": \"77838 Wilmer Walks\",\r\n            \"cp\": \"84057\",\r\n            \"localite\": \"Lake Orion\"\r\n        },\r\n        \"password\": \"password\",\r\n        \"picture\": \"https://cdn-icons-png.flaticon.com/512/1946/1946392.png\",\r\n        \"formations\": [\r\n            858,\r\n            \"AK/eoq63b(\"\r\n        ]\r\n    }",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3003/agents/63f5f53fea3970f57e276091",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3003",
+					"path": [
+						"agents",
+						"63f5f53fea3970f57e276091"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Patch Constat",
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n        \"agents\": [\r\n            \"63f5da2b48ebd02c79a716ad\",\r\n            \"63f5da2b48ebd02c79a716a9\"\r\n        ],\r\n        \"date\": \"2023-02-21T23:58:58.153Z\",\r\n        \"vehicule\": {\r\n            \"marque\": \"aaaaaaaaaaaaaaaaaaaa\",\r\n            \"modele\": \"Wrangler\",\r\n            \"couleur\": \"turquoise\",\r\n            \"type\": \"Cargo Van\",\r\n            \"immatriculation\": \"CD57WYA\"\r\n        },\r\n        \"adresse\": {\r\n            \"rue\": \"33854 Gilda Rapids\",\r\n            \"cp\": \"48084-3064\",\r\n            \"localite\": \"Lake Bransonport\"\r\n        },\r\n        \"infraction\": [\r\n            \"aut incidunt eaque\",\r\n            \"at adipisci quia\"\r\n        ],\r\n        \"pv\": false,\r\n        \"note\": \"porro voluptatibus minima\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3003/constats/63f5f540ea3970f57e2760be",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3003",
+					"path": [
+						"constats",
+						"63f5f540ea3970f57e2760be"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Patch Habitation",
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"adresse\": {\r\n        \"rue\": \"222222222222222222222\",\r\n        \"cp\": \"222222222222222222222\",\r\n        \"localite\": \"222222222222222222222\"\r\n    },\r\n    \"demandeur\": {\r\n        \"nom\": \"ZZZZZZZZZZZZZZZZzzz\",\r\n        \"tel\": \"+32 478 767 096\"\r\n    },\r\n    \"date\": {\r\n        \"debut\": \"2023-01-08T17:57:01.451Z\",\r\n        \"fin\": \"2024-01-08T22:34:10.412Z\"\r\n    },\r\n    \"mesures\": [\r\n        \"Système d'alarme : Oui\",\r\n        \"Eclairage extérieur : Oui\",\r\n        \"Minuterie d'éclairage : Oui\",\r\n        \"Société gardiennage : Non\",\r\n        \"Chien : Non\",\r\n        \"Présence d'un tiers : Non\",\r\n        \"Autres : volets roulants programmables, éclairage programmé entrée et chambres\"\r\n    ],\r\n    \"vehicule\": \"Impala\",\r\n    \"googlemap\": \"https://true-mailer.name\"\r\n\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3003/habitations/63f5f53fea3970f57e2760a0",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3003",
+					"path": [
+						"habitations",
+						"63f5f53fea3970f57e2760a0"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Patch Validation",
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "    {\r\n\r\n        \"date\": \"2023-02-21T19:40:53.214Z\",\r\n\r\n        \"agent\" : [\"63f5c7b4f3f90d575d769050\"],\r\n        \"habitation\":[\"63f5c7b4f3f90d575d769061\"],\r\n        \"note\": \"aaaaaaaaaaaaaaaaaaa\"\r\n\r\n    }",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3003/validations/63f5f53fea3970f57e2760b1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3003",
+					"path": [
+						"validations",
+						"63f5f53fea3970f57e2760b1"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

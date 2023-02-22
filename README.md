@@ -28,20 +28,15 @@
 
 Backend pour GDP - Portal
 
+
+| Back | Front | GDP Web Application |
+
+[GDP Back](https://github.com/winnux82/gdp-back)
+[GDP Front](https://github.com/winnux82/gdp-front)
+
 ## A faire
 
-admin@admin.com
-123456789
-113
-
-
-// // generic route handler
-// const genericHandler = (req, res, next) => {
-//     res.json({
-//         status: 'success',
-//         data: req.body,
-//     });
-// };
+Importer dans Postman la collection GDP back via le fichier GDP Back.postman_collection.json
 
 
 ### 🐉 Plus tard
@@ -81,12 +76,9 @@ admin@admin.com
 
 -   [eKreativ](https://eKreativ.be)
 -   [eafcm](https://www.eafcm.be/)
+-   [Linkdin](https://www.linkedin.com/in/vandermeulen-christophe/)
 -   [Facebook](https://www.facebook.com/vandermeulen.christophe)
 
-| Back | Front | GDP Web Application |
-
-[GDP Back](https://github.com/winnux82/gdp-back)
-[GDP Front](https://github.com/winnux82/gdp-front)
 
 
 | :-: | :-: | :-: | :-: |
