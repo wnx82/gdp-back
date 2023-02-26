@@ -21,6 +21,28 @@ const findAll = catchAsync(async (req, res) => {
     }
 });
 
+const findActiveHabitations = catchAsync(async (req, res) => {
+    const message = '📄 Liste des habitations';
+    const inCache = await redisClient.get('habitations:active');
+    if (inCache) {
+        return res.status(200).json(JSON.parse(inCache));
+    } else {
+        const pipeline = [
+            {
+                $match: {
+                    $and: [
+                        { 'date.debut': { $lte: new Date() } }, // date.debut <= aujourd'hui
+                        { 'date.fin': { $gte: new Date() } }, // date.fin >= aujourd'hui
+                    ],
+                },
+            },
+        ];
+        const data = await collection.aggregate(pipeline).toArray();
+        redisClient.set('habitations:active', JSON.stringify(data), 'EX', 600);
+        res.status(200).json(success(message, data));
+    }
+});
+
 const findOne = catchAsync(async (req, res) => {
     try {
         const message = `📄 Détails de l'habitation`;
@@ -193,6 +215,7 @@ const deleteOne = catchAsync(async (req, res) => {
 
 module.exports = {
     findAll,
+    // findActiveHabitations,
     findOne,
     create,
     updateOne,

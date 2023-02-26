@@ -1,26 +1,24 @@
 // db-client.util.js
 const { MongoClient } = require('mongodb');
 
-const url = `mongodb://${process.env.MONGO_DB_USERNAME}:${process.env.MONGO_DB_PWD}@${process.env.MONGO_DB_HOST}:${process.env.MONGO_DB_PORT}`;
+const url = `mongodb://${process.env.MONGODB_USERNAME}:${process.env.MONGODB_PASSWORD}@${process.env.MONGODB_HOST}:${process.env.MONGODB_PORT}`;
+
 const client = new MongoClient(url);
 
-(async () => {
+async function connectToDB() {
     try {
         await client.connect();
-        // Establish and verify connection
+        // Vérifier la connexion
         await client.db('agents').command({ ping: 1 });
         console.log(
-            `\u001b[1;34mConnected to MongoDB on  : \u001b[1;31m${url} \u001b[0m `
+            `\u001b[1;34mConnected to MongoDB on: \u001b[1;31m${url}\u001b[0m`
         );
     } catch (e) {
         console.error(`Failed to connect to MongoDB: ${e}`);
         process.exit(1);
-    } finally {
-        // Ensures that the client will close when you finish/error
-        // await client.close();
     }
-})();
+}
 
-// run().catch(console.dir);
+connectToDB();
 
 module.exports = client;

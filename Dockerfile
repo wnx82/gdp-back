@@ -15,3 +15,4 @@ ENV NODE_ENV=development
 RUN npm install -g nodemon && npm install
 COPY . /
 CMD ["nodemon", "bin/www"]
+
