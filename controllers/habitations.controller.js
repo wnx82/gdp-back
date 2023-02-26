@@ -144,8 +144,8 @@ const updateOne = catchAsync(async (req, res) => {
             tel: Joi.string(),
         },
         date: {
-            debut: Joi.string(),
-            fin: Joi.string(),
+            debut: Joi.date().required(),
+            fin: Joi.date().greater(Joi.ref('debut')).required(),
         },
         mesures: Joi.array(),
         vehicule: Joi.string(),
@@ -215,7 +215,7 @@ const deleteOne = catchAsync(async (req, res) => {
 
 module.exports = {
     findAll,
-    // findActiveHabitations,
+    findActiveHabitations,
     findOne,
     create,
     updateOne,

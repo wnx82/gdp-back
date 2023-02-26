@@ -252,12 +252,25 @@ const updateOne = catchAsync(async (req, res) => {
     if (error) {
         return res.status(400).json({ message: error.details[0].message });
     }
+    let updateValue = { ...value };
 
+    if (!value.agent) {
+        delete updateValue.agent;
+    } else {
+        updateValue.agent = value.agent.map(value => new ObjectId(value));
+    }
+    if (!value.habitation) {
+        delete updateValue.habitation;
+    } else {
+        updateValue.habitation = value.habitation.map(
+            value => new ObjectId(value)
+        );
+    }
     try {
         const updatedAt = new Date();
         const { modifiedCount } = await collection.updateOne(
             { _id: ObjectId(id) },
-            { $set: { ...value, updatedAt } },
+            { $set: { ...updateValue, updatedAt } },
             { returnDocument: 'after' }
         );
         if (modifiedCount === 0) {

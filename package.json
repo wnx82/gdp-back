@@ -21,7 +21,6 @@
         "http-errors": "~1.6.3",
         "ioredis": "^5.3.0",
         "joi": "^17.7.0",
-        "joi-oid": "^1.1.2",
         "jsonwebtoken": "^9.0.0",
         "moment": "^2.29.4",
         "mongodb": "^4.13.0",

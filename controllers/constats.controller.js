@@ -6,8 +6,7 @@ const { catchAsync, success } = require('../helpers');
 const database = dbClient.db(process.env.MONGO_DB_DATABASE);
 const collection = database.collection('constats');
 const moment = require('moment');
-// const Joi = require('joi');
-const Joi = require('joi-oid');
+const Joi = require('joi');
 const ObjectId = require('mongodb').ObjectId;
 
 const findAll = catchAsync(async (req, res) => {
@@ -52,10 +51,7 @@ const findOne = catchAsync(async (req, res) => {
 const create = catchAsync(async (req, res) => {
     const message = `✏️ Création d'un constat`;
     const schema = Joi.object({
-        agents: Joi.array()
-            .items(Joi.string().regex(/^[0-9a-fA-F]{24}$/))
-            .min(1)
-            .required(),
+        agents: Joi.array().items(JoiOid.objectId()).min(1).required(),
         // agents: Joi.array().items(Joi.string()).required(),
         date: Joi.date().required(),
         vehicule: Joi.object({
@@ -129,7 +125,7 @@ const updateOne = catchAsync(async (req, res) => {
             .items(Joi.string().regex(/^[0-9a-fA-F]{24}$/))
             .min(1)
             .required(),
-
+        // agents: Joi.array().items(Joi.string()).required(),
         date: Joi.date().required(),
         vehicule: Joi.object({
             marque: Joi.string(),
@@ -150,16 +146,25 @@ const updateOne = catchAsync(async (req, res) => {
         note: Joi.string(),
     });
     const { body } = req;
-
     const { value, error } = schema.validate(body);
     if (error) {
-        return res.status(400).json({ message: error.details[0].message });
+        console.log(error);
+        const errors = error.details.map(d => d.message);
+        return res.status(400).json({ message: 'Validation error', errors });
     }
+    let updateValue = { ...value };
+
+    if (!value.agents) {
+        delete updateValue.agents;
+    } else {
+        updateValue.agents = value.agents.map(value => new ObjectId(value));
+    }
+
     try {
         const updatedAt = new Date();
-        const { modifiedCount } = await collection.updateOne(
+        const { modifiedCount } = await collection.findOneAndUpdate(
             { _id: ObjectId(id) },
-            { $set: { ...value, updatedAt } },
+            { $set: { ...updateValue, updatedAt } },
             { returnDocument: 'after' }
         );
         if (modifiedCount === 0) {

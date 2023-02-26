@@ -6,7 +6,7 @@ const validateId = require('../helpers/validateId');
 
 /* GET habitations listing. */
 router.get('/', controller.findAll);
-// router.get('/active', controller.findActiveHabitations);
+router.get('/active', controller.findActiveHabitations);
 router.get('/:id', validateId, controller.findOne);
 router.post('/', controller.create);
 router.patch('/:id', validateId, controller.updateOne);

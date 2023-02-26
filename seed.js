@@ -1,6 +1,6 @@
 //NOSONAR
 // seed.js (à la racine du projet)
-require('dotenv').config({ path: '.env.config' });
+require('dotenv').config({ path: '.env' });
 const { dbClient, redisClient } = require('./utils/');
 const { faker } = require('@faker-js/faker');
 // const dbClient = require('./utils/db-client.util');
@@ -12,7 +12,7 @@ const validators = require('./validators');
 redisClient.del('agents:all');
 
 (async () => {
-    const db = dbClient.db(process.env.MONGODB_DATABASE);
+    const db = dbClient.db(process.env.MONGO_DB_DATABASE);
 
     const collections = ['agents', 'constats', 'habitations', 'validations'];
     const existingCollectionsCursor = db.listCollections();
