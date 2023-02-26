@@ -289,6 +289,13 @@ const deleteOne = catchAsync(async (req, res) => {
     const { id } = req.params;
     const { force } = req.query;
     if (force === undefined || parseInt(force, 10) === 0) {
+        //Vérification si l'habitation a déjà été supprimée de manière logique
+        const validation = await collection.findOne({ _id: new ObjectId(id) });
+        if (!isNaN(validation.deletedAt)) {
+            // Constat already deleted, return appropriate response
+            const message = `La validation a déjà été supprimée de manière logique.`;
+            return res.status(200).json(success(message, validation));
+        }
         //suppression logique
         const message = `🗑️ Suppression d'une validation de manière logique`;
         const data = await collection.updateOne(

@@ -182,6 +182,13 @@ const deleteOne = catchAsync(async (req, res) => {
     const { id } = req.params;
     const { force } = req.query;
     if (force === undefined || parseInt(force, 10) === 0) {
+        //Vérification si l'habitation a déjà été supprimée de manière logique
+        const habitation = await collection.findOne({ _id: new ObjectId(id) });
+        if (!isNaN(habitation.deletedAt)) {
+            // Constat already deleted, return appropriate response
+            const message = `L'habitation a déjà été supprimée de manière logique.`;
+            return res.status(200).json(success(message, habitation));
+        }
         //suppression logique
         const message = `🗑️ Suppression d'une habitation de manière logique`;
         const data = await collection.updateOne(

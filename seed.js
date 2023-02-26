@@ -9,11 +9,16 @@ const validators = require('./validators');
 // const { string, array } = require('joi');
 // const ObjectId = require('mongodb').ObjectId;
 
-redisClient.del('agents:all');
-
+// Flush Redis
+redisClient.flushall((err, reply) => {
+    if (err) {
+        console.error(err);
+    } else {
+        console.log(reply);
+    }
+});
 (async () => {
-    const db = dbClient.db(process.env.MONGO_DB_DATABASE);
-
+    const db = dbClient.db(process.env.MONGODB_DATABASE);
     const collections = ['agents', 'constats', 'habitations', 'validations'];
     const existingCollectionsCursor = db.listCollections();
     const existingcollections = await existingCollectionsCursor.toArray();

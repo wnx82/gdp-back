@@ -179,9 +179,19 @@ const deleteOne = catchAsync(async (req, res) => {
     const { force } = req.query;
 
     if (force === undefined || parseInt(force, 10) === 0) {
+        //Vérification si l'agent a déjà été supprimé de manière logique
+        const agent = await collection.findOne({ _id: new ObjectId(id) });
+        redisClient.flushall();
+        if (!isNaN(agent.deletedAt)) {
+            // Agent already deleted, return appropriate response
+            const message = `L'agent a déjà été supprimé de manière logique.`;
+            return res.status(200).json(success(message, agent));
+        }
+
         //suppression logique
+
         const message = `🗑️ Suppression d'un agent de manière logique`;
-        const data = await collection.updateOne(
+        const data = await collection.findOneAndUpdate(
             {
                 _id: new ObjectId(id),
             },

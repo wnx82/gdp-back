@@ -51,8 +51,10 @@ const findOne = catchAsync(async (req, res) => {
 const create = catchAsync(async (req, res) => {
     const message = `✏️ Création d'un constat`;
     const schema = Joi.object({
-        agents: Joi.array().items(JoiOid.objectId()).min(1).required(),
-        // agents: Joi.array().items(Joi.string()).required(),
+        agents: Joi.array()
+            .items(Joi.string().regex(/^[0-9a-fA-F]{24}$/))
+            .min(1)
+            .required(),
         date: Joi.date().required(),
         vehicule: Joi.object({
             marque: Joi.string(),
@@ -182,6 +184,13 @@ const deleteOne = catchAsync(async (req, res) => {
     const { id } = req.params;
     const { force } = req.query;
     if (force === undefined || parseInt(force, 10) === 0) {
+        //Vérification si le constat a déjà été supprimé de manière logique
+        const constat = await collection.findOne({ _id: new ObjectId(id) });
+        if (!isNaN(constat.deletedAt)) {
+            // Constat already deleted, return appropriate response
+            const message = `Le constat a déjà été supprimé de manière logique.`;
+            return res.status(200).json(success(message, constat));
+        }
         //suppression logique
         const message = `🗑️ Suppression d'un constat de manière logique`;
         const data = await collection.updateOne(
@@ -215,10 +224,6 @@ const deleteOne = catchAsync(async (req, res) => {
 
 const findAgents = async (req, res) => {
     const { id } = req.params;
-
-    // const data = await collection.findOne({ _id: new ObjectId(id) });
-
-    //gestion des erreurs
     const data = await collection
         .aggregate([
             {
