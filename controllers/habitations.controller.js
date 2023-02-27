@@ -13,7 +13,7 @@ const findAll = catchAsync(async (req, res) => {
     const message = '📄 Liste des habitations';
     const inCache = await redisClient.get('habitations:all');
     if (inCache) {
-        return res.status(200).json(JSON.parse(inCache));
+        return res.status(200).json(success(message, JSON.parse(inCache)));
     } else {
         const data = await collection.find({}).toArray();
         redisClient.set('habitations:all', JSON.stringify(data), 'EX', 600);
@@ -25,7 +25,7 @@ const findActiveHabitations = catchAsync(async (req, res) => {
     const message = '📄 Liste des habitations';
     const inCache = await redisClient.get('habitations:active');
     if (inCache) {
-        return res.status(200).json(JSON.parse(inCache));
+        return res.status(200).json(success(message, JSON.parse(inCache)));
     } else {
         const pipeline = [
             {
@@ -51,7 +51,7 @@ const findOne = catchAsync(async (req, res) => {
         const inCache = await redisClient.get(`habitation:${id}`);
 
         if (inCache) {
-            return res.status(200).json(JSON.parse(inCache));
+            return res.status(200).json(success(message, JSON.parse(inCache)));
         } else {
             data = await collection.findOne({ _id: new ObjectId(id) });
             redisClient.set(

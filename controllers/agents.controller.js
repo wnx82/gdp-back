@@ -14,7 +14,7 @@ const findAll = catchAsync(async (req, res) => {
     const message = '📄 Liste des agents';
     const inCache = await redisClient.get('agents:all');
     if (inCache) {
-        return res.status(200).json(JSON.parse(inCache));
+        return res.status(200).json(success(message, JSON.parse(inCache)));
     } else {
         const pipeline = [
             {
@@ -36,7 +36,7 @@ const findOne = catchAsync(async (req, res) => {
         let data = null;
         const inCache = await redisClient.get(`agent:${id}`);
         if (inCache) {
-            data = JSON.parse(inCache);
+            return res.status(200).json(success(message, JSON.parse(inCache)));
         } else {
             data = await collection.findOne({ _id: new ObjectId(id) });
             redisClient.set(`agent:${id}`, JSON.stringify(data), 'EX', 600);

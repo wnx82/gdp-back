@@ -13,7 +13,7 @@ const findAll = catchAsync(async (req, res) => {
     const message = '📄 Liste des constats';
     const inCache = await redisClient.get('constats:all');
     if (inCache) {
-        return res.status(200).json(JSON.parse(inCache));
+        return res.status(200).json(success(message, JSON.parse(inCache)));
     } else {
         const data = await collection.find({}).toArray();
         redisClient.set('constats:all', JSON.stringify(data), 'EX', 600);
@@ -29,7 +29,7 @@ const findOne = catchAsync(async (req, res) => {
         const inCache = await redisClient.get(`constat:${id}`);
 
         if (inCache) {
-            return res.status(200).json(JSON.parse(inCache));
+            return res.status(200).json(success(message, JSON.parse(inCache)));
         } else {
             data = await collection.findOne({ _id: new ObjectId(id) });
             redisClient.set(`constat:${id}`, JSON.stringify(data), 'EX', 600);
