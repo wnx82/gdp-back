@@ -98,9 +98,9 @@ const create = catchAsync(async (req, res) => {
         const updatedAt = new Date();
         const data = await collection
             .insertOne({
+                ...rest,
                 createdAt,
                 updatedAt,
-                ...rest,
             })
             .then(
                 console.log(

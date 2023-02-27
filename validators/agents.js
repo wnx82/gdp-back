@@ -5,9 +5,25 @@ module.exports = {
     validator: {
         $jsonSchema: {
             bsonType: 'object',
-            required: ['email', 'matricule', 'password'],
+            required: ['email', 'matricule', 'userAccess', 'password'],
             properties: {
                 _id: {},
+                email: {
+                    bsonType: 'string',
+                    description: ' must be a string and is required',
+                },
+                password: {
+                    bsonType: 'string',
+                    description: 'must be a string and is required',
+                },
+                userAccess: {
+                    bsonType: 'int',
+                    description: 'must be a integer and is required',
+                },
+                matricule: {
+                    bsonType: 'string',
+                    description: 'must be a string and is required',
+                },
                 firstname: {
                     bsonType: 'string',
                     description: 'firstname must be a string',
@@ -24,18 +40,7 @@ module.exports = {
                     bsonType: 'string',
                     description: 'must be a string',
                 },
-                email: {
-                    bsonType: 'string',
-                    description: ' must be a string and is required',
-                },
-                password: {
-                    bsonType: 'string',
-                    description: 'must be a string and is required',
-                },
-                matricule: {
-                    bsonType: 'string',
-                    description: 'must be a string and is required',
-                },
+
                 adresse: {
                     bsonType: 'object',
                     required: ['rue', 'cp', 'localite'],
@@ -45,6 +50,7 @@ module.exports = {
                         localite: { bsonType: 'string' },
                     },
                 },
+
                 picture: {
                     bsonType: 'string',
                     description: 'must be a string and is required',

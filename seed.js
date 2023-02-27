@@ -10,6 +10,7 @@ const validators = require('./validators');
 // const ObjectId = require('mongodb').ObjectId;
 
 // Flush Redis
+
 redisClient.flushall((err, reply) => {
     if (err) {
         console.error(err);
@@ -26,6 +27,9 @@ redisClient.flushall((err, reply) => {
     console.log(names);
 
     //on efface les données et on les recrée
+    console.log(
+        '\u001b[1;31m----------------- Redis Flushing ------------------------------------\u001b[0m '
+    );
     collections.forEach(async c => {
         try {
             if (names.includes(c)) {
@@ -44,16 +48,17 @@ redisClient.flushall((err, reply) => {
     // DTO = DATA TRANSFER OBJECT
 
     const admin = {
+        email: 'admin@admin.com',
+        password: await bcrypt.hash('123456789', 10),
+        userAccess: 0,
+        matricule: 'A113',
         firstname: 'Administrator',
         lastname: 'Administrator',
-        email: 'admin@admin.com',
-        matricule: 'A113',
         adresse: {
             rue: faker.address.streetAddress(),
             cp: faker.address.zipCode(),
             localite: faker.address.city(),
         },
-        password: await bcrypt.hash('123456789', 10),
         picture: 'https://cdn-icons-png.flaticon.com/512/1946/1946392.png',
         // formations: faker.datatype.array(2),
         createdAt: new Date(),
@@ -62,18 +67,19 @@ redisClient.flushall((err, reply) => {
     const agentsDto = await Promise.all(
         [...Array(15)].map(async () => {
             return {
+                email: faker.internet.email(),
+                password: bcrypt.hashSync(faker.internet.password(), 10),
+                userAccess: faker.datatype.number({ min: 1, max: 10 }),
+                matricule: 'A1' + faker.random.numeric(2),
                 firstname: faker.name.firstName(),
                 lastname: faker.name.lastName(),
                 birthday: faker.date.past(),
                 tel: faker.phone.number('+32 47#######'), // '+48 91 463 61 70',
-                email: faker.internet.email(),
-                matricule: 'A1' + faker.random.numeric(2),
                 adresse: {
                     rue: faker.address.streetAddress(),
                     cp: faker.address.zipCode(),
                     localite: faker.address.city(),
                 },
-                password: bcrypt.hashSync(faker.internet.password(), 10),
                 picture:
                     'https://cdn-icons-png.flaticon.com/512/1946/1946392.png',
                 formations: faker.datatype.array(2),

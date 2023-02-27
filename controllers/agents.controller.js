@@ -55,13 +55,14 @@ const findOne = catchAsync(async (req, res) => {
 const create = catchAsync(async (req, res) => {
     const message = `✏️ Création d'un agent`;
     const schema = Joi.object({
+        email: Joi.string().email().required().max(200),
+        password: Joi.string().required(),
+        userAccess: Joi.number().integer().min(0).max(10).required(),
+        matricule: Joi.string().required(),
         firstname: Joi.string().max(25),
         lastname: Joi.string(),
         birthday: Joi.date(),
         tel: Joi.string().max(30),
-        email: Joi.string().email().required().max(200),
-        password: Joi.string().required(),
-        matricule: Joi.string().required(),
         adresse: {
             rue: Joi.string(),
             cp: Joi.string(),
@@ -108,11 +109,11 @@ const create = catchAsync(async (req, res) => {
         const updatedAt = new Date();
         const data = await collection
             .insertOne({
+                ...rest,
                 password: hash,
                 email,
                 createdAt,
                 updatedAt,
-                ...rest,
             })
             .then(
                 console.log(`----------->L\'agent a bien été créé<-----------`)
@@ -132,13 +133,14 @@ const updateOne = catchAsync(async (req, res) => {
     }
     const message = `📝 Mise à jour de l'agent ${id}`;
     const schema = Joi.object({
-        firstname: Joi.string().max(50),
+        email: Joi.string().email().required().max(200),
+        password: Joi.string().required(),
+        userAccess: Joi.number().integer().min(0).max(10).required(),
+        matricule: Joi.string().required(),
+        firstname: Joi.string().max(25),
         lastname: Joi.string(),
         birthday: Joi.date(),
         tel: Joi.string().max(30),
-        email: Joi.string().email().required().max(200),
-        matricule: Joi.string().required(),
-        password: Joi.string().max(30),
         adresse: {
             rue: Joi.string(),
             cp: Joi.string(),
