@@ -63,13 +63,16 @@ const create = catchAsync(async (req, res) => {
             type: Joi.string(),
             immatriculation: Joi.string(),
         }),
-
         adresse: Joi.object({
             rue: Joi.string(),
             cp: Joi.string(),
             localite: Joi.string(),
         }),
-
+        geolocation: Joi.object({
+            latitude: Joi.string(),
+            longitude: Joi.string(),
+            horodatage: Joi.date(),
+        }),
         infraction: Joi.array().items(Joi.string()).required(),
         pv: Joi.boolean().required(),
         note: Joi.string(),
@@ -136,13 +139,16 @@ const updateOne = catchAsync(async (req, res) => {
             type: Joi.string(),
             immatriculation: Joi.string(),
         }),
-
         adresse: Joi.object({
             rue: Joi.string(),
             cp: Joi.string(),
             localite: Joi.string(),
         }),
-
+        geolocation: Joi.object({
+            latitude: Joi.string(),
+            longitude: Joi.string(),
+            horodatage: Joi.date(),
+        }),
         infraction: Joi.array().items(Joi.string()).required(),
         pv: Joi.boolean().required(),
         note: Joi.string(),

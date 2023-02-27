@@ -170,6 +170,11 @@ redisClient.flushall((err, reply) => {
             cp: faker.address.zipCode(),
             localite: faker.address.city(),
         },
+        geolocation: {
+            latitude: faker.address.latitude(),
+            longitude: faker.address.longitude(),
+            horodatage: faker.date.recent(),
+        },
         infraction: [faker.lorem.words(), faker.lorem.words()],
         pv: faker.datatype.boolean(),
         note: faker.lorem.words(),

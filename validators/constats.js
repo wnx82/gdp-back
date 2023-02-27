@@ -20,11 +20,26 @@ module.exports = {
                 adresse: {
                     bsonType: 'object',
                     // required: ['rue', 'cp', 'localite'],
-                    description: ' must be a object and is  not required',
+                    description: ' must be a object and is not required',
                     properties: {
                         rue: { bsonType: 'string' },
                         cp: { bsonType: 'string' },
                         localite: { bsonType: 'string' },
+                    },
+                },
+                geolocation: {
+                    bsonType: 'object',
+                    description: ' must be a object and is not required',
+                    properties: {
+                        latitude: {
+                            bsonType: 'string',
+                        },
+                        longitude: {
+                            bsonType: 'string',
+                        },
+                        horodatage: {
+                            bsonType: 'date',
+                        },
                     },
                 },
                 infraction: {
