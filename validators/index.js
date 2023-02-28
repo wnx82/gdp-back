@@ -5,5 +5,6 @@ module.exports = {
     constats: require('./constats'),
     habitations: require('./habitations'),
     infractions: require('./infractions'),
+    missions: require('./missions'),
     validations: require('./validations'),
 };

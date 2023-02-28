@@ -75,26 +75,27 @@ const findOne = catchAsync(async (req, res) => {
         console.error(e);
     }
 });
+const schema = Joi.object({
+    adresse: {
+        rue: Joi.string(),
+        cp: Joi.string(),
+        localite: Joi.string(),
+    },
+    demandeur: {
+        nom: Joi.string().allow(null).optional().empty(''),
+        tel: Joi.string().allow(null).optional().empty(''),
+    },
+    date: {
+        debut: Joi.date().required(),
+        fin: Joi.date().greater(Joi.ref('debut')).required(),
+    },
+    mesures: Joi.array(),
+    vehicule: Joi.string().allow(null).optional().empty(''),
+    googlemap: Joi.string().allow(null).optional().empty(''),
+});
 const create = catchAsync(async (req, res) => {
     const message = `✏️ Création d'une habitation`;
-    const schema = Joi.object({
-        adresse: {
-            rue: Joi.string(),
-            cp: Joi.string(),
-            localite: Joi.string(),
-        },
-        demandeur: {
-            nom: Joi.string(),
-            tel: Joi.string(),
-        },
-        date: {
-            debut: Joi.date().required(),
-            fin: Joi.date().greater(Joi.ref('debut')).required(),
-        },
-        mesures: Joi.array(),
-        vehicule: Joi.string(),
-        googlemap: Joi.string(),
-    });
+
     const { body } = req;
     if (!body.adresse) {
         return res.status(400).json({ message: 'adresse field is required' });
@@ -133,25 +134,6 @@ const updateOne = catchAsync(async (req, res) => {
         return res.status(400).json({ message: 'No id provided' });
     }
     const message = `📝 Mise à jour de l'habitation ${id}`;
-    const schema = Joi.object({
-        adresse: {
-            rue: Joi.string(),
-            cp: Joi.string(),
-            localite: Joi.string(),
-        },
-        demandeur: {
-            nom: Joi.string(),
-            tel: Joi.string(),
-        },
-        date: {
-            debut: Joi.date().required(),
-            fin: Joi.date().greater(Joi.ref('debut')).required(),
-        },
-        mesures: Joi.array(),
-        vehicule: Joi.string(),
-        googlemap: Joi.string(),
-    });
-
     const { body } = req;
 
     const { value, error } = schema.validate(body);

@@ -17,6 +17,7 @@ var agentsRouter = require('./routes/agents');
 var constatsRouter = require('./routes/constats');
 var habitationsRouter = require('./routes/habitations');
 var infractionsRouter = require('./routes/infractions');
+var missionsRouter = require('./routes/missions');
 var validationsRouter = require('./routes/validations');
 
 app.post('login', async (req, res) => {
@@ -48,6 +49,7 @@ app.use(
 app.use('/constats', constatsRouter);
 app.use('/habitations', habitationsRouter);
 app.use('/infractions', infractionsRouter);
+app.use('/missions', missionsRouter);
 app.use('/validations', validationsRouter);
 
 // catch 404 and forward to error handler

@@ -47,36 +47,36 @@ const findOne = catchAsync(async (req, res) => {
         console.error(e);
     }
 });
-
+const schema = Joi.object({
+    agents: Joi.array()
+        .items(Joi.string().regex(/^[0-9a-fA-F]{24}$/))
+        .min(1)
+        .required(),
+    date: Joi.date().required(),
+    vehicule: Joi.object().allow(null).keys({
+        marque: Joi.string(),
+        modele: Joi.string(),
+        couleur: Joi.string(),
+        type: Joi.string(),
+        immatriculation: Joi.string(),
+    }),
+    adresse: Joi.object().allow(null).keys({
+        rue: Joi.string(),
+        cp: Joi.string(),
+        localite: Joi.string(),
+    }),
+    geolocation: Joi.object().allow(null).keys({
+        latitude: Joi.string(),
+        longitude: Joi.string(),
+        horodatage: Joi.date(),
+    }),
+    infraction: Joi.array().items(Joi.string()).required(),
+    pv: Joi.boolean().required(),
+    note: Joi.string().allow(null).optional().empty(''),
+});
 const create = catchAsync(async (req, res) => {
     const message = `✏️ Création d'un constat`;
-    const schema = Joi.object({
-        agents: Joi.array()
-            .items(Joi.string().regex(/^[0-9a-fA-F]{24}$/))
-            .min(1)
-            .required(),
-        date: Joi.date().required(),
-        vehicule: Joi.object({
-            marque: Joi.string(),
-            modele: Joi.string(),
-            couleur: Joi.string(),
-            type: Joi.string(),
-            immatriculation: Joi.string(),
-        }),
-        adresse: Joi.object({
-            rue: Joi.string(),
-            cp: Joi.string(),
-            localite: Joi.string(),
-        }),
-        geolocation: Joi.object({
-            latitude: Joi.string(),
-            longitude: Joi.string(),
-            horodatage: Joi.date(),
-        }),
-        infraction: Joi.array().items(Joi.string()).required(),
-        pv: Joi.boolean().required(),
-        note: Joi.string(),
-    });
+
     const { body } = req;
     if (!body.adresse) {
         return res.status(400).json({ message: 'adresse field is required' });
@@ -124,35 +124,6 @@ const updateOne = catchAsync(async (req, res) => {
         return res.status(400).json({ message: 'No id provided' });
     }
     const message = `📝 Mise à jour du constat ${id}`;
-
-    const schema = Joi.object({
-        agents: Joi.array()
-            .items(Joi.string().regex(/^[0-9a-fA-F]{24}$/))
-            .min(1)
-            .required(),
-        // agents: Joi.array().items(Joi.string()).required(),
-        date: Joi.date().required(),
-        vehicule: Joi.object({
-            marque: Joi.string(),
-            modele: Joi.string(),
-            couleur: Joi.string(),
-            type: Joi.string(),
-            immatriculation: Joi.string(),
-        }),
-        adresse: Joi.object({
-            rue: Joi.string(),
-            cp: Joi.string(),
-            localite: Joi.string(),
-        }),
-        geolocation: Joi.object({
-            latitude: Joi.string(),
-            longitude: Joi.string(),
-            horodatage: Joi.date(),
-        }),
-        infraction: Joi.array().items(Joi.string()).required(),
-        pv: Joi.boolean().required(),
-        note: Joi.string(),
-    });
     const { body } = req;
     const { value, error } = schema.validate(body);
     if (error) {

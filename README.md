@@ -41,11 +41,21 @@ Importer dans Postman la collection GDP back via le fichier GDP Back.
 
 Fichier dispo dossier racine: postman_collection.json
 
+Alimenter les rues
+https://github.com/geo6/geocoder-php-spw-provider
+
+
 ## Addons
 
 Jwt on /users 
-
 ValidateId on routes
+sendEmail for validations
+habitations valides dates
+Joi Validate Update
+Agent Level Access
+Constats geolocation
+CRUD infractions
+
 
 
 

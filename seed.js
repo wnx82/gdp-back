@@ -24,8 +24,9 @@ redisClient.flushall((err, reply) => {
         'agents',
         'constats',
         'habitations',
-        'validations',
         'infractions',
+        'missions',
+        'validations',
     ];
     const existingCollectionsCursor = db.listCollections();
     const existingcollections = await existingCollectionsCursor.toArray();
@@ -293,6 +294,41 @@ redisClient.flushall((err, reply) => {
     );
     console.log(
         '\u001b[1;31m----------------- Collection infractions créée ------------------------------------\u001b[0m '
+    );
+
+    const horairesDto = [
+        {
+            horaires: ['07h30-15h', '08h30-16h', '10h30-18h'],
+            createdAt: new Date(),
+            updatedAt: new Date(),
+        },
+    ];
+    const vehiculesDto = [
+        {
+            marque: 'Skoda',
+            immatriculation: '1XRJ929',
+        },
+        {
+            marque: 'Dacia',
+            immatriculation: '1GFV206',
+        },
+        {
+            marque: 'Peugeot',
+            immatriculation: '1AMS560',
+        },
+    ];
+
+    const missionsDto = [
+        {
+            title: 'Ecole St Ex',
+            description: '',
+            horaire: '',
+            priority: 1,
+            contact: '',
+        },
+    ];
+    await Promise.all(
+        missionsDto.map(u => db.collection('missions').insertOne(u))
     );
     process.exit(0);
 })();

@@ -51,26 +51,27 @@ const findOne = catchAsync(async (req, res) => {
         console.error(e);
     }
 });
+const schema = Joi.object({
+    email: Joi.string().email().required().max(200),
+    password: Joi.string().required(),
+    userAccess: Joi.number().integer().min(0).max(10).required(),
+    matricule: Joi.string().required(),
+    firstname: Joi.string().max(25).allow(null).optional().empty(''),
+    lastname: Joi.string().allow(null).optional().empty(''),
+    birthday: Joi.date().allow(null).optional().empty(''),
+    tel: Joi.string().max(30).allow(null).optional().empty(''),
+    adresse: {
+        rue: Joi.string().allow(null).optional().empty(''),
+        cp: Joi.string().allow(null).optional().empty(''),
+        localite: Joi.string().allow(null).optional().empty(''),
+    },
+    picture: Joi.string().allow(null).optional().empty(''),
+    formations: Joi.array(),
+});
 
 const create = catchAsync(async (req, res) => {
     const message = `✏️ Création d'un agent`;
-    const schema = Joi.object({
-        email: Joi.string().email().required().max(200),
-        password: Joi.string().required(),
-        userAccess: Joi.number().integer().min(0).max(10).required(),
-        matricule: Joi.string().required(),
-        firstname: Joi.string().max(25),
-        lastname: Joi.string(),
-        birthday: Joi.date(),
-        tel: Joi.string().max(30),
-        adresse: {
-            rue: Joi.string(),
-            cp: Joi.string(),
-            localite: Joi.string(),
-        },
-        picture: Joi.string(),
-        formations: Joi.array(),
-    });
+
     const { body } = req;
     console.log(body.email);
     if (typeof body.email === 'undefined') {
@@ -132,23 +133,7 @@ const updateOne = catchAsync(async (req, res) => {
         return res.status(400).json({ message: 'No id provided' });
     }
     const message = `📝 Mise à jour de l'agent ${id}`;
-    const schema = Joi.object({
-        email: Joi.string().email().required().max(200),
-        password: Joi.string().required(),
-        userAccess: Joi.number().integer().min(0).max(10).required(),
-        matricule: Joi.string().required(),
-        firstname: Joi.string().max(25),
-        lastname: Joi.string(),
-        birthday: Joi.date(),
-        tel: Joi.string().max(30),
-        adresse: {
-            rue: Joi.string(),
-            cp: Joi.string(),
-            localite: Joi.string(),
-        },
-        picture: Joi.string(),
-        formations: Joi.array(),
-    });
+
     const { body } = req;
     if (!body.email) {
         return res.status(400).json({ message: 'Email field is required' });

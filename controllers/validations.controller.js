@@ -89,20 +89,21 @@ const findOne = catchAsync(async (req, res) => {
         console.error(e);
     }
 });
+
+const schema = Joi.object({
+    agent: Joi.array()
+        .items(Joi.string().regex(/^[0-9a-fA-F]{24}$/))
+        .min(1)
+        .required(),
+    habitation: Joi.array()
+        .items(Joi.string().regex(/^[0-9a-fA-F]{24}$/))
+        .min(1)
+        .required(),
+    date: Joi.date().required(),
+    note: Joi.string().allow(null).optional().empty(''),
+});
 const create = catchAsync(async (req, res) => {
     const message = `✏️ Création d'une validation`;
-    const schema = Joi.object({
-        agent: Joi.array()
-            .items(Joi.string().regex(/^[0-9a-fA-F]{24}$/))
-            .min(1)
-            .required(),
-        habitation: Joi.array()
-            .items(Joi.string().regex(/^[0-9a-fA-F]{24}$/))
-            .min(1)
-            .required(),
-        date: Joi.date().required(),
-        note: Joi.string(),
-    });
 
     const { body } = req;
     const { value, error } = schema.validate(body);
@@ -231,20 +232,6 @@ const updateOne = catchAsync(async (req, res) => {
         return res.status(400).json({ message: 'No id provided' });
     }
     const message = `📝 Mise à jour de la validation ${id}`;
-    const schema = Joi.object({
-        agent: Joi.array()
-            .items(Joi.string().regex(/^[0-9a-fA-F]{24}$/))
-            .min(1)
-            .required(),
-        habitation: Joi.array()
-            .items(Joi.string().regex(/^[0-9a-fA-F]{24}$/))
-            .min(1)
-            .required(),
-        date: Joi.date().required(),
-        note: Joi.string(),
-        // agent: Joi.objectId().required(),
-        // habitation: Joi.objectId().required(),
-    });
 
     const { body } = req;
 
