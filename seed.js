@@ -20,7 +20,13 @@ redisClient.flushall((err, reply) => {
 });
 (async () => {
     const db = dbClient.db(process.env.MONGODB_DATABASE);
-    const collections = ['agents', 'constats', 'habitations', 'validations'];
+    const collections = [
+        'agents',
+        'constats',
+        'habitations',
+        'validations',
+        'infractions',
+    ];
     const existingCollectionsCursor = db.listCollections();
     const existingcollections = await existingCollectionsCursor.toArray();
     const names = existingcollections.map(c => c.name);
@@ -64,6 +70,7 @@ redisClient.flushall((err, reply) => {
         createdAt: new Date(),
         updatedAt: new Date(),
     };
+    //Dto Data Transfert Objects
     const agentsDto = await Promise.all(
         [...Array(15)].map(async () => {
             return {
@@ -188,6 +195,104 @@ redisClient.flushall((err, reply) => {
     );
     console.log(
         '\u001b[1;31m----------------- Collection constats créée ------------------------------------\u001b[0m '
+    );
+
+    const infractionsDto = [
+        {
+            category: 'RGP',
+            priority: 3,
+            list: [
+                ['Art. 9', 'Affichage publicitaire'],
+                ['Art. 41', 'Mécanique sur la voie publique'],
+                ['Art. 44', 'N° de maison/sonnette/boîtes lettres'],
+                ['Art. 57', 'Bombes/sprays'],
+                ['Art. 95', 'Alcool sur voie publique'],
+                ['Art. 96', 'Sonner/Frapper aux portes'],
+                ['Art. 106', 'Mendicité'],
+                ['Art. 123', 'Déversement dans les avaloirs'],
+                ['Art. 124', "Trottoir et filet d'eau non entretenu"],
+                ['Art. 125', 'Uriner'],
+            ],
+            createdAt: new Date(),
+            updatedAt: new Date(),
+        },
+        {
+            category: 'Arrêt et stationnement',
+            priority: 1,
+            list: [
+                ['Art. 29', 'Hors zones'],
+                ['Art. 31', 'Sur dispositifs surélevés'],
+                ['Art. 32', 'Dans zones piétonnes'],
+                ['Art. 34-1-1', 'Sur trottoir'],
+                ['Art. 34-1-4', 'Sur Passage à niveau'],
+                ['Art. 35-1-6', 'A proximité du passage à niveau'],
+                ['Art. 34-1-9', 'A -5m du carrefour'],
+                ['Art. 34-2-1', 'Sur marquage blanc'],
+                ['Art. 34-1-2', "Sur/à moins de 3m d'une piste cyclable"],
+                ['Art. 34-1-3', "Sur/à moins de 5m d'une piste cyclable"],
+                ['Art. 34-1-5', "Sur/à moins de 3m d'un passage piétons"],
+                ['Art. 34-1-6', "Sur/à moins de 5m d'un passage piétons"],
+                ['Art. 35-1-2', "A -15m d'un arrêt de bus"],
+                ['Art. 35.1.3', 'Devant un accès privé'],
+                ['Art. 39', 'Zone de livraison'],
+                ['Art. 36', 'Zone bleue : Mauvaise heure'],
+                ['Art. 39', 'Zone bleue : Pas de disque'],
+                ['Art. 35-14', 'Emplacement PMR : Sans carte'],
+                ['Art. 38', "Emplacement PMR: Oubli d'apposer la carte"],
+                ['Art. 39', 'Zone sourise à autorisation'],
+                ['Art. 40', 'Non-respect du signal C3'],
+            ],
+            createdAt: new Date(),
+            updatedAt: new Date(),
+        },
+        {
+            category: 'Déchets',
+            priority: 3,
+            list: [
+                ['Art. 126', 'Jets de déchets'],
+                ['Art. 158 b', "PAV (Point d'apport volontaire)"],
+                ['Art. 165', 'Dépôt sauvage'],
+            ],
+            createdAt: new Date(),
+            updatedAt: new Date(),
+        },
+        {
+            category: 'Site spécifique',
+            priority: 4,
+            list: [
+                ['Art. 5', 'Parking/Non-respect du ROI'],
+                ['Art. 83', 'Parc/Non-respect du ROI'],
+            ],
+            createdAt: new Date(),
+            updatedAt: new Date(),
+        },
+        {
+            category: 'Animaux',
+            priority: 5,
+            list: [
+                ['Art. 46-7', 'Déjections'],
+                ['Art. 46-9', 'Tenue en laisse'],
+                ['Art. 46-10', 'Muselière'],
+                ['Art. 46-14', 'Zone de liberté'],
+            ],
+            createdAt: new Date(),
+            updatedAt: new Date(),
+        },
+        {
+            category: 'Occupation de voie publique',
+            priority: 6,
+            list: [['Art. 18', "Défaut d'autorisation"]],
+            createdAt: new Date(),
+            updatedAt: new Date(),
+        },
+    ];
+
+    console.log(infractionsDto);
+    await Promise.all(
+        infractionsDto.map(u => db.collection('infractions').insertOne(u))
+    );
+    console.log(
+        '\u001b[1;31m----------------- Collection infractions créée ------------------------------------\u001b[0m '
     );
     process.exit(0);
 })();

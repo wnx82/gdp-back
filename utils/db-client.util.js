@@ -1,7 +1,7 @@
 // db-client.util.js
 const { MongoClient } = require('mongodb');
-
-const url = `mongodb://${process.env.MONGODB_USERNAME}:${process.env.MONGODB_PASSWORD}@${process.env.MONGODB_HOST}:${process.env.MONGODB_PORT}`;
+console.log(`Connection url => ${process.env.MONGO_DB_URL}`);
+const url = `${process.env.MONGO_DB_URL}`;
 const client = new MongoClient(url);
 
 (async () => {
