@@ -1,6 +1,6 @@
 // ./controllers/validations.controller.js
 
-const { dbClient, redisClient } = require('../utils');
+const { dbClient, redisClient, sendMail } = require('../utils');
 const { catchAsync, success } = require('../helpers');
 const database = dbClient.db(process.env.MONGO_DB_DATABASE);
 const collection = database.collection('validations');
@@ -148,7 +148,7 @@ const create = catchAsync(async (req, res) => {
             .aggregate([
                 {
                     $match: {
-                        _id: new ObjectId('63f61c68aa29b305523638ba'),
+                        _id: new ObjectId('63ff0049cc9ba9838117faeb'),
                     },
                 },
                 {
@@ -169,6 +169,7 @@ const create = catchAsync(async (req, res) => {
                         'agentData.matricule': 1,
                         habitation: 1,
                         note: 1,
+                        date: 1,
                     },
                 },
                 {
@@ -188,7 +189,9 @@ const create = catchAsync(async (req, res) => {
                     $project: {
                         'agentData.matricule': 1,
                         'habitationData.adresse.rue': 1,
+                        habitation: 1,
                         note: 1,
+                        date: 1,
                     },
                 },
             ])
@@ -200,24 +203,11 @@ const create = catchAsync(async (req, res) => {
             'note:' + note
         );
 
-        const SendMail = require('../helpers/sendMail');
         // Utilisation de la fonction SendMail pour envoyer un mail
-        const dataSubject =
-            '✅ Nouvelle entrée pour ' + habitationData.adresse.rue;
+        const dataSubject = process.env.MAIL_DATA_HABITATION_HTML;
         const dataMessage = '';
-        const dataHTML = `
-Ce <strong>${moment(new Date()).format(
-            'YYYY/MM/DD à HH:mm'
-        )}</strong>, l'agent GDP <strong>${
-            agentData.matricule
-        }</strong>, s'est rendu à l'habitation : 
-<strong>${
-            habitationData.adresse.rue
-        }</strong> et a communiqué le commentaire suivant :
-<strong>${note}</strong>
-`;
-
-        SendMail(dataSubject, dataMessage, dataHTML)
+        const dataHTML = process.env.MAIL_DATA_HABITATION_HTML;
+        sendMail(dataSubject, dataMessage, dataHTML)
             .then(() => console.log('📄 Mail envoyé avec succès'))
             .catch(err =>
                 console.error("Erreur lors de l'envoi du mail:", err)

@@ -8,7 +8,7 @@ const SendMail = async function (dataSubject, dataMessage, dataHTML) {
         secure: true, // true for 465, false for other ports
         auth: {
             user: process.env.MAIL_USER, // generated ethereal user
-            pass: process.env.MAIL_PWD, // generated ethereal password
+            pass: process.env.MAIL_PASSWORD, // generated ethereal password
         },
         logger: true,
     });
