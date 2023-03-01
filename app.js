@@ -17,6 +17,7 @@ var agentsRouter = require('./routes/agents');
 var constatsRouter = require('./routes/constats');
 var habitationsRouter = require('./routes/habitations');
 var infractionsRouter = require('./routes/infractions');
+var quartiersRouter = require('./routes/quartiers');
 var missionsRouter = require('./routes/missions');
 var validationsRouter = require('./routes/validations');
 
@@ -49,6 +50,7 @@ app.use(
 app.use('/constats', constatsRouter);
 app.use('/habitations', habitationsRouter);
 app.use('/infractions', infractionsRouter);
+app.use('/quartiers', quartiersRouter);
 app.use('/missions', missionsRouter);
 app.use('/validations', validationsRouter);
 

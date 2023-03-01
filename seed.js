@@ -26,7 +26,7 @@ redisClient.flushall((err, reply) => {
         'habitations',
         'infractions',
         'missions',
-        'quartiersMissions',
+        'quartiers',
         'validations',
     ];
     const existingCollectionsCursor = db.listCollections();
@@ -308,14 +308,20 @@ redisClient.flushall((err, reply) => {
         {
             marque: 'Skoda',
             immatriculation: '1XRJ929',
+            createdAt: new Date(),
+            updatedAt: new Date(),
         },
         {
             marque: 'Dacia',
             immatriculation: '1GFV206',
+            createdAt: new Date(),
+            updatedAt: new Date(),
         },
         {
             marque: 'Peugeot',
             immatriculation: '1AMS560',
+            createdAt: new Date(),
+            updatedAt: new Date(),
         },
     ];
 
@@ -326,6 +332,8 @@ redisClient.flushall((err, reply) => {
             horaire: '',
             priority: 1,
             contact: '',
+            createdAt: new Date(),
+            updatedAt: new Date(),
         },
         {
             title: 'Zone Bleue',
@@ -333,6 +341,8 @@ redisClient.flushall((err, reply) => {
             horaire: '',
             priority: 1,
             contact: '',
+            createdAt: new Date(),
+            updatedAt: new Date(),
         },
         {
             title: 'Zone de livraison',
@@ -340,6 +350,8 @@ redisClient.flushall((err, reply) => {
             horaire: '',
             priority: 1,
             contact: '',
+            createdAt: new Date(),
+            updatedAt: new Date(),
         },
         {
             title: 'Stationnement',
@@ -347,6 +359,8 @@ redisClient.flushall((err, reply) => {
             horaire: '',
             priority: 1,
             contact: '',
+            createdAt: new Date(),
+            updatedAt: new Date(),
         },
         {
             title: 'Arrêt et stationnemnt',
@@ -354,6 +368,8 @@ redisClient.flushall((err, reply) => {
             horaire: '',
             priority: 1,
             contact: '',
+            createdAt: new Date(),
+            updatedAt: new Date(),
         },
     ];
     console.log(missionsDto);
@@ -364,28 +380,33 @@ redisClient.flushall((err, reply) => {
     const quartiersDto = [
         {
             title: 'Nouveau-Monde',
-            missionsQuartiers: [
+            missions: [
                 createdMissions[Math.floor(Math.random() * 5)].insertedId,
                 createdMissions[Math.floor(Math.random() * 5)].insertedId,
                 createdMissions[Math.floor(Math.random() * 5)].insertedId,
                 createdMissions[Math.floor(Math.random() * 5)].insertedId,
                 createdMissions[Math.floor(Math.random() * 5)].insertedId,
             ],
+            createdAt: new Date(),
+            updatedAt: new Date(),
         },
         {
             title: 'Centre',
-            missionsQuartiers: [
+            missions: [
                 createdMissions[Math.floor(Math.random() * 5)].insertedId,
                 createdMissions[Math.floor(Math.random() * 5)].insertedId,
                 createdMissions[Math.floor(Math.random() * 5)].insertedId,
                 createdMissions[Math.floor(Math.random() * 5)].insertedId,
                 createdMissions[Math.floor(Math.random() * 5)].insertedId,
             ],
+            createdAt: new Date(),
+            updatedAt: new Date(),
         },
     ];
     console.log(quartiersDto);
     const createdMissionsQuartiers = await Promise.all(
-        quartiersDto.map(u => db.collection('quartiersMissions').insertOne(u))
+        quartiersDto.map(u => db.collection('quartiers').insertOne(u))
     );
+
     process.exit(0);
 })();

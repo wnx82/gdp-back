@@ -9,14 +9,13 @@ module.exports = {
                     bsonType: 'string',
                     description: ' must be a string and is required',
                 },
-
-                quartiersMissions: {
+                missions: {
                     bsonType: 'array',
                     items: {
-                        bsonType: ['objectId'],
+                        // bsonType: ['objectId'],
                     },
                     description:
-                        'quartiersMissions must be an array of objectIds and is required',
+                        'missions must be an array of objectIds and is not required',
                 },
             },
         },
