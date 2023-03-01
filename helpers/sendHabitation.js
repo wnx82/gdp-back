@@ -135,7 +135,7 @@ const sendHabitation = async function (agentData, habitationData, note) {
     `;
 
     sendMail(dataSubject, dataMessage, dataHTML)
-        .then(() => console.log('📄 Habitation envoyée avec succès'))
+        .then(() => console.log('📄 Mail Habitation envoyé avec succès'))
         .catch(err =>
             console.error("Erreur lors de l'envoi de l'habitation:", err)
         );
