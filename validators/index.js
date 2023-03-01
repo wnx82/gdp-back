@@ -6,5 +6,6 @@ module.exports = {
     habitations: require('./habitations'),
     infractions: require('./infractions'),
     missions: require('./missions'),
+    quartiersMissions: require('./quartiersMissions'),
     validations: require('./validations'),
 };

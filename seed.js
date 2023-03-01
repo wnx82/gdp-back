@@ -26,6 +26,7 @@ redisClient.flushall((err, reply) => {
         'habitations',
         'infractions',
         'missions',
+        'quartiersMissions',
         'validations',
     ];
     const existingCollectionsCursor = db.listCollections();
@@ -326,9 +327,65 @@ redisClient.flushall((err, reply) => {
             priority: 1,
             contact: '',
         },
+        {
+            title: 'Zone Bleue',
+            description: '',
+            horaire: '',
+            priority: 1,
+            contact: '',
+        },
+        {
+            title: 'Zone de livraison',
+            description: '',
+            horaire: '',
+            priority: 1,
+            contact: '',
+        },
+        {
+            title: 'Stationnement',
+            description: '',
+            horaire: '',
+            priority: 1,
+            contact: '',
+        },
+        {
+            title: 'Arrêt et stationnemnt',
+            description: '',
+            horaire: '',
+            priority: 1,
+            contact: '',
+        },
     ];
-    await Promise.all(
+    console.log(missionsDto);
+    const createdMissions = await Promise.all(
         missionsDto.map(u => db.collection('missions').insertOne(u))
+    );
+
+    const quartiersDto = [
+        {
+            title: 'Nouveau-Monde',
+            missionsQuartiers: [
+                createdMissions[Math.floor(Math.random() * 5)].insertedId,
+                createdMissions[Math.floor(Math.random() * 5)].insertedId,
+                createdMissions[Math.floor(Math.random() * 5)].insertedId,
+                createdMissions[Math.floor(Math.random() * 5)].insertedId,
+                createdMissions[Math.floor(Math.random() * 5)].insertedId,
+            ],
+        },
+        {
+            title: 'Centre',
+            missionsQuartiers: [
+                createdMissions[Math.floor(Math.random() * 5)].insertedId,
+                createdMissions[Math.floor(Math.random() * 5)].insertedId,
+                createdMissions[Math.floor(Math.random() * 5)].insertedId,
+                createdMissions[Math.floor(Math.random() * 5)].insertedId,
+                createdMissions[Math.floor(Math.random() * 5)].insertedId,
+            ],
+        },
+    ];
+    console.log(quartiersDto);
+    const createdMissionsQuartiers = await Promise.all(
+        quartiersDto.map(u => db.collection('quartiersMissions').insertOne(u))
     );
     process.exit(0);
 })();

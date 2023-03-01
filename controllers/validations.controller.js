@@ -1,12 +1,15 @@
 // ./controllers/validations.controller.js
 
-const { dbClient, redisClient, sendMail } = require('../utils');
+const { dbClient, redisClient } = require('../utils');
+
 const { catchAsync, success } = require('../helpers');
 const database = dbClient.db(process.env.MONGO_DB_DATABASE);
 const collection = database.collection('validations');
-const moment = require('moment');
+
 const Joi = require('joi');
 const ObjectId = require('mongodb').ObjectId;
+
+const sendHabitation = require('../helpers/sendHabitation');
 
 const findAll = catchAsync(async (req, res) => {
     const message = '📄 Liste des validations';
@@ -148,7 +151,7 @@ const create = catchAsync(async (req, res) => {
             .aggregate([
                 {
                     $match: {
-                        _id: new ObjectId('63ff0049cc9ba9838117faeb'),
+                        _id: new ObjectId(insertedId),
                     },
                 },
                 {
@@ -197,21 +200,7 @@ const create = catchAsync(async (req, res) => {
             ])
             .next();
 
-        console.log(
-            'matricule:' + agentData.matricule,
-            'habitation:' + habitationData.adresse.rue,
-            'note:' + note
-        );
-
-        // Utilisation de la fonction SendMail pour envoyer un mail
-        const dataSubject = process.env.MAIL_DATA_HABITATION_HTML;
-        const dataMessage = '';
-        const dataHTML = process.env.MAIL_DATA_HABITATION_HTML;
-        sendMail(dataSubject, dataMessage, dataHTML)
-            .then(() => console.log('📄 Mail envoyé avec succès'))
-            .catch(err =>
-                console.error("Erreur lors de l'envoi du mail:", err)
-            );
+        sendHabitation(agentData, habitationData, note);
     } catch (err) {
         console.log(err);
     }
