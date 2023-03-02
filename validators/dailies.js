@@ -16,7 +16,7 @@ module.exports = {
                 },
                 agents: {
                     bsonType: 'array',
-                    minItems: 1,
+                    minItems: 0,
                     description: ' must be a array and is required',
                     items: {
                         bsonType: 'objectId',
@@ -32,7 +32,7 @@ module.exports = {
                 },
                 quartiers: {
                     bsonType: 'array',
-                    minItems: 1,
+                    minItems: 0,
                     description: ' must be a array and is required',
                     items: {
                         bsonType: 'objectId',
@@ -40,7 +40,7 @@ module.exports = {
                 },
                 missions: {
                     bsonType: 'array',
-                    minItems: 1,
+                    minItems: 0,
                     description: ' must be a array and is required',
                     items: {
                         bsonType: 'objectId',

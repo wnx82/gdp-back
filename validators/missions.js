@@ -29,6 +29,14 @@ module.exports = {
                     bsonType: 'string',
                     description: ' must be a string and is not required',
                 },
+                visibility: {
+                    bsonType: 'bool',
+                    description: ' must be a booleen and is not required',
+                },
+                annexes: {
+                    bsonType: 'array',
+                    description: ' must be a array and is not required',
+                },
             },
         },
     },

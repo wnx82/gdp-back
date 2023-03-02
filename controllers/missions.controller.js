@@ -51,6 +51,10 @@ const schema = Joi.object({
     horaire: Joi.string().allow(null).optional().empty(''),
     priority: Joi.number().allow(null).optional().empty(''),
     contact: Joi.string().allow(null).optional().empty(''),
+    visibility: Joi.boolean().optional(),
+    annexe: Joi.array()
+        .items(Joi.string().allow(null).optional().empty(''))
+        .optional(),
 });
 const create = catchAsync(async (req, res) => {
     const message = `✏️ Création d'une mission`;

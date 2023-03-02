@@ -49,20 +49,14 @@ const findOne = catchAsync(async (req, res) => {
 });
 const schema = Joi.object({
     date: Joi.date().required(),
-    agents: Joi.array()
-        .items(Joi.string().regex(/^[0-9a-fA-F]{24}$/))
-        .min(1)
-        .required(),
+    agents: Joi.array().items(Joi.string().regex(/^[0-9a-fA-F]{24}$/)),
+    // .min(1)
+    // .required(),
     horaire: Joi.string().allow(null).optional().empty(''),
     vehicule: Joi.string().allow(null).optional().empty(''),
-    quartiers: Joi.array()
-        .items(Joi.string().regex(/^[0-9a-fA-F]{24}$/))
-        .min(1)
-        .required(),
-    missions: Joi.array()
-        .items(Joi.string().regex(/^[0-9a-fA-F]{24}$/))
-        .min(1)
-        .required(),
+    quartiers: Joi.array().items(Joi.string().regex(/^[0-9a-fA-F]{24}$/)),
+
+    missions: Joi.array().items(Joi.string().regex(/^[0-9a-fA-F]{24}$/)),
 
     note: Joi.string().allow(null).optional().empty(''),
 });
@@ -232,12 +226,12 @@ const findAgents = async (req, res) => {
                     from: 'agents',
                     localField: 'agents',
                     foreignField: '_id',
-                    as: 'result',
+                    as: 'populatedAgents',
                 },
             },
             {
                 $project: {
-                    agents: '$result',
+                    agents: '$populatedAgents',
                 },
             },
         ])
@@ -294,21 +288,27 @@ const addAgent = async (req, res) => {
 
 const removeAgent = async (req, res) => {
     const { id, agentId } = req.params;
-    const { deletedCount } = await collection.updateOne(
-        { _id: new ObjectId(id) },
-        {
-            $pull: {
-                agents: new ObjectId(agentId),
-            },
-        }
-    );
+    try {
+        const result = await collection.updateOne(
+            { _id: new ObjectId(id) },
+            {
+                $pull: {
+                    agents: new ObjectId(agentId),
+                },
+            }
+        );
 
-    if (deletedCount === 1) {
-        res.status(200).json({ message: 'Agent removed' });
-    } else {
-        res.status(404).json({ message: 'No agent found with this id' });
+        if (result.matchedCount === 1) {
+            res.status(200).json({ message: 'Agent removed' });
+        } else {
+            res.status(404).json({ message: 'No agent found with this id' });
+        }
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Internal Server Error' });
     }
 };
+
 const findQuartiers = async (req, res) => {
     const { id } = req.params;
     const daily = await collection.findOne({ _id: new ObjectId(id) });
@@ -371,19 +371,24 @@ const addQuartier = async (req, res) => {
 
 const removeQuartier = async (req, res) => {
     const { id, quartierId } = req.params;
-    const { deletedCount } = await collection.updateOne(
-        { _id: new ObjectId(id) },
-        {
-            $pull: {
-                quartiers: new ObjectId(quartierId),
-            },
-        }
-    );
+    try {
+        const result = await collection.updateOne(
+            { _id: new ObjectId(id) },
+            {
+                $pull: {
+                    quartiers: new ObjectId(quartierId),
+                },
+            }
+        );
 
-    if (deletedCount === 1) {
-        res.status(200).json({ message: 'Quartier removed' });
-    } else {
-        res.status(404).json({ message: 'No quartier found with this id' });
+        if (result.matchedCount === 1) {
+            res.status(200).json({ message: 'Quartier removed' });
+        } else {
+            res.status(404).json({ message: 'No quartier found with this id' });
+        }
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Internal Server Error' });
     }
 };
 
@@ -447,19 +452,24 @@ const addMission = async (req, res) => {
 
 const removeMission = async (req, res) => {
     const { id, missionId } = req.params;
-    const { deletedCount } = await collection.updateOne(
-        { _id: new ObjectId(id) },
-        {
-            $pull: {
-                missions: new ObjectId(missionId),
-            },
-        }
-    );
+    try {
+        const result = await collection.updateOne(
+            { _id: new ObjectId(id) },
+            {
+                $pull: {
+                    missions: new ObjectId(missionId),
+                },
+            }
+        );
 
-    if (deletedCount === 1) {
-        res.status(200).json({ message: 'Mission removed' });
-    } else {
-        res.status(404).json({ message: 'No mission found with this id' });
+        if (result.matchedCount === 1) {
+            res.status(200).json({ message: 'Mission removed' });
+        } else {
+            res.status(404).json({ message: 'No mission found with this id' });
+        }
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Internal Server Error' });
     }
 };
 
