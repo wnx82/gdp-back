@@ -47,6 +47,7 @@ const findOne = catchAsync(async (req, res) => {
 const schema = Joi.object({
     title: Joi.string().required(),
     description: Joi.string().allow(null).optional().empty(''),
+    category: Joi.string().allow(null).optional().empty(''),
     horaire: Joi.string().allow(null).optional().empty(''),
     priority: Joi.number().allow(null).optional().empty(''),
     contact: Joi.string().allow(null).optional().empty(''),

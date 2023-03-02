@@ -13,6 +13,10 @@ module.exports = {
                     bsonType: 'string',
                     description: ' must be a string and is not required',
                 },
+                description: {
+                    bsonType: 'string',
+                    description: ' must be a string and is not required',
+                },
                 horaire: {
                     bsonType: 'string',
                     description: ' must be a string and is not required',

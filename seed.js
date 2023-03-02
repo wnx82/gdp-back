@@ -307,18 +307,21 @@ redisClient.flushall((err, reply) => {
     const vehiculesDto = [
         {
             marque: 'Skoda',
+            model: '',
             immatriculation: '1XRJ929',
             createdAt: new Date(),
             updatedAt: new Date(),
         },
         {
             marque: 'Dacia',
+            model: '',
             immatriculation: '1GFV206',
             createdAt: new Date(),
             updatedAt: new Date(),
         },
         {
             marque: 'Peugeot',
+            model: '',
             immatriculation: '1AMS560',
             createdAt: new Date(),
             updatedAt: new Date(),
@@ -329,6 +332,7 @@ redisClient.flushall((err, reply) => {
         {
             title: 'Ecole St Ex',
             description: '',
+            category: '',
             horaire: '',
             priority: 1,
             contact: '',
@@ -338,6 +342,7 @@ redisClient.flushall((err, reply) => {
         {
             title: 'Zone Bleue',
             description: '',
+            category: '',
             horaire: '',
             priority: 1,
             contact: '',
@@ -347,6 +352,7 @@ redisClient.flushall((err, reply) => {
         {
             title: 'Zone de livraison',
             description: '',
+            category: '',
             horaire: '',
             priority: 1,
             contact: '',
@@ -356,6 +362,7 @@ redisClient.flushall((err, reply) => {
         {
             title: 'Stationnement',
             description: '',
+            category: '',
             horaire: '',
             priority: 1,
             contact: '',
@@ -365,6 +372,7 @@ redisClient.flushall((err, reply) => {
         {
             title: 'Arrêt et stationnemnt',
             description: '',
+            category: '',
             horaire: '',
             priority: 1,
             contact: '',
@@ -408,5 +416,35 @@ redisClient.flushall((err, reply) => {
         quartiersDto.map(u => db.collection('quartiers').insertOne(u))
     );
 
+    const dailyDto = [
+        {
+            date: faker.date.recent(),
+            agents: [
+                createdAgents[Math.floor(Math.random() * 15)].insertedId,
+                createdAgents[Math.floor(Math.random() * 15)].insertedId,
+            ],
+            horaire: horairesDto[0].horaires[1],
+            vehicule: vehiculesDto[0].marque,
+            quartier: [
+                createdMissionsQuartiers[Math.floor(Math.random() * 2)]
+                    .insertedId,
+            ],
+            missions: [
+                createdMissions[Math.floor(Math.random() * 5)].insertedId,
+                createdMissions[Math.floor(Math.random() * 5)].insertedId,
+                createdMissions[Math.floor(Math.random() * 5)].insertedId,
+                createdMissions[Math.floor(Math.random() * 5)].insertedId,
+                createdMissions[Math.floor(Math.random() * 5)].insertedId,
+            ],
+            note: '',
+
+            createdAt: new Date(),
+            updatedAt: new Date(),
+        },
+    ];
+    console.log(dailyDto);
+    // const createdDailyDto = await Promise.all(
+    //     createdDailyDto.map(u => db.collection('daily').insertOne(u))
+    // );
     process.exit(0);
 })();
