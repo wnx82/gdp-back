@@ -23,6 +23,7 @@ redisClient.flushall((err, reply) => {
     const collections = [
         'agents',
         'constats',
+        'dailies',
         'habitations',
         'infractions',
         'missions',
@@ -425,7 +426,31 @@ redisClient.flushall((err, reply) => {
             ],
             horaire: horairesDto[0].horaires[1],
             vehicule: vehiculesDto[0].marque,
-            quartier: [
+            quartiers: [
+                createdMissionsQuartiers[Math.floor(Math.random() * 2)]
+                    .insertedId,
+            ],
+            missions: [
+                createdMissions[Math.floor(Math.random() * 5)].insertedId,
+                createdMissions[Math.floor(Math.random() * 5)].insertedId,
+                createdMissions[Math.floor(Math.random() * 5)].insertedId,
+                createdMissions[Math.floor(Math.random() * 5)].insertedId,
+                createdMissions[Math.floor(Math.random() * 5)].insertedId,
+            ],
+            note: '',
+
+            createdAt: new Date(),
+            updatedAt: new Date(),
+        },
+        {
+            date: faker.date.recent(),
+            agents: [
+                createdAgents[Math.floor(Math.random() * 15)].insertedId,
+                createdAgents[Math.floor(Math.random() * 15)].insertedId,
+            ],
+            horaire: horairesDto[0].horaires[2],
+            vehicule: vehiculesDto[1].marque,
+            quartiers: [
                 createdMissionsQuartiers[Math.floor(Math.random() * 2)]
                     .insertedId,
             ],
@@ -443,8 +468,8 @@ redisClient.flushall((err, reply) => {
         },
     ];
     console.log(dailyDto);
-    // const createdDailyDto = await Promise.all(
-    //     createdDailyDto.map(u => db.collection('daily').insertOne(u))
-    // );
+    const createdDailyDto = await Promise.all(
+        dailyDto.map(u => db.collection('dailies').insertOne(u))
+    );
     process.exit(0);
 })();

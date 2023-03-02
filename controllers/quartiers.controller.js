@@ -105,6 +105,10 @@ const create = catchAsync(async (req, res) => {
         return res.status(400).json({ message: error.details[0].message });
     }
     try {
+        const missionsID = value.missions.map(p => {
+            return new ObjectId(p);
+        });
+        value.missions = missionsID;
         const { ...rest } = value;
         const createdAt = new Date();
         const updatedAt = new Date();
