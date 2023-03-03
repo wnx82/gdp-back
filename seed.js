@@ -28,6 +28,7 @@ redisClient.flushall((err, reply) => {
         'infractions',
         'missions',
         'quartiers',
+        'rapports',
         'validations',
     ];
     const existingCollectionsCursor = db.listCollections();
@@ -428,60 +429,73 @@ redisClient.flushall((err, reply) => {
     const createdMissionsQuartiers = await Promise.all(
         quartiersDto.map(u => db.collection('quartiers').insertOne(u))
     );
+    const dailiesDto = [...Array(15)].map(() => ({
+        date: faker.date.recent(),
+        agents: [
+            createdAgents[Math.floor(Math.random() * 15)].insertedId,
+            createdAgents[Math.floor(Math.random() * 15)].insertedId,
+        ],
+        horaire: horairesDto[0].horaires[1],
+        vehicule: vehiculesDto[0].marque,
+        quartiers: [
+            createdMissionsQuartiers[Math.floor(Math.random() * 2)].insertedId,
+        ],
+        missions: [
+            createdMissions[Math.floor(Math.random() * 5)].insertedId,
+            createdMissions[Math.floor(Math.random() * 5)].insertedId,
+            createdMissions[Math.floor(Math.random() * 5)].insertedId,
+            createdMissions[Math.floor(Math.random() * 5)].insertedId,
+            createdMissions[Math.floor(Math.random() * 5)].insertedId,
+        ],
+        notes: '',
 
-    const dailyDto = [
-        {
-            date: faker.date.recent(),
-            agents: [
-                createdAgents[Math.floor(Math.random() * 15)].insertedId,
-                createdAgents[Math.floor(Math.random() * 15)].insertedId,
-            ],
-            horaire: horairesDto[0].horaires[1],
-            vehicule: vehiculesDto[0].marque,
-            quartiers: [
-                createdMissionsQuartiers[Math.floor(Math.random() * 2)]
-                    .insertedId,
-            ],
-            missions: [
-                createdMissions[Math.floor(Math.random() * 5)].insertedId,
-                createdMissions[Math.floor(Math.random() * 5)].insertedId,
-                createdMissions[Math.floor(Math.random() * 5)].insertedId,
-                createdMissions[Math.floor(Math.random() * 5)].insertedId,
-                createdMissions[Math.floor(Math.random() * 5)].insertedId,
-            ],
-            note: '',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+    }));
 
-            createdAt: new Date(),
-            updatedAt: new Date(),
-        },
-        {
-            date: faker.date.recent(),
-            agents: [
-                createdAgents[Math.floor(Math.random() * 15)].insertedId,
-                createdAgents[Math.floor(Math.random() * 15)].insertedId,
-            ],
-            horaire: horairesDto[0].horaires[2],
-            vehicule: vehiculesDto[1].marque,
-            quartiers: [
-                createdMissionsQuartiers[Math.floor(Math.random() * 2)]
-                    .insertedId,
-            ],
-            missions: [
-                createdMissions[Math.floor(Math.random() * 5)].insertedId,
-                createdMissions[Math.floor(Math.random() * 5)].insertedId,
-                createdMissions[Math.floor(Math.random() * 5)].insertedId,
-                createdMissions[Math.floor(Math.random() * 5)].insertedId,
-                createdMissions[Math.floor(Math.random() * 5)].insertedId,
-            ],
-            note: '',
-            annexes: [''],
-            createdAt: new Date(),
-            updatedAt: new Date(),
-        },
-    ];
-    console.log(dailyDto);
-    const createdDailyDto = await Promise.all(
-        dailyDto.map(u => db.collection('dailies').insertOne(u))
+    console.log(dailiesDto);
+    const createdsDailyDto = await Promise.all(
+        dailiesDto.map(u => db.collection('dailies').insertOne(u))
+    );
+    const rapportsDto = [...Array(15)].map(() => ({
+        daily: createdsDailyDto[Math.floor(Math.random() * 15)].insertedId,
+        date: faker.date.recent(),
+        horaire: horairesDto[0].horaires[1],
+
+        agents: [
+            createdAgents[Math.floor(Math.random() * 15)].insertedId,
+            createdAgents[Math.floor(Math.random() * 15)].insertedId,
+        ],
+        vehicule: vehiculesDto[0].marque,
+        quartiers: [
+            createdMissionsQuartiers[Math.floor(Math.random() * 2)].insertedId,
+        ],
+        missions: [
+            createdMissions[Math.floor(Math.random() * 5)].insertedId,
+            createdMissions[Math.floor(Math.random() * 5)].insertedId,
+            createdMissions[Math.floor(Math.random() * 5)].insertedId,
+            createdMissions[Math.floor(Math.random() * 5)].insertedId,
+            createdMissions[Math.floor(Math.random() * 5)].insertedId,
+        ],
+        notes: [
+            faker.lorem.words(),
+            faker.lorem.words(),
+            faker.lorem.words(),
+            faker.lorem.words(),
+        ],
+        annexes: [
+            faker.lorem.words(),
+            faker.lorem.words(),
+            faker.lorem.words(),
+            faker.lorem.words(),
+        ],
+        createdAt: new Date(),
+        updatedAt: new Date(),
+    }));
+
+    console.log(rapportsDto);
+    const createdRapportsDto = await Promise.all(
+        rapportsDto.map(u => db.collection('rapports').insertOne(u))
     );
     process.exit(0);
 })();

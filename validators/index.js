@@ -8,5 +8,6 @@ module.exports = {
     infractions: require('./infractions'),
     missions: require('./missions'),
     quartiers: require('./quartiers'),
+    rapports: require('./rapports'),
     validations: require('./validations'),
 };

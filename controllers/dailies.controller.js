@@ -9,6 +9,23 @@ const moment = require('moment');
 const Joi = require('joi');
 const ObjectId = require('mongodb').ObjectId;
 
+const schema = Joi.object({
+    date: Joi.date().required(),
+    agents: Joi.array().items(Joi.string().regex(/^[0-9a-fA-F]{24}$/)),
+    // .min(1)
+    // .required(),
+    horaire: Joi.string().allow(null).optional().empty(''),
+    vehicule: Joi.string().allow(null).optional().empty(''),
+    quartiers: Joi.array().items(Joi.string().regex(/^[0-9a-fA-F]{24}$/)),
+
+    missions: Joi.array().items(Joi.string().regex(/^[0-9a-fA-F]{24}$/)),
+
+    notes: Joi.string().allow(null).optional().empty(''),
+    annexes: Joi.array()
+        .items(Joi.string().allow(null).optional().empty(''))
+        .optional(),
+});
+
 const findAll = catchAsync(async (req, res) => {
     const message = '📄 Liste des dailies';
     const inCache = await redisClient.get('dailies:all');
@@ -47,22 +64,7 @@ const findOne = catchAsync(async (req, res) => {
         console.error(e);
     }
 });
-const schema = Joi.object({
-    date: Joi.date().required(),
-    agents: Joi.array().items(Joi.string().regex(/^[0-9a-fA-F]{24}$/)),
-    // .min(1)
-    // .required(),
-    horaire: Joi.string().allow(null).optional().empty(''),
-    vehicule: Joi.string().allow(null).optional().empty(''),
-    quartiers: Joi.array().items(Joi.string().regex(/^[0-9a-fA-F]{24}$/)),
 
-    missions: Joi.array().items(Joi.string().regex(/^[0-9a-fA-F]{24}$/)),
-
-    note: Joi.string().allow(null).optional().empty(''),
-    annexe: Joi.array()
-        .items(Joi.string().allow(null).optional().empty(''))
-        .optional(),
-});
 const create = catchAsync(async (req, res) => {
     const message = `✏️ Création d'un daily`;
 
