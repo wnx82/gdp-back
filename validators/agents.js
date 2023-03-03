@@ -50,7 +50,6 @@ module.exports = {
                         localite: { bsonType: 'string' },
                     },
                 },
-
                 picture: {
                     bsonType: 'string',
                     description: 'must be a string and is required',

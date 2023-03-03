@@ -13,6 +13,38 @@ module.exports = {
                         bsonType: 'objectId',
                     },
                 },
+                vehicule: {
+                    bsonType: 'object',
+                    // required: ['rue', 'cp', 'localite'],
+                    description: ' must be a object and is not required',
+                    properties: {
+                        marque: { bsonType: 'string' },
+                        modele: { bsonType: 'string' },
+                        couleur: { bsonType: 'string' },
+                        type: { bsonType: 'string' },
+                        immatriculation: { bsonType: 'string' },
+                    },
+                },
+                personne: {
+                    bsonType: 'object',
+                    // required: ['rue', 'cp', 'localite'],
+                    description: ' must be a object and is not required',
+                    properties: {
+                        firstname: { bsonType: 'string' },
+                        lastname: { bsonType: 'string' },
+                        birthday: { bsonType: 'date' },
+                        nationalNumber: { bsonType: 'number' },
+                        tel: { bsonType: 'string' },
+                        adresse: {
+                            bsonType: 'object',
+                            properties: {
+                                rue: { bsonType: 'string' },
+                                cp: { bsonType: 'string' },
+                                localite: { bsonType: 'string' },
+                            },
+                        },
+                    },
+                },
                 date: {
                     bsonType: 'date',
                     description: ' must be a date and is required',

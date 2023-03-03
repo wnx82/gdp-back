@@ -2,6 +2,7 @@
 
 module.exports = {
     agents: require('./agents'),
+    categories: require('./categories'),
     constats: require('./constats'),
     dailies: require('./dailies'),
     habitations: require('./habitations'),

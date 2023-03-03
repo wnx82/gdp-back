@@ -20,7 +20,8 @@ const schema = Joi.object({
 
     missions: Joi.array().items(Joi.string().regex(/^[0-9a-fA-F]{24}$/)),
 
-    notes: Joi.string().allow(null).optional().empty(''),
+    notes: Joi.array().items(Joi.string().allow(null).optional().empty('')),
+
     annexes: Joi.array()
         .items(Joi.string().allow(null).optional().empty(''))
         .optional(),

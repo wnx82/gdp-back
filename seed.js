@@ -22,14 +22,17 @@ redisClient.flushall((err, reply) => {
     const db = dbClient.db(process.env.MONGODB_DATABASE);
     const collections = [
         'agents',
+        'categories',
         'constats',
         'dailies',
         'habitations',
+        'horaires',
         'infractions',
         'missions',
         'quartiers',
         'rapports',
         'validations',
+        'voitures',
     ];
     const existingCollectionsCursor = db.listCollections();
     const existingcollections = await existingCollectionsCursor.toArray();
@@ -75,6 +78,79 @@ redisClient.flushall((err, reply) => {
         updatedAt: new Date(),
     };
     //Dto Data Transfert Objects
+
+    const horairesDto = [
+        {
+            horaire: '07h30-15h',
+            createdAt: new Date(),
+            updatedAt: new Date(),
+        },
+        {
+            horaire: '08h30-16h',
+            createdAt: new Date(),
+            updatedAt: new Date(),
+        },
+        {
+            horaire: '10h30-18h',
+            createdAt: new Date(),
+            updatedAt: new Date(),
+        },
+    ];
+    await Promise.all(
+        horairesDto.map(u => db.collection('horaires').insertOne(u))
+    );
+    const vehiculesDto = [
+        {
+            marque: 'Skoda',
+            modele: '',
+            immatriculation: '1XRJ929',
+            createdAt: new Date(),
+            updatedAt: new Date(),
+        },
+        {
+            marque: 'Dacia',
+            modele: '',
+            immatriculation: '1GFV206',
+            createdAt: new Date(),
+            updatedAt: new Date(),
+        },
+        {
+            marque: 'Peugeot',
+            modele: '',
+            immatriculation: '1AMS560',
+            createdAt: new Date(),
+            updatedAt: new Date(),
+        },
+    ];
+    await Promise.all(
+        vehiculesDto.map(u => db.collection('vehicules').insertOne(u))
+    );
+
+    const categoriesDto = [
+        {
+            title: 'Altercation/Agression',
+            createdAt: new Date(),
+            updatedAt: new Date(),
+        },
+        {
+            title: 'Informations',
+            createdAt: new Date(),
+            updatedAt: new Date(),
+        },
+        {
+            title: 'Requêtes',
+            createdAt: new Date(),
+            updatedAt: new Date(),
+        },
+        {
+            title: 'Secours',
+            createdAt: new Date(),
+            updatedAt: new Date(),
+        },
+    ];
+    await Promise.all(
+        categoriesDto.map(u => db.collection('categories').insertOne(u))
+    );
     const agentsDto = await Promise.all(
         [...Array(15)].map(async () => {
             return {
@@ -175,6 +251,18 @@ redisClient.flushall((err, reply) => {
             couleur: faker.vehicle.color(),
             type: faker.vehicle.type(),
             immatriculation: faker.vehicle.vrm(),
+        },
+        personne: {
+            firstname: faker.name.firstName(),
+            lastname: faker.name.lastName(),
+            birthday: faker.date.past(),
+            nationalNumber: faker.datatype.number(99999999999),
+            tel: faker.phone.number('+32 47#######'), // '+48 91 463 61 70',
+            adresse: {
+                rue: faker.address.streetAddress(),
+                cp: faker.address.zipCode(),
+                localite: faker.address.city(),
+            },
         },
         adresse: {
             rue: faker.address.streetAddress(),
@@ -301,37 +389,6 @@ redisClient.flushall((err, reply) => {
         '\u001b[1;31m----------------- Collection infractions créée ------------------------------------\u001b[0m '
     );
 
-    const horairesDto = [
-        {
-            horaires: ['07h30-15h', '08h30-16h', '10h30-18h'],
-            createdAt: new Date(),
-            updatedAt: new Date(),
-        },
-    ];
-    const vehiculesDto = [
-        {
-            marque: 'Skoda',
-            model: '',
-            immatriculation: '1XRJ929',
-            createdAt: new Date(),
-            updatedAt: new Date(),
-        },
-        {
-            marque: 'Dacia',
-            model: '',
-            immatriculation: '1GFV206',
-            createdAt: new Date(),
-            updatedAt: new Date(),
-        },
-        {
-            marque: 'Peugeot',
-            model: '',
-            immatriculation: '1AMS560',
-            createdAt: new Date(),
-            updatedAt: new Date(),
-        },
-    ];
-
     const missionsDto = [
         {
             title: 'Ecole St Ex',
@@ -435,7 +492,7 @@ redisClient.flushall((err, reply) => {
             createdAgents[Math.floor(Math.random() * 15)].insertedId,
             createdAgents[Math.floor(Math.random() * 15)].insertedId,
         ],
-        horaire: horairesDto[0].horaires[1],
+        horaire: horairesDto[0].horaire,
         vehicule: vehiculesDto[0].marque,
         quartiers: [
             createdMissionsQuartiers[Math.floor(Math.random() * 2)].insertedId,
@@ -460,7 +517,7 @@ redisClient.flushall((err, reply) => {
     const rapportsDto = [...Array(15)].map(() => ({
         daily: createdsDailyDto[Math.floor(Math.random() * 15)].insertedId,
         date: faker.date.recent(),
-        horaire: horairesDto[0].horaires[1],
+        horaire: horairesDto[0].horaire,
 
         agents: [
             createdAgents[Math.floor(Math.random() * 15)].insertedId,

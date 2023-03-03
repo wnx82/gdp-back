@@ -9,6 +9,54 @@ const moment = require('moment');
 const Joi = require('joi');
 const ObjectId = require('mongodb').ObjectId;
 
+const schema = Joi.object({
+    agents: Joi.array()
+        .items(Joi.string().regex(/^[0-9a-fA-F]{24}$/))
+        .min(1)
+        .required(),
+    date: Joi.date().required(),
+    vehicule: Joi.object().allow(null).keys({
+        marque: Joi.string(),
+        modele: Joi.string(),
+        couleur: Joi.string(),
+        type: Joi.string(),
+        immatriculation: Joi.string(),
+    }),
+    personne: Joi.object()
+        .allow(null)
+        .keys({
+            firstname: Joi.string(),
+            lastname: Joi.string(),
+            birthday: Joi.date(),
+            birthday: Joi.date(),
+            nationalNumber: Joi.number(),
+            tel: Joi.string(),
+            adresse: Joi.object().allow(null).keys({
+                rue: Joi.string(),
+                cp: Joi.string(),
+                localite: Joi.string(),
+            }),
+        }),
+    adresse: Joi.object().allow(null).keys({
+        rue: Joi.string(),
+        cp: Joi.string(),
+        localite: Joi.string(),
+    }),
+    geolocation: Joi.object().allow(null).keys({
+        latitude: Joi.string(),
+        longitude: Joi.string(),
+        horodatage: Joi.date(),
+    }),
+    infractions: Joi.array()
+        .items(Joi.string().allow(null).optional().empty(''))
+        .optional(),
+    pv: Joi.boolean().required(),
+    notes: Joi.string().allow(null).optional().empty(''),
+    annexes: Joi.array()
+        .items(Joi.string().allow(null).optional().empty(''))
+        .optional(),
+});
+
 const findAll = catchAsync(async (req, res) => {
     const message = '📄 Liste des constats';
     const inCache = await redisClient.get('constats:all');
@@ -47,38 +95,7 @@ const findOne = catchAsync(async (req, res) => {
         console.error(e);
     }
 });
-const schema = Joi.object({
-    agents: Joi.array()
-        .items(Joi.string().regex(/^[0-9a-fA-F]{24}$/))
-        .min(1)
-        .required(),
-    date: Joi.date().required(),
-    vehicule: Joi.object().allow(null).keys({
-        marque: Joi.string(),
-        modele: Joi.string(),
-        couleur: Joi.string(),
-        type: Joi.string(),
-        immatriculation: Joi.string(),
-    }),
-    adresse: Joi.object().allow(null).keys({
-        rue: Joi.string(),
-        cp: Joi.string(),
-        localite: Joi.string(),
-    }),
-    geolocation: Joi.object().allow(null).keys({
-        latitude: Joi.string(),
-        longitude: Joi.string(),
-        horodatage: Joi.date(),
-    }),
-    infractions: Joi.array()
-        .items(Joi.string().allow(null).optional().empty(''))
-        .optional(),
-    pv: Joi.boolean().required(),
-    notes: Joi.string().allow(null).optional().empty(''),
-    annexes: Joi.array()
-        .items(Joi.string().allow(null).optional().empty(''))
-        .optional(),
-});
+
 const create = catchAsync(async (req, res) => {
     const message = `✏️ Création d'un constat`;
 
