@@ -185,9 +185,10 @@ redisClient.flushall((err, reply) => {
             longitude: faker.address.longitude(),
             horodatage: faker.date.recent(),
         },
-        infraction: [faker.lorem.words(), faker.lorem.words()],
+        infractions: [faker.lorem.words(), faker.lorem.words()],
         pv: faker.datatype.boolean(),
-        note: faker.lorem.words(),
+        notes: faker.lorem.words(),
+        annexes: [faker.lorem.words(), faker.lorem.words()],
         createdAt: new Date(),
         updatedAt: new Date(),
     }));
@@ -245,6 +246,7 @@ redisClient.flushall((err, reply) => {
                 ['Art. 39', 'Zone sourise à autorisation'],
                 ['Art. 40', 'Non-respect du signal C3'],
             ],
+
             createdAt: new Date(),
             updatedAt: new Date(),
         },
@@ -472,7 +474,7 @@ redisClient.flushall((err, reply) => {
                 createdMissions[Math.floor(Math.random() * 5)].insertedId,
             ],
             note: '',
-
+            annexes: [''],
             createdAt: new Date(),
             updatedAt: new Date(),
         },

@@ -59,6 +59,9 @@ const schema = Joi.object({
     missions: Joi.array().items(Joi.string().regex(/^[0-9a-fA-F]{24}$/)),
 
     note: Joi.string().allow(null).optional().empty(''),
+    annexe: Joi.array()
+        .items(Joi.string().allow(null).optional().empty(''))
+        .optional(),
 });
 const create = catchAsync(async (req, res) => {
     const message = `✏️ Création d'un daily`;

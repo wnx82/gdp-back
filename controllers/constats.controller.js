@@ -70,9 +70,14 @@ const schema = Joi.object({
         longitude: Joi.string(),
         horodatage: Joi.date(),
     }),
-    infraction: Joi.array().items(Joi.string()).required(),
+    infractions: Joi.array()
+        .items(Joi.string().allow(null).optional().empty(''))
+        .optional(),
     pv: Joi.boolean().required(),
-    note: Joi.string().allow(null).optional().empty(''),
+    notes: Joi.string().allow(null).optional().empty(''),
+    annexes: Joi.array()
+        .items(Joi.string().allow(null).optional().empty(''))
+        .optional(),
 });
 const create = catchAsync(async (req, res) => {
     const message = `✏️ Création d'un constat`;

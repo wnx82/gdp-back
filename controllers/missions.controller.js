@@ -52,7 +52,7 @@ const schema = Joi.object({
     priority: Joi.number().allow(null).optional().empty(''),
     contact: Joi.string().allow(null).optional().empty(''),
     visibility: Joi.boolean().optional(),
-    annexe: Joi.array()
+    annexes: Joi.array()
         .items(Joi.string().allow(null).optional().empty(''))
         .optional(),
 });

@@ -46,6 +46,10 @@ module.exports = {
                         bsonType: 'objectId',
                     },
                 },
+                annexes: {
+                    bsonType: 'array',
+                    description: ' must be a arrray and is not required',
+                },
             },
         },
     },

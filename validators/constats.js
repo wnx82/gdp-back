@@ -2,7 +2,7 @@ module.exports = {
     validator: {
         $jsonSchema: {
             bsonType: 'object',
-            required: ['agents', 'date', 'infraction', 'pv'],
+            required: ['agents', 'date', 'pv'],
             properties: {
                 _id: {},
                 agents: {
@@ -42,7 +42,7 @@ module.exports = {
                         },
                     },
                 },
-                infraction: {
+                infractions: {
                     bsonType: 'array',
                     description: ' must be a arrray and is required',
                 },
@@ -50,9 +50,13 @@ module.exports = {
                     bsonType: 'bool',
                     description: ' must be a boolean and is required',
                 },
-                note: {
+                notes: {
                     bsonType: 'string',
                     description: ' must be a string and is not required',
+                },
+                annexes: {
+                    bsonType: 'array',
+                    description: ' must be a arrray and is not required',
                 },
             },
         },
