@@ -1,7 +1,7 @@
 //./routes/validations.js
 var express = require('express');
 var router = express.Router();
-const controller = require('../controllers/validations.controller');
+const controller = require('../controllers/habitations.validations.controller');
 const validateId = require('../helpers/validateId');
 /* GET agents listing. */
 router.get('/', controller.findAll);

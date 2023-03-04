@@ -9,7 +9,7 @@ const Joi = require('joi');
 const ObjectId = require('mongodb').ObjectId;
 
 const schema = Joi.object({
-    horaire: Joi.string().allow(null).optional().empty(''),
+    horaire: Joi.string().required(),
 });
 
 const findAll = catchAsync(async (req, res) => {

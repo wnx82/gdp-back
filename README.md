@@ -47,21 +47,28 @@ https://github.com/geo6/geocoder-php-spw-provider
 
 ## Addons
 
-Jwt on /users 
-ValidateId on routes
-sendEmail for validations
-habitations valides dates
-Joi Validate Update
-Agent Level Access
-Constats geolocation
-CRUD infractions
-CRUD missions
+### Jwt on /users 
+### ValidateId on routes
+### sendEmail for validations
+### habitations valides dates
+### Joi Validate Update
+### Agent Level Access
+### Constats geolocation
+### ✨ CRUD infractions
+### ✨ CRUD missions
+### ✨ CRUD Dailies
+### ✨ Rapports
+### ✨CRUD Rues
+### ✨CRUD voitures
+### ✨CRUD horaires
+### ✨CRUD categories
 
 
 
 
 
-### 🐉 Plus tard
+
+## 🐉 Plus tard
 
 -   [**Git Emojis**](https://gitmoji.dev/)
 -   [**Listing Emojis**](emoji.md)
@@ -69,13 +76,13 @@ CRUD missions
 -   [Tuto Get Data From server ✨](https://angular.io/tutorial/tour-of-heroes/toh-pt6)
 
 
-### 🎨 Front-End Tutorial
+## 🎨 Front-End Tutorial
 
 -   [Angular](#)
 
 
 
-### 👽 Back-End Tutorial
+## 👽 Back-End Tutorial
 
 -   [Nodejs](#)
 -   [Nodejs](https://github.com/geo6/geocoder-php-spw-provider)
@@ -83,12 +90,12 @@ CRUD missions
 
 
 
-### 🎣 Front-Back-End Tutorial
+## 🎣 Front-Back-End Tutorial
 
 -   [Tools](#)
 
 
-### 🔨 Other Wizards List
+## 🔨 Other Wizards List
 
 -   [Docker 👏](/Docker.md) 
 -   [Shields.io 👏](https://shields.io/) 

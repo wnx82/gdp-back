@@ -26,7 +26,7 @@ module.exports = {
                     description: ' must be a string and is not required',
                 },
                 traductionNl: {
-                    bsonType: 'traductionNl',
+                    bsonType: 'string',
                     description: ' must be a string and is not required',
                 },
             },

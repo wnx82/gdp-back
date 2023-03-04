@@ -33,7 +33,7 @@ redisClient.flushall((err, reply) => {
         'rapports',
         'rues',
         'validations',
-        'voitures',
+        'vehicules',
     ];
     const existingCollectionsCursor = db.listCollections();
     const existingcollections = await existingCollectionsCursor.toArray();

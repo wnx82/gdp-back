@@ -77,10 +77,9 @@ const create = catchAsync(async (req, res) => {
                 createdAt,
                 updatedAt,
             })
-            .then(
-                console.log(`----------->Le rue a bien été créé<-----------`)
-            );
+            .then();
         res.status(201).json(success(message, data));
+        console.log(`--> 📝 Rue ${data.insertedId} créée`);
         redisClient.del('rues:all');
     } catch (err) {
         console.log(err);

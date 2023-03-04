@@ -1,15 +1,26 @@
 // ./controllers/validations.controller.js
 
 const { dbClient, redisClient } = require('../utils');
-
 const { catchAsync, success } = require('../helpers');
 const database = dbClient.db(process.env.MONGO_DB_DATABASE);
 const collection = database.collection('validations');
-
 const Joi = require('joi');
 const ObjectId = require('mongodb').ObjectId;
 
 const sendHabitation = require('../helpers/sendHabitation');
+
+const schema = Joi.object({
+    agent: Joi.array()
+        .items(Joi.string().regex(/^[0-9a-fA-F]{24}$/))
+        .min(1)
+        .required(),
+    habitation: Joi.array()
+        .items(Joi.string().regex(/^[0-9a-fA-F]{24}$/))
+        .min(1)
+        .required(),
+    date: Joi.date().required(),
+    note: Joi.string().allow(null).optional().empty(''),
+});
 
 const findAll = catchAsync(async (req, res) => {
     const message = '📄 Liste des validations';
@@ -93,18 +104,6 @@ const findOne = catchAsync(async (req, res) => {
     }
 });
 
-const schema = Joi.object({
-    agent: Joi.array()
-        .items(Joi.string().regex(/^[0-9a-fA-F]{24}$/))
-        .min(1)
-        .required(),
-    habitation: Joi.array()
-        .items(Joi.string().regex(/^[0-9a-fA-F]{24}$/))
-        .min(1)
-        .required(),
-    date: Joi.date().required(),
-    note: Joi.string().allow(null).optional().empty(''),
-});
 const create = catchAsync(async (req, res) => {
     const message = `✏️ Création d'une validation`;
 
@@ -140,13 +139,12 @@ const create = catchAsync(async (req, res) => {
                     `----------->La validation a bien été créé<-----------`
                 )
             );
+        res.status(201).json(success(message, data));
+        redisClient.del('validations:all');
         // Récupérer l'insertedId
         const insertedId = data.insertedId;
-        response = res.status(201).json(success(message, data));
 
-        redisClient.del('validations:all');
-        //
-        console.log(insertedId);
+        // Récupération des données par aggregate et envoi de la validation par mail
         const { agentData, habitationData, note } = await collection
             .aggregate([
                 {

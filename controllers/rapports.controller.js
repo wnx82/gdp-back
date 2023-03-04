@@ -1,6 +1,5 @@
 // ./controllers/rapports.controller.js
 
-// const dbClient = require('../utils/').dbClient;
 const { dbClient, redisClient } = require('../utils');
 const { catchAsync, success } = require('../helpers');
 const database = dbClient.db(process.env.MONGO_DB_DATABASE);
@@ -8,6 +7,8 @@ const collection = database.collection('rapports');
 const moment = require('moment');
 const Joi = require('joi');
 const ObjectId = require('mongodb').ObjectId;
+
+const sendRapport = require('../helpers/sendRapport');
 
 const schema = Joi.object({
     // daily: Joi.string().allow(null).optional().empty(''),
@@ -80,10 +81,6 @@ const create = catchAsync(async (req, res) => {
 
     try {
         value.daily = new ObjectId(value.daily);
-        // const dailyID = value.daily.map(p => {
-        //     return new ObjectId(p);
-        // });
-        // value.dailyID = dailyID;
         const agentsID = value.agents.map(p => {
             return new ObjectId(p);
         });
@@ -100,7 +97,7 @@ const create = catchAsync(async (req, res) => {
         const { ...rest } = value;
         const createdAt = new Date();
         const updatedAt = new Date();
-        const data = await collection
+        const donnees = await collection
             .insertOne({
                 ...rest,
                 createdAt,
@@ -111,8 +108,82 @@ const create = catchAsync(async (req, res) => {
                     `----------->Le rapport a bien été créé<-----------`
                 )
             );
-        res.status(201).json(success(message, data));
+        res.status(201).json(success(message, donnees));
         redisClient.del('rapports:all');
+        // Récupérer l'insertedId
+        const insertedId = donnees.insertedId;
+
+        // Récupération des données par aggregate et envoi de la validation par mail
+        const { data } = await collection
+            .aggregate([
+                {
+                    $match: {
+                        _id: new ObjectId(insertedId),
+                    },
+                },
+                {
+                    $lookup: {
+                        from: 'agents',
+                        localField: 'agents',
+                        foreignField: '_id',
+                        as: 'agentsData',
+                    },
+                },
+                {
+                    $lookup: {
+                        from: 'missions',
+                        localField: 'missions',
+                        foreignField: '_id',
+                        as: 'missionsData',
+                    },
+                },
+                {
+                    $lookup: {
+                        from: 'quartiers',
+                        localField: 'quartiers',
+                        foreignField: '_id',
+                        as: 'quartiersData',
+                    },
+                },
+                {
+                    $project: {
+                        date: 1,
+                        horaire: 1,
+                        vehicule: 1,
+                        habitation: 1,
+                        notes: 1,
+                        annexes: 1,
+                        'agentsData.matricule': 1,
+                        'agentsData.lastname': 1,
+                        'agentsData.firstname': 1,
+                        'quartiersData.title': 1,
+                        'missionsData.title': 1,
+                    },
+                },
+                {
+                    $group: {
+                        _id: '$_id',
+                        data: {
+                            $push: {
+                                date: '$date',
+                                horaire: '$horaire',
+                                vehicule: '$vehicule',
+                                notes: '$notes',
+                                annexes: '$annexes',
+                                matricules: '$agentsData.matricule',
+                                lastnames: '$agentsData.lastname',
+                                firstnames: '$agentsData.firstname',
+                                quartiers: '$quartiersData.title',
+                                missions: '$missionsData.title',
+                            },
+                        },
+                    },
+                },
+            ])
+            .next();
+        // console.log(data);
+        sendRapport(insertedId, data[0]);
+        // console.log(data[0].matricules);
     } catch (err) {
         console.log(err);
     }
