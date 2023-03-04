@@ -158,6 +158,7 @@ const create = catchAsync(async (req, res) => {
                         'agentsData.firstname': 1,
                         'quartiersData.title': 1,
                         'missionsData.title': 1,
+                        createdAt: 1,
                     },
                 },
                 {
@@ -175,6 +176,7 @@ const create = catchAsync(async (req, res) => {
                                 firstnames: '$agentsData.firstname',
                                 quartiers: '$quartiersData.title',
                                 missions: '$missionsData.title',
+                                createdAt: '$createdAt',
                             },
                         },
                     },

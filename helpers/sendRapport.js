@@ -63,10 +63,6 @@ body {
   margin-top: 0;
 }
 
-.content p {
-  margin-top: 0;
-}
-
 .footer div:first-child {
   margin-bottom: 10px;
 }
@@ -76,23 +72,59 @@ body {
   justify-content: center;
 }
 
+ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+li {
+  margin-top: 10px;
+}
+
+.content p strong {
+  font-weight: bold;
+}
+
 	</style>
 </head>
 <body>
 	<div class="container">
 		<div class="header">
-			<h1>Rapport ${moment(data.date).format('YYYY/MM/DD')}</h1>
-			<p>${id}</p>
+			<h1>Rapport du ${moment(data.date).format('YYYY/MM/DD')}</h1>
+			<p>ID unique: ${id}</p>
 		</div>
 		<div class="content">
-			<p>Matricules: ${data.matricules}</p>
-			<p>Agents: ${data.lastnames}</p>
-			<p>Horaire presté: ${data.horaire}</p>
-			<p>Véhicule: ${data.vehicule}</p>
-			<p>Quartiers effectués : ${data.quartiers}</p>
-			<p>Liste des missions effectuées: ${data.missions}</p>
-			<p>Notes : ${data.notes}</p>
-			<p>Annexes : ${data.annexes}</p>
+			<p><strong>Matricules:</strong></p>
+                        			<ul>
+				${data.matricules.map(matricule => `<li>${matricule}</li>`).join('')}
+			</ul>
+			<p><strong>Agents:</strong></p>
+            	<ul>
+				${data.lastnames.map(lastname => `<li>${lastname}</li>`).join('')}
+			</ul>
+			<p><strong>Horaire presté:</strong> ${data.horaire}</p>
+			<p><strong>Véhicule:</strong> ${data.vehicule}</p>
+			<p><strong>Quartiers effectués:</strong></p>
+            			<ul>
+				${data.quartiers.map(quartier => `<li>${quartier}</li>`).join('')}
+			</ul>
+			<p><strong>Liste des missions effectuées:</strong></p>
+			<ul>
+				${data.missions.map(mission => `<li>${mission}</li>`).join('')}
+			</ul>
+			<p><strong>Notes:</strong></p>
+                        	<ul>
+				${data.notes.map(note => `<li>${note}</li>`).join('')}
+			</ul>
+			<p><strong>Annexes:</strong></p>
+                                    	<ul>
+				${data.annexes.map(annexe => `<li>${annexe}</li>`).join('')}
+			</ul>
+<p><strong>Envoyé le :</strong>${moment(data.createdAt)
+        .utcOffset('+0100')
+        .format('YYYY/MM/DD à HH:MM')}</p>
+
 		</div>
 		<div class="footer">
 			<div>Gardien de la Paix - Ville de Mouscron</div>
@@ -104,8 +136,9 @@ body {
 			</div>
 		</div>
 	</div>
-</body>
-</html>
+
+
+
     `;
 
     sendMail(dataSubject, dataMessage, dataHTML)
