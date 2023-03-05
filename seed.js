@@ -9,6 +9,10 @@ const validators = require('./validators');
 // const { string, array } = require('joi');
 // const ObjectId = require('mongodb').ObjectId;
 
+const cliProgress = require('cli-progress');
+
+const bar1 = new cliProgress.SingleBar({}, cliProgress.Presets.shades_classic);
+
 // Flush Redis
 
 redisClient.flushall((err, reply) => {
@@ -18,6 +22,7 @@ redisClient.flushall((err, reply) => {
         console.log(reply);
     }
 });
+
 (async () => {
     const db = dbClient.db(process.env.MONGODB_DATABASE);
     const collections = [
@@ -35,15 +40,16 @@ redisClient.flushall((err, reply) => {
         'validations',
         'vehicules',
     ];
+    bar1.start(collections.length, 0);
+    let i = 0;
     const existingCollectionsCursor = db.listCollections();
     const existingcollections = await existingCollectionsCursor.toArray();
     const names = existingcollections.map(c => c.name);
-    console.log(names);
+    // console.log(names);
 
     //on efface les données et on les recrée
-    console.log(
-        '\u001b[1;31m----------------- Redis Flushing <------------------------------------\u001b[0m '
-    );
+    console.log('\u001b[1;32m--------> Redis Flushing <--------\u001b[0m ');
+
     collections.forEach(async c => {
         try {
             if (names.includes(c)) {
@@ -60,7 +66,7 @@ redisClient.flushall((err, reply) => {
     });
 
     // DTO = DATA TRANSFER OBJECT
-
+    bar1.update(i++);
     const admin = {
         email: 'admin@admin.com',
         password: await bcrypt.hash('123456789', 10),
@@ -101,7 +107,8 @@ redisClient.flushall((err, reply) => {
         horairesDto.map(u => db.collection('horaires').insertOne(u))
     );
 
-    console.log('\u001b[1;31m---> Collection horaires créée <---\u001b[0m ');
+    bar1.update(i++);
+
     const vehiculesDto = [
         {
             marque: 'Skoda',
@@ -128,7 +135,8 @@ redisClient.flushall((err, reply) => {
     await Promise.all(
         vehiculesDto.map(u => db.collection('vehicules').insertOne(u))
     );
-    console.log('\u001b[1;31m---> Collection vehicules créée <---\u001b[0m ');
+
+    bar1.update(i++);
     const categoriesDto = [
         {
             title: 'Altercation/Agression',
@@ -154,7 +162,8 @@ redisClient.flushall((err, reply) => {
     await Promise.all(
         categoriesDto.map(u => db.collection('categories').insertOne(u))
     );
-    console.log('\u001b[1;31m---> Collection categories créée <---\u001b[0m ');
+    // console.log('\u001b[1;32m---> Collection categories créée <---\u001b[0m ');
+    bar1.update(i++);
     const agentsDto = await Promise.all(
         [...Array(15)].map(async () => {
             return {
@@ -183,7 +192,8 @@ redisClient.flushall((err, reply) => {
     const createdAgents = await Promise.all(
         agentsDto.map(u => db.collection('agents').insertOne(u))
     );
-    console.log('\u001b[1;31m---> Collection agents créée <---\u001b[0m ');
+    // console.log('\u001b[1;32m---> Collection agents créée <---\u001b[0m ');
+    bar1.update(i++);
     const habitationsDto = [...Array(15)].map(() => ({
         adresse: {
             rue: faker.address.streetAddress(),
@@ -216,7 +226,8 @@ redisClient.flushall((err, reply) => {
     const createdHabitations = await Promise.all(
         habitationsDto.map(u => db.collection('habitations').insertOne(u))
     );
-    console.log('\u001b[1;31m---> Collection habitations créée <---\u001b[0m ');
+    // console.log('\u001b[1;32m---> Collection habitations créée <---\u001b[0m ');
+    bar1.update(i++);
 
     const validationsDto = [...Array(15)].map(() => ({
         agent: [createdAgents[Math.floor(Math.random() * 15)].insertedId],
@@ -234,7 +245,8 @@ redisClient.flushall((err, reply) => {
         validationsDto.map(u => db.collection('validations').insertOne(u))
     );
 
-    console.log('\u001b[1;31m---> Collection validations créée <---\u001b[0m ');
+    // console.log('\u001b[1;32m---> Collection validations créée <---\u001b[0m ');
+    bar1.update(i++);
     const constatsDto = [...Array(25)].map(() => ({
         agents: [
             createdAgents[Math.floor(Math.random() * 15)].insertedId,
@@ -281,7 +293,8 @@ redisClient.flushall((err, reply) => {
     await Promise.all(
         constatsDto.map(u => db.collection('constats').insertOne(u))
     );
-    console.log('\u001b[1;31m---> Collection constats créée <---\u001b[0m ');
+    // console.log('\u001b[1;32m---> Collection constats créée <---\u001b[0m ');
+    bar1.update(i++);
 
     const infractionsDto = [
         {
@@ -378,7 +391,8 @@ redisClient.flushall((err, reply) => {
     await Promise.all(
         infractionsDto.map(u => db.collection('infractions').insertOne(u))
     );
-    console.log('\u001b[1;31m---> Collection infractions créée <---\u001b[0m ');
+    // console.log('\u001b[1;32m---> Collection infractions créée <---\u001b[0m ');
+    bar1.update(i++);
     const missionsDto = [
         {
             //Centre
@@ -657,7 +671,8 @@ redisClient.flushall((err, reply) => {
     const createdMissions = await Promise.all(
         missionsDto.map(u => db.collection('missions').insertOne(u))
     );
-    console.log('\u001b[1;31m---> Collection missions créée <---\u001b[0m ');
+    // console.log('\u001b[1;32m---> Collection missions créée <---\u001b[0m ');
+    bar1.update(i++);
     const quartiersDto = [
         {
             title: 'Nouveau-Monde',
@@ -688,8 +703,8 @@ redisClient.flushall((err, reply) => {
     const createdMissionsQuartiers = await Promise.all(
         quartiersDto.map(u => db.collection('quartiers').insertOne(u))
     );
-    console.log('\u001b[1;31m---> Collection quartiers créée <---\u001b[0m ');
-
+    // console.log('\u001b[1;32m---> Collection quartiers créée <---\u001b[0m ');
+    bar1.update(i++);
     const dailiesDto = [...Array(15)].map(() => ({
         date: faker.date.recent(),
         agents: [
@@ -717,7 +732,8 @@ redisClient.flushall((err, reply) => {
     const createdsDailyDto = await Promise.all(
         dailiesDto.map(u => db.collection('dailies').insertOne(u))
     );
-    console.log('\u001b[1;31m---> Collection dailies créée <---\u001b[0m ');
+    // console.log('\u001b[1;32m---> Collection dailies créée <---\u001b[0m ');
+    bar1.update(i++);
     const rapportsDto = [...Array(15)].map(() => ({
         daily: createdsDailyDto[Math.floor(Math.random() * 15)].insertedId,
         date: faker.date.recent(),
@@ -757,7 +773,8 @@ redisClient.flushall((err, reply) => {
     const createdRapportsDto = await Promise.all(
         rapportsDto.map(u => db.collection('rapports').insertOne(u))
     );
-    console.log('\u001b[1;31m---> Collection rapports créée <---\u001b[0m ');
+    bar1.update(i++);
+    // console.log('\u001b[1;32m---> Collection rapports créée <---\u001b[0m ');
     const ruesDto = [
         {
             adresse: 'Abattoir',
@@ -6324,6 +6341,13 @@ redisClient.flushall((err, reply) => {
     const createdRues = await Promise.all(
         ruesDto.map(u => db.collection('rues').insertOne(u))
     );
-    console.log('\u001b[1;31m---> Collection rues créée <---\u001b[0m ');
+
+    bar1.update(i++);
+
+    bar1.stop();
+    console.clear();
+    collections.forEach(collection => {
+        console.log('Collection ' + collection + ' créée');
+    });
     process.exit(0);
 })();

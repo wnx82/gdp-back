@@ -89,7 +89,7 @@ const sendHabitation = async function (agentData, habitationData, note) {
 <body>
     <div class="container">
         <div class="header">
-            <h1>Nouvelle entrée pour ${habitationData.adresse.rue}</h1>
+            <h1>📌 Nouvelle entrée pour ${habitationData.adresse.rue}</h1>
         </div>
         <div class="content">
             <p class="message">
@@ -105,15 +105,15 @@ const sendHabitation = async function (agentData, habitationData, note) {
             <div class="details">
                 <table>
                     <tr>
-                        <th>Agent</th>
+                        <th>👮 Agent</th>
                         <td>${agentData.matricule}</td>
                     </tr>
                     <tr>
-                        <th>Habitation</th>
+                        <th>📌 Habitation</th>
                         <td>${habitationData.adresse.rue}</td>
                     </tr>
                     <tr>
-                        <th>Note</th>
+                        <th>📝 Note</th>
                         <td>${note}</td>
                     </tr>
                 </table>

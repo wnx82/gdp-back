@@ -7,6 +7,13 @@ var logger = require('morgan');
 const passport = require('passport');
 const bodyParser = require('body-parser');
 const prettier = require('prettier');
+const morgan = require('morgan');
+const fs = require('fs');
+
+const accessLogStream = fs.createWriteStream(
+    path.join(__dirname, 'access.log'),
+    { flags: 'a' }
+);
 
 require('./passport');
 var app = express();
@@ -44,6 +51,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+
+app.use(morgan('combined', { stream: accessLogStream }));
 
 app.use('/', indexRouter);
 app.use('/login', authRouter);
