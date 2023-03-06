@@ -3,7 +3,7 @@ var express = require('express');
 var router = express.Router();
 const controller = require('../controllers/habitations.validations.controller');
 const validateId = require('../helpers/validateId');
-/* GET agents listing. */
+/* GET validations listing. */
 router.get('/', controller.findAll);
 router.get('/:id', validateId, controller.findOne);
 router.post('/', controller.create);

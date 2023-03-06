@@ -1,14 +1,15 @@
-//./routes/habitations.js
+//./routes/rues.js
 var express = require('express');
 var router = express.Router();
 const controller = require('../controllers/rues.controller');
 const validateId = require('../helpers/validateId');
 
-/* GET habitations listing. */
+/* GET rues listing. */
 router.get('/', controller.findAll);
 router.get('/:id', validateId, controller.findOne);
 router.post('/', controller.create);
 router.patch('/:id', validateId, controller.updateOne);
 router.delete('/:id', validateId, controller.deleteOne);
+router.get('/localite/:localite', controller.localite);
 
 module.exports = router;

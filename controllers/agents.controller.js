@@ -10,20 +10,32 @@ const moment = require('moment');
 const Joi = require('joi');
 const ObjectId = require('mongodb').ObjectId;
 
+// const findAll = catchAsync(async (req, res) => {
+//     const message = '📄 Liste des agents';
+//     const inCache = await redisClient.get('agents:all');
+//     if (inCache) {
+//         return res.status(200).json(success(message, JSON.parse(inCache)));
+//     } else {
+//         const pipeline = [
+//             {
+//                 $project: {
+//                     password: 0,
+//                 },
+//             },
+//         ];
+//         const data = await collection.aggregate(pipeline).toArray();
+//         redisClient.set('agents:all', JSON.stringify(data), 'EX', 600);
+//         res.status(200).json(success(message, data));
+//     }
+// });
+
 const findAll = catchAsync(async (req, res) => {
     const message = '📄 Liste des agents';
     const inCache = await redisClient.get('agents:all');
     if (inCache) {
         return res.status(200).json(success(message, JSON.parse(inCache)));
     } else {
-        const pipeline = [
-            {
-                $project: {
-                    password: 0,
-                },
-            },
-        ];
-        const data = await collection.aggregate(pipeline).toArray();
+        const data = await collection.find({}).toArray();
         redisClient.set('agents:all', JSON.stringify(data), 'EX', 600);
         res.status(200).json(success(message, data));
     }

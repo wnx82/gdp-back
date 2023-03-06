@@ -24,7 +24,7 @@ redisClient.flushall((err, reply) => {
 });
 
 (async () => {
-    const db = dbClient.db(process.env.MONGODB_DATABASE);
+    const db = dbClient.db(process.env.MONGO_DB_DATABASE);
     const collections = [
         'agents',
         'categories',

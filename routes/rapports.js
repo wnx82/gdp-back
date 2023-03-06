@@ -29,13 +29,17 @@ router.delete('/:id/missions/:missionId', validateId, controller.removeMission);
 
 //ajouter supprimer quartierMissionsValidate du rapport
 router.get(
-    '/:id/quartierMissions',
+    '/:id/quartierMissionsValidate',
     validateId,
     controller.findMissionsQuartier
 );
-router.post('/:id/quartierMissions', validateId, controller.addMissionQuartier);
+router.post(
+    '/:id/quartierMissionsValidate',
+    validateId,
+    controller.addMissionQuartier
+);
 router.delete(
-    '/:id/quartierMissions/:missionId',
+    '/:id/quartierMissionsValidate/:missionId',
     validateId,
     controller.removeMissionQuartier
 );

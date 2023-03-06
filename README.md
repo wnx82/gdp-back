@@ -71,6 +71,7 @@ https://github.com/geo6/geocoder-php-spw-provider
 ## 🐉 Plus tard
 
 -   [**Git Emojis**](https://gitmoji.dev/)
+-   [**emojidb**](https://emojidb.org/facebook-emojis?user_typed_query=1&utm_source=user_search)
 -   [**Listing Emojis**](emoji.md)
 
 -   [Tuto Get Data From server ✨](https://angular.io/tutorial/tour-of-heroes/toh-pt6)

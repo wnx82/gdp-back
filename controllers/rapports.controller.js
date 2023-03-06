@@ -783,7 +783,7 @@ const removeMissionQuartier = async (req, res) => {
         );
 
         if (result.matchedCount === 1) {
-            res.status(200).json({ message: '🗑️ Mission removed' });
+            res.status(200).json({ message: '🗑️ Mission Quartier removed' });
             redisClient.del(`rapport:${id}`);
         } else {
             res.status(500).json({ message: '😖 Failed to remove mission' });

@@ -29,6 +29,28 @@ const findAll = catchAsync(async (req, res) => {
     }
 });
 
+const localite = catchAsync(async (req, res) => {
+    let localite = req.params.localite;
+    localite = localite.charAt(0).toUpperCase() + localite.slice(1);
+    const message = `📄 Liste des rues de ${localite}`;
+    const inCache = await redisClient.get(`rues:${localite}`);
+    if (inCache) {
+        return res.status(200).json(success(message, JSON.parse(inCache)));
+    } else {
+        const data = await collection
+            .aggregate([
+                {
+                    $match: {
+                        localite: localite,
+                    },
+                },
+            ])
+            .toArray();
+        redisClient.set(`rues:${localite}`, JSON.stringify(data), 'EX', 600);
+        res.status(200).json(success(message, data));
+    }
+});
+
 const findOne = catchAsync(async (req, res) => {
     try {
         const message = `📄 Détails de la rue`;
@@ -162,6 +184,7 @@ const deleteOne = catchAsync(async (req, res) => {
 
 module.exports = {
     findAll,
+    localite,
     findOne,
     create,
     updateOne,

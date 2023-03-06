@@ -1,10 +1,10 @@
-//./routes/habitations.js
+//./routes/quartiers.js
 var express = require('express');
 var router = express.Router();
 const controller = require('../controllers/quartiers.controller');
 const validateId = require('../helpers/validateId');
 
-/* GET habitations listing. */
+/* GET quartiers listing. */
 router.get('/', controller.findAll);
 router.get('/:id', validateId, controller.findOne);
 router.post('/', controller.create);
