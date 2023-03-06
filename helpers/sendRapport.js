@@ -4,7 +4,8 @@ const fs = require('fs');
 
 const sendHabitation = async function (id, data) {
     // const dataSubject = '✅ Rapport ' + data.date;
-    const dataSubject = '📝 Rapport ' + moment(data.date).format('YYYY/MM/DD');
+    const dataSubject =
+        '📝 Rapport du ' + moment(data.date).format('YYYY/MM/DD');
     const dataMessage = '';
     console.log(data);
     console.log(data.date);

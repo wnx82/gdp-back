@@ -210,7 +210,7 @@ const findAgents = async (req, res) => {
 
     if (!daily) {
         res.status(404).json({
-            message: 'No daily found with these parameters',
+            message: '🚫 No daily found with these parameters',
         });
         return;
     }
@@ -251,7 +251,7 @@ const addAgent = async (req, res) => {
     const { body } = req;
 
     if (!id) {
-        res.status(400).json({ message: 'No id provided' });
+        res.status(400).json({ message: '🚫 No id provided' });
         return;
     }
 
@@ -259,16 +259,32 @@ const addAgent = async (req, res) => {
 
     if (!daily) {
         res.status(404).json({
-            message: 'No daily found with these parameters',
+            message: '🚫 No daily found with these parameters',
         });
         return;
     }
 
     const agentId = new ObjectId(body.agentId);
 
-    if (daily.agents.includes(agentId)) {
+    const agentExistsInDaily = await collection.findOne({
+        _id: new ObjectId(id),
+        agents: { $in: [agentId] },
+    });
+
+    if (agentExistsInDaily) {
         res.status(400).json({
-            message: 'The daily already includes this agent',
+            message: '⚠️ The daily already includes this agent',
+        });
+        return;
+    }
+
+    const agentExists = await database
+        .collection('agents')
+        .findOne({ _id: agentId });
+
+    if (!agentExists) {
+        res.status(404).json({
+            message: '⚠️ Agent not found',
         });
         return;
     }
@@ -286,15 +302,25 @@ const addAgent = async (req, res) => {
     );
 
     if (data && data.value) {
-        res.status(201).json({ message: 'Agent added' });
+        res.status(201).json({ message: '👍 Agent added' });
+        redisClient.del(`daily:${id}`);
     } else {
-        res.status(500).json({ message: 'Failed to add agent' });
+        res.status(500).json({ message: '🚫 Failed to add agent' });
     }
 };
 
 const removeAgent = async (req, res) => {
     const { id, agentId } = req.params;
     try {
+        const agentExists = await collection.findOne({
+            _id: new ObjectId(id),
+            agents: new ObjectId(agentId),
+        });
+        if (!agentExists) {
+            res.status(404).json({ message: '⛔ No agent found with this id' });
+            return;
+        }
+
         const result = await collection.updateOne(
             { _id: new ObjectId(id) },
             {
@@ -305,23 +331,130 @@ const removeAgent = async (req, res) => {
         );
 
         if (result.matchedCount === 1) {
-            res.status(200).json({ message: 'Agent removed' });
+            res.status(200).json({ message: '🗑️ Agent removed' });
+            redisClient.del(`daily:${id}`);
         } else {
-            res.status(404).json({ message: 'No agent found with this id' });
+            res.status(500).json({ message: '😖 Failed to remove agent' });
         }
     } catch (error) {
         console.error(error);
-        res.status(500).json({ message: 'Internal Server Error' });
+        res.status(500).json({ message: '⚠️ Internal Server Error' });
     }
 };
 
+const findMissions = async (req, res) => {
+    const { id } = req.params;
+    const daily = await collection.findOne({ _id: new ObjectId(id) });
+
+    if (!daily) {
+        res.status(404).json({
+            message: '⚠️ No daily found with these parameters',
+        });
+        return;
+    }
+
+    res.status(200).json(daily.missions);
+};
+
+const addMission = async (req, res) => {
+    const { id } = req.params;
+    const { body } = req;
+
+    if (!id) {
+        res.status(400).json({ message: '🚫 No id provided' });
+        return;
+    }
+
+    const daily = await collection.findOne({ _id: new ObjectId(id) });
+
+    if (!daily) {
+        res.status(404).json({
+            message: '🚫 No daily found with these parameters',
+        });
+        return;
+    }
+
+    const missionId = new ObjectId(body.missionId);
+
+    if (daily.missions.includes(missionId)) {
+        res.status(400).json({
+            message: '⚠️ The daily already includes this mission',
+        });
+        return;
+    }
+
+    const missionExists = await database
+        .collection('missions')
+        .findOne({ _id: missionId });
+
+    if (!missionExists) {
+        res.status(404).json({
+            message: '⚠️ Mission not found',
+        });
+        return;
+    }
+
+    const data = await collection.findOneAndUpdate(
+        {
+            _id: new ObjectId(id),
+        },
+        {
+            $push: { missions: missionId },
+        },
+        {
+            returnDocument: 'after',
+        }
+    );
+
+    if (data && data.value) {
+        res.status(201).json({ message: '👍 Mission added' });
+        redisClient.del(`daily:${id}`);
+    } else {
+        res.status(500).json({ message: '🚫 Failed to add mission' });
+    }
+};
+
+const removeMission = async (req, res) => {
+    const { id, missionId } = req.params;
+    try {
+        const missionExists = await collection.findOne({
+            _id: new ObjectId(id),
+            missions: new ObjectId(missionId),
+        });
+        if (!missionExists) {
+            res.status(404).json({
+                message: '⛔ No mission found with this id',
+            });
+            return;
+        }
+
+        const result = await collection.updateOne(
+            { _id: new ObjectId(id) },
+            {
+                $pull: {
+                    missions: new ObjectId(missionId),
+                },
+            }
+        );
+
+        if (result.matchedCount === 1) {
+            res.status(200).json({ message: '🗑️ Mission removed' });
+            redisClient.del(`daily:${id}`);
+        } else {
+            res.status(500).json({ message: '😖 Failed to remove mission' });
+        }
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: '⚠️ Internal Server Error' });
+    }
+};
 const findQuartiers = async (req, res) => {
     const { id } = req.params;
     const daily = await collection.findOne({ _id: new ObjectId(id) });
 
     if (!daily) {
         res.status(404).json({
-            message: 'No daily found with these parameters',
+            message: '⚠️ No daily found with these parameters',
         });
         return;
     }
@@ -334,7 +467,7 @@ const addQuartier = async (req, res) => {
     const { body } = req;
 
     if (!id) {
-        res.status(400).json({ message: 'No id provided' });
+        res.status(400).json({ message: '🚫 No id provided' });
         return;
     }
 
@@ -342,7 +475,7 @@ const addQuartier = async (req, res) => {
 
     if (!daily) {
         res.status(404).json({
-            message: 'No daily found with these parameters',
+            message: '🚫 No daily found with these parameters',
         });
         return;
     }
@@ -351,7 +484,18 @@ const addQuartier = async (req, res) => {
 
     if (daily.quartiers.includes(quartierId)) {
         res.status(400).json({
-            message: 'The daily already includes this quartier',
+            message: '⚠️ The daily already includes this quartier',
+        });
+        return;
+    }
+
+    const quartierExists = await database
+        .collection('quartiers')
+        .findOne({ _id: quartierId });
+
+    if (!quartierExists) {
+        res.status(404).json({
+            message: '⚠️ Quartier not found',
         });
         return;
     }
@@ -369,113 +513,45 @@ const addQuartier = async (req, res) => {
     );
 
     if (data && data.value) {
-        res.status(201).json({ message: 'Quartier added' });
+        res.status(201).json({ message: '👍 Quartier added' });
+        redisClient.del(`daily:${id}`);
     } else {
-        res.status(500).json({ message: 'Failed to add quartier' });
+        res.status(500).json({ message: '🚫 Failed to add quartier' });
     }
 };
 
 const removeQuartier = async (req, res) => {
     const { id, quartierId } = req.params;
     try {
+        const quartierExists = await collection.findOne({
+            _id: new ObjectId(id),
+            agents: new ObjectId(quartierId),
+        });
+        if (!quartierExists) {
+            res.status(404).json({
+                message: '⛔ No quartier found with this id',
+            });
+            return;
+        }
+
         const result = await collection.updateOne(
             { _id: new ObjectId(id) },
             {
                 $pull: {
-                    quartiers: new ObjectId(quartierId),
+                    agents: new ObjectId(quartierId),
                 },
             }
         );
 
         if (result.matchedCount === 1) {
-            res.status(200).json({ message: 'Quartier removed' });
+            res.status(200).json({ message: '🗑️ Quartier removed' });
+            redisClient.del(`daily:${id}`);
         } else {
-            res.status(404).json({ message: 'No quartier found with this id' });
+            res.status(500).json({ message: '😖 Failed to remove quartier' });
         }
     } catch (error) {
         console.error(error);
-        res.status(500).json({ message: 'Internal Server Error' });
-    }
-};
-
-const findMissions = async (req, res) => {
-    const { id } = req.params;
-    const daily = await collection.findOne({ _id: new ObjectId(id) });
-
-    if (!daily) {
-        res.status(404).json({
-            message: 'No daily found with these parameters',
-        });
-        return;
-    }
-
-    res.status(200).json(daily.missions);
-};
-
-const addMission = async (req, res) => {
-    const { id } = req.params;
-    const { body } = req;
-
-    if (!id) {
-        res.status(400).json({ message: 'No id provided' });
-        return;
-    }
-
-    const daily = await collection.findOne({ _id: new ObjectId(id) });
-
-    if (!daily) {
-        res.status(404).json({
-            message: 'No daily found with these parameters',
-        });
-        return;
-    }
-
-    const missionId = new ObjectId(body.missionId);
-
-    if (daily.missions.includes(missionId)) {
-        res.status(400).json({
-            message: 'The daily already includes this mission',
-        });
-        return;
-    }
-
-    const data = await collection.findOneAndUpdate(
-        { _id: new ObjectId(id), missions: { $ne: missionId } },
-        {
-            $push: { missions: missionId },
-        },
-        {
-            returnDocument: 'after',
-        }
-    );
-
-    if (data && data.value) {
-        res.status(201).json({ message: 'Mission added' });
-    } else {
-        res.status(500).json({ message: 'Failed to add mission' });
-    }
-};
-
-const removeMission = async (req, res) => {
-    const { id, missionId } = req.params;
-    try {
-        const result = await collection.updateOne(
-            { _id: new ObjectId(id) },
-            {
-                $pull: {
-                    missions: new ObjectId(missionId),
-                },
-            }
-        );
-
-        if (result.matchedCount === 1) {
-            res.status(200).json({ message: 'Mission removed' });
-        } else {
-            res.status(404).json({ message: 'No mission found with this id' });
-        }
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: 'Internal Server Error' });
+        res.status(500).json({ message: '⚠️ Internal Server Error' });
     }
 };
 
@@ -488,10 +564,10 @@ module.exports = {
     findAgents,
     addAgent,
     removeAgent,
-    findQuartiers,
-    addQuartier,
-    removeQuartier,
     findMissions,
     addMission,
     removeMission,
+    findQuartiers,
+    addQuartier,
+    removeQuartier,
 };

@@ -290,24 +290,32 @@ const addAgent = async (req, res) => {
 
 const removeAgent = async (req, res) => {
     const { id, agentId } = req.params;
-    //gestion des erreurs
-    const data = await collection.findOneAndUpdate(
-        {
-            //filtre
-            _id: new ObjectId(id),
-        },
-        {
-            //comment faire
-            $pull: {
-                agents: { $in: [new ObjectId(agentId)] },
+    try {
+        const data = await collection.findOneAndUpdate(
+            {
+                //filtre
+                _id: new ObjectId(id),
+                agents: { $in: [new ObjectId(agentId)] }, // Vérifie si l'agent existe dans la liste
             },
-        },
-        {
-            //options mongos
-            returnDocument: 'after',
+            {
+                //mise à jour
+                $pull: {
+                    agents: new ObjectId(agentId),
+                },
+            },
+            {
+                //options mongos
+                returnDocument: 'after',
+            }
+        );
+        if (data) {
+            res.status(201).json({ message: '🗑️ Agent removed' });
+        } else {
+            res.status(404).json({ message: '🚫 Agent not found' });
         }
-    );
-    res.status(201).json({ message: '🗑️ Agent removed' });
+    } catch (err) {
+        res.status(500).json({ message: '🔥 Server Error' });
+    }
 };
 
 module.exports = {
