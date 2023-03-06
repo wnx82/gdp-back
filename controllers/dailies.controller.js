@@ -376,7 +376,12 @@ const addMission = async (req, res) => {
 
     const missionId = new ObjectId(body.missionId);
 
-    if (daily.missions.includes(missionId)) {
+    const missionExistsInDaily = await collection.findOne({
+        _id: new ObjectId(id),
+        missions: { $in: [missionId] },
+    });
+
+    if (missionExistsInDaily) {
         res.status(400).json({
             message: '⚠️ The daily already includes this mission',
         });
@@ -482,7 +487,12 @@ const addQuartier = async (req, res) => {
 
     const quartierId = new ObjectId(body.quartierId);
 
-    if (daily.quartiers.includes(quartierId)) {
+    const quartierExistsInDaily = await collection.findOne({
+        _id: new ObjectId(id),
+        quartiers: { $in: [quartierId] },
+    });
+
+    if (quartierExistsInDaily) {
         res.status(400).json({
             message: '⚠️ The daily already includes this quartier',
         });

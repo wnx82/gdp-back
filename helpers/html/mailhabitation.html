@@ -1,79 +1,77 @@
+<!DOCTYPE html>
 <html>
 
 <head>
+    <title>Rapport</title>
     <style>
+        /* CSS */
         body {
-            background-color: #f5f5f5;
-            font-family: Arial, Helvetica, sans-serif;
-            font-size: 16px;
-            color: #444444;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
         }
 
         .container {
-            max-width: 600px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #ffffff;
-            border-radius: 5px;
-            box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.2);
+            margin: 50px;
         }
 
         .header {
             background-color: #56007b;
-            color: #ffffff;
             padding: 10px;
-            border-radius: 5px 5px 0 0;
+            text-align: center;
+            color: #fff
         }
 
         .content {
             padding: 20px;
         }
 
-        .message {
-            font-size: 20px;
-            margin-bottom: 20px;
-        }
-
-        .details {
-            margin-top: 20px;
-        }
-
-        .details table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        .details table td {
-            padding: 10px;
-            vertical-align: top;
-            border: 1px solid #dddddd;
-        }
-
-        .details table th {
-            padding: 10px;
-            text-align: left;
-            background-color: #f5f5f5;
-            border: 1px solid #dddddd;
-        }
-
         .footer {
-            margin-top: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 12px;
-            color: #777;
+            background-color: #fff;
+            padding: 10px;
+            text-align: center;
         }
 
-        .footer img {
-            height: 30px;
-            width: auto;
-            margin-right: 10px;
+        .logo img {
+            height: 50px;
+            margin: 5px;
+        }
+
+        /* Style de la page */
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .header h1 {
+            margin-top: 0;
+        }
+
+        .footer div:first-child {
+            margin-bottom: 10px;
         }
 
         .logo {
-            height: 60px;
-            width: auto;
+            display: flex;
+            justify-content: center;
+        }
+
+        ul {
+            list-style: none;
+            margin: 0 0 0 60px;
+            padding: 0;
+        }
+
+
+        li {
+            margin-top: 10px;
+        }
+
+        .content p strong {
+            font-weight: bold;
         }
     </style>
 </head>
@@ -81,44 +79,52 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>Nouvelle entrée pour ${habitationData.adresse.rue}</h1>
+            <h1>📝 Rapport du ${moment(data.date).format('YYYY/MM/DD')}</h1>
+            <p>ID unique: ${id}</p>
         </div>
         <div class="content">
-            <p class="message">
-                Ce <strong>${moment(new Date()).format(
-                    'YYYY/MM/DD à HH:mm'
-                    )}</strong>, l'agent GDP <strong>${
-                    agentData.matricule
-                    }</strong>, s'est rendu à l'habitation : <strong>${
-                    habitationData.adresse.rue
-                    }</strong> et a communiqué le commentaire suivant :
-                <strong>${note}</strong>
-            </p>
-            <div class="details">
-                <table>
-                    <tr>
-                        <th>Agent</th>
-                        <td>${agentData.matricule}</td>
-                    </tr>
-                    <tr>
-                        <th>Habitation</th>
-                        <td>${habitationData.adresse.rue}</td>
-                    </tr>
-                    <tr>
-                        <th>Note</th>
-                        <td>${note}</td>
-                    </tr>
-                </table>
-            </div>
+            <p><strong>🆔 Matricules:</strong></p>
+            <ul>
+                ${data.matricules.map(matricule => `<li>${matricule}</li>`).join('')}
+            </ul>
+            <p><strong>👮 Agents:</strong></p>
+            <ul>
+                ${data.lastnames.map(lastname => `<li>${lastname}</li>`).join('')}
+            </ul>
+            <p><strong>📅 Horaire presté:</strong> ${data.horaire}</p>
+            <p><strong>🚙 Véhicule:</strong> ${data.vehicule}</p>
+            <p><strong>📌 Quartiers effectués:</strong></p>
+            <ul>
+                ${data.quartiers.map(quartier => `<li>${quartier}</li>`).join('')}
+            </ul>
+            <p><strong>📌 Missions quartier effectués:</strong></p>
+            <ul>
+                ${data.missionsQuartierValidate.map(quartier => `<li>${missionsQuartierValidate}</li>`).join('')}
+            </ul>
+            <p><strong>📋 Liste des missions effectuées:</strong></p>
+            <ul>
+                ${data.missions.map(mission => `<li>${mission}</li>`).join('')}
+            </ul>
+            <p><strong>📝 Notes:</strong></p>
+            <ul>
+                ${data.notes.map(note => `<li>${note}</li>`).join('')}
+            </ul>
+            <p><strong>📑 Annexes:</strong></p>
+            <ul>
+                ${data.annexes.map(annexe => `<li>${annexe}</li>`).join('')}
+            </ul><br><br>
+            <p><strong>Envoyé le :</strong>${moment(data.createdAt)
+                .utcOffset('+0100')
+                .format('YYYY/MM/DD à HH:MM')}</p>
         </div>
-        <div class="footer">
-            <div>Gardien de la Paix - Ville de Mouscron</div>
-            <div class="logo"><img src="https://www.perwez.be/commune/autres-services/gardiens-de-la-paix/visuel.png"
-                    alt="Logo Gardien de la Paix Belgique" />
-                <img src="https://www.mouscron.be/cpskinlogo.png/@@images/1d2c8501-9f39-478c-b643-d1ee63496fd5.png"
-                    alt="Logo Mouscron" />
-
-            </div>
+    </div>
+    <div class="footer">
+        <div>Gardien de la Paix - Ville de Mouscron</div>
+        <div class="logo">
+            <img src="https://www.perwez.be/commune/autres-services/gardiens-de-la-paix/visuel.png"
+                alt="Logo Gardien de la Paix Belgique" />
+            <img src="https://www.mouscron.be/cpskinlogo.png/@@images/1d2c8501-9f39-478c-b643-d1ee63496fd5.png"
+                alt="Logo Mouscron" />
         </div>
     </div>
 </body>

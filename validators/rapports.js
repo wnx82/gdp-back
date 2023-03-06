@@ -54,6 +54,14 @@ module.exports = {
                         bsonType: 'objectId',
                     },
                 },
+                quartierMissionsValidate: {
+                    bsonType: 'array',
+                    minItems: 0,
+                    description: ' must be a array and is required',
+                    items: {
+                        bsonType: 'objectId',
+                    },
+                },
             },
         },
     },
