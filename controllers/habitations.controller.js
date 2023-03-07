@@ -41,6 +41,52 @@ const findAll = catchAsync(async (req, res) => {
                     as: 'adresseData',
                 },
             },
+            {
+                $group: {
+                    _id: '$_id',
+                    demandeur: {
+                        $first: '$demandeur',
+                    },
+                    date: {
+                        $first: '$date',
+                    },
+                    adresse: {
+                        $push: {
+                            numero: '$adresse.numero',
+                            nom: {
+                                $first: '$adresseData.nom',
+                            },
+                            denomination: {
+                                $first: '$adresseData.denomination',
+                            },
+                            quartier: {
+                                $first: '$adresseData.quartier',
+                            },
+                            cp: {
+                                $first: '$adresseData.cp',
+                            },
+                            localite: {
+                                $first: '$adresseData.localite',
+                            },
+                        },
+                    },
+                    mesures: {
+                        $first: '$mesures',
+                    },
+                    vehicule: {
+                        $first: '$vehicule',
+                    },
+                    googlemap: {
+                        $first: '$googlemap',
+                    },
+                    createdAt: {
+                        $first: '$createdAt',
+                    },
+                    updatedAt: {
+                        $first: '$updatedAt',
+                    },
+                },
+            },
         ];
         const data = await collection.aggregate(pipeline).toArray();
         redisClient.set('habitations:all', JSON.stringify(data), 'EX', 600);
@@ -58,9 +104,71 @@ const findActiveHabitations = catchAsync(async (req, res) => {
             {
                 $match: {
                     $and: [
-                        { 'date.debut': { $lte: new Date() } }, // date.debut <= aujourd'hui
-                        { 'date.fin': { $gte: new Date() } }, // date.fin >= aujourd'hui
+                        {
+                            'date.debut': {
+                                $lte: new Date(),
+                            },
+                        },
+                        {
+                            'date.fin': {
+                                $gte: new Date(),
+                            },
+                        },
                     ],
+                },
+            },
+            {
+                $lookup: {
+                    from: 'rues',
+                    localField: 'adresse.rue',
+                    foreignField: '_id',
+                    as: 'adresseData',
+                },
+            },
+            {
+                $group: {
+                    _id: '$_id',
+                    demandeur: {
+                        $first: '$demandeur',
+                    },
+                    date: {
+                        $first: '$date',
+                    },
+                    mesures: {
+                        $first: '$mesures',
+                    },
+                    vehicule: {
+                        $first: '$vehicule',
+                    },
+                    googlemap: {
+                        $first: '$googlemap',
+                    },
+                    createdAt: {
+                        $first: '$createdAt',
+                    },
+                    updatedAt: {
+                        $first: '$updatedAt',
+                    },
+                    adresse: {
+                        $push: {
+                            numero: '$adresse.numero',
+                            nom: {
+                                $first: '$adresseData.nom',
+                            },
+                            denomination: {
+                                $first: '$adresseData.denomination',
+                            },
+                            quartier: {
+                                $first: '$adresseData.quartier',
+                            },
+                            cp: {
+                                $first: '$adresseData.cp',
+                            },
+                            localite: {
+                                $first: '$adresseData.localite',
+                            },
+                        },
+                    },
                 },
             },
         ];
@@ -80,7 +188,68 @@ const findOne = catchAsync(async (req, res) => {
         if (inCache) {
             return res.status(200).json(success(message, JSON.parse(inCache)));
         } else {
-            data = await collection.findOne({ _id: new ObjectId(id) });
+            const pipeline = [
+                {
+                    $match: {
+                        _id: new ObjectId(id),
+                    },
+                },
+                {
+                    $lookup: {
+                        from: 'rues',
+                        localField: 'adresse.rue',
+                        foreignField: '_id',
+                        as: 'adresseData',
+                    },
+                },
+                {
+                    $group: {
+                        _id: '$_id',
+                        demandeur: {
+                            $first: '$demandeur',
+                        },
+                        date: {
+                            $first: '$date',
+                        },
+                        adresse: {
+                            $push: {
+                                numero: '$adresse.numero',
+                                nom: {
+                                    $first: '$adresseData.nom',
+                                },
+                                denomination: {
+                                    $first: '$adresseData.denomination',
+                                },
+                                quartier: {
+                                    $first: '$adresseData.quartier',
+                                },
+                                cp: {
+                                    $first: '$adresseData.cp',
+                                },
+                                localite: {
+                                    $first: '$adresseData.localite',
+                                },
+                            },
+                        },
+                        mesures: {
+                            $first: '$mesures',
+                        },
+                        vehicule: {
+                            $first: '$vehicule',
+                        },
+                        googlemap: {
+                            $first: '$googlemap',
+                        },
+                        createdAt: {
+                            $first: '$createdAt',
+                        },
+                        updatedAt: {
+                            $first: '$updatedAt',
+                        },
+                    },
+                },
+            ];
+            data = await collection.aggregate(pipeline).toArray();
             redisClient.set(
                 `habitation:${id}`,
                 JSON.stringify(data),
@@ -118,6 +287,7 @@ const create = catchAsync(async (req, res) => {
     }
     try {
         const { ...rest } = value;
+        value.adresse.rue = new ObjectId(value.adresse.rue);
         const createdAt = new Date();
         const updatedAt = new Date();
         const data = await collection
@@ -153,6 +323,7 @@ const updateOne = catchAsync(async (req, res) => {
 
     try {
         const updatedAt = new Date();
+        value.adresse.rue = new ObjectId(value.adresse.rue);
         const { modifiedCount } = await collection.updateOne(
             { _id: ObjectId(id) },
             { $set: { ...value, updatedAt } },

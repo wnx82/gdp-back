@@ -82,12 +82,10 @@ const create = catchAsync(async (req, res) => {
             return new ObjectId(p);
         });
         value.agents = agentsID;
-
         const quartiersID = value.quartiers.map(p => {
             return new ObjectId(p);
         });
         value.quartiers = quartiersID;
-
         const missionsID = value.missions.map(p => {
             return new ObjectId(p);
         });
