@@ -199,7 +199,7 @@ const updateOne = catchAsync(async (req, res) => {
         // Vérifier si l'ID de la rue existe dans la collection
         const rue = await collection.findOne({ _id: ObjectId(id) });
         if (!rue) {
-            return res.status(404).json({ message: 'ID Rue not found' });
+            return res.status(404).json({ message: 'ID Street not found' });
         }
 
         const updatedAt = new Date();
@@ -209,7 +209,7 @@ const updateOne = catchAsync(async (req, res) => {
             { returnDocument: 'after' }
         );
         if (modifiedCount === 0) {
-            return res.status(404).json({ message: 'Rue not modified' });
+            return res.status(404).json({ message: 'Street not modified' });
         }
         res.status(200).json(success(message, value));
         redisClient.del('rues:all');
