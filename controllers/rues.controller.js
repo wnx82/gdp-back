@@ -30,7 +30,6 @@ const schema = Joi.object({
         .required(),
     idTronconCentral: Joi.string().allow(null).optional().empty(''),
 });
-
 const findAll = catchAsync(async (req, res, next) => {
     let { localite } = req.query;
     let { cp } = req.query;
@@ -123,7 +122,6 @@ const findAll = catchAsync(async (req, res, next) => {
     }
     return;
 });
-
 const findOne = catchAsync(async (req, res) => {
     try {
         const message = `📄 Détails de la rue`;
@@ -150,7 +148,6 @@ const findOne = catchAsync(async (req, res) => {
         console.error(e);
     }
 });
-
 const create = catchAsync(async (req, res) => {
     const message = `✏️ Création d'une rue`;
 
@@ -199,7 +196,7 @@ const updateOne = catchAsync(async (req, res) => {
         // Vérifier si l'ID de la rue existe dans la collection
         const rue = await collection.findOne({ _id: ObjectId(id) });
         if (!rue) {
-            return res.status(404).json({ message: 'ID Rue not found' });
+            return res.status(404).json({ message: 'ID Street not found' });
         }
 
         const updatedAt = new Date();
@@ -209,7 +206,7 @@ const updateOne = catchAsync(async (req, res) => {
             { returnDocument: 'after' }
         );
         if (modifiedCount === 0) {
-            return res.status(404).json({ message: 'Rue not modified' });
+            return res.status(404).json({ message: 'Street not modified' });
         }
         res.status(200).json(success(message, value));
         redisClient.del('rues:all');
@@ -219,7 +216,6 @@ const updateOne = catchAsync(async (req, res) => {
         res.status(500).json({ message: 'Server error' });
     }
 });
-
 const deleteOne = catchAsync(async (req, res) => {
     const { id } = req.params;
     const { force } = req.query;
