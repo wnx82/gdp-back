@@ -7,12 +7,13 @@ module.exports = {
                 _id: {},
                 adresse: {
                     bsonType: 'object',
-                    required: ['rue', 'cp', 'localite'],
-                    description: ' must be a object and is required',
+                    required: ['rue'],
                     properties: {
-                        rue: { bsonType: 'string' },
-                        cp: { bsonType: 'string' },
-                        localite: { bsonType: 'string' },
+                        rue: {
+                            bsonType: 'objectId',
+                            description: 'must be an objectId and is required',
+                        },
+                        numero: { bsonType: 'string' },
                     },
                 },
                 demandeur: {

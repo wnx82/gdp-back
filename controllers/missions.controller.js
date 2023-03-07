@@ -3,7 +3,7 @@
 // const dbClient = require('../utils/').dbClient;
 const { dbClient, redisClient } = require('../utils');
 const { catchAsync, success } = require('../helpers');
-const database = dbClient.db(process.env.MONGODB_DATABASE);
+const database = dbClient.db(process.env.MONGO_DB_DATABASE);
 const collection = database.collection('missions');
 const Joi = require('joi');
 const ObjectId = require('mongodb').ObjectId;

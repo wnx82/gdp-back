@@ -43,20 +43,22 @@ module.exports = {
 
                 adresse: {
                     bsonType: 'object',
-                    required: ['rue', 'cp', 'localite'],
+                    required: ['rue'],
                     properties: {
-                        rue: { bsonType: 'string' },
-                        cp: { bsonType: 'string' },
-                        localite: { bsonType: 'string' },
+                        rue: {
+                            bsonType: 'objectId',
+                            description: 'must be an objectId and is required',
+                        },
+                        numero: { bsonType: 'string' },
                     },
                 },
                 picture: {
                     bsonType: 'string',
-                    description: 'must be a string and is required',
+                    description: 'must be a string and is not required',
                 },
                 formations: {
                     bsonType: 'array',
-                    description: 'must be an array and is required',
+                    description: 'must be an array and is not required',
                 },
             },
         },

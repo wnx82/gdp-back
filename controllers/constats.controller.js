@@ -37,11 +37,10 @@ const schema = Joi.object({
                 localite: Joi.string(),
             }),
         }),
-    adresse: Joi.object().allow(null).keys({
-        rue: Joi.string(),
-        cp: Joi.string(),
-        localite: Joi.string(),
-    }),
+    adresse: {
+        rue: Joi.string().regex(/^[0-9a-fA-F]{24}$/),
+        numero: Joi.string().allow(null).optional().empty(''),
+    },
     geolocation: Joi.object().allow(null).keys({
         latitude: Joi.string(),
         longitude: Joi.string(),
@@ -95,35 +94,35 @@ const findAll = catchAsync(async (req, res) => {
         }
         return;
     }
-    if (rue) {
-        const message = `📄 Liste des constats avec la rue ${rue}`;
-        const inCache = await redisClient.get(`constats:rue:${rue}`);
-        if (inCache) {
-            res.status(200).json(success(message, JSON.parse(inCache)));
-        } else {
-            const data = await collection
-                .aggregate([
-                    {
-                        $match: {
-                            'adresse.rue': {
-                                $regex: rue,
-                                $options: 'i', // options pour faire une recherche insensible à la casse
-                            },
-                        },
-                    },
-                ])
-                .toArray();
+    // if (rue) {
+    //     const message = `📄 Liste des constats avec la rue ${rue}`;
+    //     const inCache = await redisClient.get(`constats:rue:${rue}`);
+    //     if (inCache) {
+    //         res.status(200).json(success(message, JSON.parse(inCache)));
+    //     } else {
+    //         const data = await collection
+    //             .aggregate([
+    //                 {
+    //                     $match: {
+    //                         'adresse.rue': {
+    //                             $regex: rue,
+    //                             $options: 'i', // options pour faire une recherche insensible à la casse
+    //                         },
+    //                     },
+    //                 },
+    //             ])
+    //             .toArray();
 
-            redisClient.set(
-                `constats:rue:${rue}`,
-                JSON.stringify(data),
-                'EX',
-                600
-            );
-            res.status(200).json(success(message, data));
-        }
-        return;
-    }
+    //         redisClient.set(
+    //             `constats:rue:${rue}`,
+    //             JSON.stringify(data),
+    //             'EX',
+    //             600
+    //         );
+    //         res.status(200).json(success(message, data));
+    //     }
+    //     return;
+    // }
     if (localite) {
         const message = `📄 Liste des constats avec la localité ${localite}`;
         const inCache = await redisClient.get(`constats:loc:${localite}`);

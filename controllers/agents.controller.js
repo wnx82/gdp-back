@@ -3,39 +3,127 @@
 // const dbClient = require('../utils/').dbClient;
 const { dbClient, redisClient } = require('../utils/');
 const { catchAsync, success } = require('../helpers/');
-const database = dbClient.db(process.env.MONGODB_DATABASE);
+const database = dbClient.db(process.env.MONGO_DB_DATABASE);
 const collection = database.collection('agents');
 const bcrypt = require('bcrypt');
 const moment = require('moment');
 const Joi = require('joi');
 const ObjectId = require('mongodb').ObjectId;
 
-// const findAll = catchAsync(async (req, res) => {
-//     const message = '📄 Liste des agents';
-//     const inCache = await redisClient.get('agents:all');
-//     if (inCache) {
-//         return res.status(200).json(success(message, JSON.parse(inCache)));
-//     } else {
-//         const pipeline = [
-//             {
-//                 $project: {
-//                     password: 0,
-//                 },
-//             },
-//         ];
-//         const data = await collection.aggregate(pipeline).toArray();
-//         redisClient.set('agents:all', JSON.stringify(data), 'EX', 600);
-//         res.status(200).json(success(message, data));
-//     }
-// });
-
+const schema = Joi.object({
+    email: Joi.string().email().required().max(200),
+    password: Joi.string().required(),
+    userAccess: Joi.number().integer().min(0).max(10).required(),
+    matricule: Joi.string().required(),
+    firstname: Joi.string().max(25).allow(null).optional().empty(''),
+    lastname: Joi.string().allow(null).optional().empty(''),
+    birthday: Joi.date().allow(null).optional().empty(''),
+    tel: Joi.string().max(30).allow(null).optional().empty(''),
+    adresse: {
+        rue: Joi.string().regex(/^[0-9a-fA-F]{24}$/),
+        numero: Joi.string().allow(null).optional().empty(''),
+    },
+    picture: Joi.string().allow(null).optional().empty(''),
+    formations: Joi.array(),
+});
 const findAll = catchAsync(async (req, res) => {
     const message = '📄 Liste des agents';
     const inCache = await redisClient.get('agents:all');
     if (inCache) {
         return res.status(200).json(success(message, JSON.parse(inCache)));
     } else {
-        const data = await collection.find({}).toArray();
+        const pipeline = [
+            {
+                $project: {
+                    password: 0,
+                },
+            },
+            {
+                $lookup: {
+                    from: 'rues',
+                    localField: 'adresse.rue',
+                    foreignField: '_id',
+                    as: 'adresseData',
+                },
+            },
+            {
+                $project: {
+                    _id: 1,
+                    email: 1,
+                    matricule: 1,
+                    firstname: 1,
+                    lastname: 1,
+                    birthday: 1,
+                    tel: 1,
+                    picture: 1,
+                    createdAt: 1,
+                    updatedAt: 1,
+                    formations: 1,
+                    'adresse.numero': 1,
+                    'adresseData.nom': 1,
+                    'adresseData.denomination': 1,
+                    'adresseData.quartier': 1,
+                    'adresseData.cp': 1,
+                    'adresseData.localite': 1,
+                },
+            },
+            {
+                $group: {
+                    _id: '$_id',
+                    email: {
+                        $first: '$email',
+                    },
+                    matricule: {
+                        $first: '$matricule',
+                    },
+                    firstname: {
+                        $first: '$firstname',
+                    },
+                    lastname: {
+                        $first: '$lastname',
+                    },
+                    birthday: {
+                        $first: '$birthday',
+                    },
+                    tel: {
+                        $first: '$tel',
+                    },
+                    picture: {
+                        $first: '$picture',
+                    },
+                    formations: {
+                        $first: '$formations',
+                    },
+                    createdAt: {
+                        $first: '$createdAt',
+                    },
+                    updatedAt: {
+                        $first: '$updatedAt',
+                    },
+                    adresse: {
+                        $push: {
+                            numero: '$adresse.numero',
+                            nom: {
+                                $first: '$adresseData.nom',
+                            },
+                            denomination: {
+                                $first: '$adresseData.denomination',
+                            },
+                            quartier: {
+                                $first: '$adresseData.quartier',
+                            },
+                            cp: {
+                                $first: '$adresseData.cp',
+                            },
+                            localite: {
+                                $first: '$adresseData.localite',
+                            },
+                        },
+                    },
+                },
+            },
+        ];
+        const data = await collection.aggregate(pipeline).toArray();
         redisClient.set('agents:all', JSON.stringify(data), 'EX', 600);
         res.status(200).json(success(message, data));
     }
@@ -45,12 +133,108 @@ const findOne = catchAsync(async (req, res) => {
     try {
         const message = `📄 Détails de l'agent`;
         const { id } = req.params;
-        let data = null;
+        let data;
         const inCache = await redisClient.get(`agent:${id}`);
         if (inCache) {
             return res.status(200).json(success(message, JSON.parse(inCache)));
         } else {
-            data = await collection.findOne({ _id: new ObjectId(id) });
+            const pipeline = [
+                {
+                    $match: {
+                        _id: new ObjectId(id),
+                    },
+                },
+                {
+                    $project: {
+                        password: 0,
+                    },
+                },
+                {
+                    $lookup: {
+                        from: 'rues',
+                        localField: 'adresse.rue',
+                        foreignField: '_id',
+                        as: 'adresseData',
+                    },
+                },
+                {
+                    $project: {
+                        _id: 1,
+                        email: 1,
+                        matricule: 1,
+                        firstname: 1,
+                        lastname: 1,
+                        birthday: 1,
+                        tel: 1,
+                        picture: 1,
+                        createdAt: 1,
+                        updatedAt: 1,
+                        formations: 1,
+                        'adresse.numero': 1,
+                        'adresseData.nom': 1,
+                        'adresseData.denomination': 1,
+                        'adresseData.quartier': 1,
+                        'adresseData.cp': 1,
+                        'adresseData.localite': 1,
+                    },
+                },
+                {
+                    $group: {
+                        _id: '$_id',
+                        email: {
+                            $first: '$email',
+                        },
+                        matricule: {
+                            $first: '$matricule',
+                        },
+                        firstname: {
+                            $first: '$firstname',
+                        },
+                        lastname: {
+                            $first: '$lastname',
+                        },
+                        birthday: {
+                            $first: '$birthday',
+                        },
+                        tel: {
+                            $first: '$tel',
+                        },
+                        picture: {
+                            $first: '$picture',
+                        },
+                        formations: {
+                            $first: '$formations',
+                        },
+                        createdAt: {
+                            $first: '$createdAt',
+                        },
+                        updatedAt: {
+                            $first: '$updatedAt',
+                        },
+                        adresse: {
+                            $push: {
+                                numero: '$adresse.numero',
+                                nom: {
+                                    $first: '$adresseData.nom',
+                                },
+                                denomination: {
+                                    $first: '$adresseData.denomination',
+                                },
+                                quartier: {
+                                    $first: '$adresseData.quartier',
+                                },
+                                cp: {
+                                    $first: '$adresseData.cp',
+                                },
+                                localite: {
+                                    $first: '$adresseData.localite',
+                                },
+                            },
+                        },
+                    },
+                },
+            ];
+            data = await collection.aggregate(pipeline).toArray();
             redisClient.set(`agent:${id}`, JSON.stringify(data), 'EX', 600);
         }
         if (!data) {
@@ -62,23 +246,6 @@ const findOne = catchAsync(async (req, res) => {
     } catch (e) {
         console.error(e);
     }
-});
-const schema = Joi.object({
-    email: Joi.string().email().required().max(200),
-    password: Joi.string().required(),
-    userAccess: Joi.number().integer().min(0).max(10).required(),
-    matricule: Joi.string().required(),
-    firstname: Joi.string().max(25).allow(null).optional().empty(''),
-    lastname: Joi.string().allow(null).optional().empty(''),
-    birthday: Joi.date().allow(null).optional().empty(''),
-    tel: Joi.string().max(30).allow(null).optional().empty(''),
-    adresse: {
-        rue: Joi.string().allow(null).optional().empty(''),
-        cp: Joi.string().allow(null).optional().empty(''),
-        localite: Joi.string().allow(null).optional().empty(''),
-    },
-    picture: Joi.string().allow(null).optional().empty(''),
-    formations: Joi.array(),
 });
 
 const create = catchAsync(async (req, res) => {

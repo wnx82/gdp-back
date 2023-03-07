@@ -5,9 +5,26 @@ const { dbClient, redisClient } = require('../utils');
 const { catchAsync, success } = require('../helpers');
 const database = dbClient.db(process.env.MONGO_DB_DATABASE);
 const collection = database.collection('habitations');
-const moment = require('moment');
 const Joi = require('joi');
 const ObjectId = require('mongodb').ObjectId;
+
+const schema = Joi.object({
+    adresse: {
+        rue: Joi.string().regex(/^[0-9a-fA-F]{24}$/),
+        numero: Joi.string().allow(null).optional().empty(''),
+    },
+    demandeur: {
+        nom: Joi.string().allow(null).optional().empty(''),
+        tel: Joi.string().allow(null).optional().empty(''),
+    },
+    date: {
+        debut: Joi.date().required(),
+        fin: Joi.date().greater(Joi.ref('debut')).required(),
+    },
+    mesures: Joi.array(),
+    vehicule: Joi.string().allow(null).optional().empty(''),
+    googlemap: Joi.string().allow(null).optional().empty(''),
+});
 
 const findAll = catchAsync(async (req, res) => {
     const message = '📄 Liste des habitations';
@@ -15,7 +32,17 @@ const findAll = catchAsync(async (req, res) => {
     if (inCache) {
         return res.status(200).json(success(message, JSON.parse(inCache)));
     } else {
-        const data = await collection.find({}).toArray();
+        const pipeline = [
+            {
+                $lookup: {
+                    from: 'rues',
+                    localField: 'adresse.rue',
+                    foreignField: '_id',
+                    as: 'adresseData',
+                },
+            },
+        ];
+        const data = await collection.aggregate(pipeline).toArray();
         redisClient.set('habitations:all', JSON.stringify(data), 'EX', 600);
         res.status(200).json(success(message, data));
     }
@@ -75,24 +102,7 @@ const findOne = catchAsync(async (req, res) => {
         console.error(e);
     }
 });
-const schema = Joi.object({
-    adresse: {
-        rue: Joi.string(),
-        cp: Joi.string(),
-        localite: Joi.string(),
-    },
-    demandeur: {
-        nom: Joi.string().allow(null).optional().empty(''),
-        tel: Joi.string().allow(null).optional().empty(''),
-    },
-    date: {
-        debut: Joi.date().required(),
-        fin: Joi.date().greater(Joi.ref('debut')).required(),
-    },
-    mesures: Joi.array(),
-    vehicule: Joi.string().allow(null).optional().empty(''),
-    googlemap: Joi.string().allow(null).optional().empty(''),
-});
+
 const create = catchAsync(async (req, res) => {
     const message = `✏️ Création d'une habitation`;
 
