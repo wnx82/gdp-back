@@ -33,11 +33,12 @@ const schema = Joi.object({
 const findAll = catchAsync(async (req, res, next) => {
     let { localite } = req.query;
     let { cp } = req.query;
-    let { adresse } = req.query; // Ajout d'un paramètre de recherche par adresse
+    let { nom } = req.query; // Ajout d'un paramètre de recherche par adresse
+    let { quartier } = req.query; // Ajout d'un paramètre de recherche par adresse
 
     if (localite) {
         localite = localite.charAt(0).toUpperCase() + localite.slice(1);
-        const message = `📄 Liste des rues de ${localite}`;
+        const message = `📄 Liste des rues de la localité de ${localite}`;
         const inCache = await redisClient.get(`rues:${localite}`);
         if (inCache) {
             res.status(200).json(success(message, JSON.parse(inCache)));
@@ -61,7 +62,6 @@ const findAll = catchAsync(async (req, res, next) => {
         }
         return;
     }
-
     if (cp) {
         const postalCode = parseInt(cp);
         const message = `📄 Liste des rues avec le code postal ${cp}`;
@@ -85,10 +85,9 @@ const findAll = catchAsync(async (req, res, next) => {
         }
         return;
     }
-
-    if (adresse) {
-        const message = `📄 Liste des rues avec l'adresse ${adresse}`;
-        const inCache = await redisClient.get(`rues:${adresse}`);
+    if (nom) {
+        const message = `📄 Liste des rues avec le nom ${nom}`;
+        const inCache = await redisClient.get(`rues:${nom}`);
         if (inCache) {
             res.status(200).json(success(message, JSON.parse(inCache)));
         } else {
@@ -96,8 +95,8 @@ const findAll = catchAsync(async (req, res, next) => {
                 .aggregate([
                     {
                         $match: {
-                            adresse: {
-                                $regex: adresse,
+                            nom: {
+                                $regex: nom,
                                 $options: 'i', // options pour faire une recherche insensible à la casse
                             },
                         },
@@ -105,12 +104,40 @@ const findAll = catchAsync(async (req, res, next) => {
                 ])
                 .toArray();
 
-            redisClient.set(`rues:${adresse}`, JSON.stringify(data), 'EX', 600);
+            redisClient.set(`rues:${nom}`, JSON.stringify(data), 'EX', 600);
             res.status(200).json(success(message, data));
         }
         return;
     }
+    if (quartier) {
+        const message = `📄 Liste des rues du quartier ${quartier}`;
+        const inCache = await redisClient.get(`rues:${quartier}`);
+        if (inCache) {
+            res.status(200).json(success(message, JSON.parse(inCache)));
+        } else {
+            const data = await collection
+                .aggregate([
+                    {
+                        $match: {
+                            quartier: {
+                                $regex: quartier,
+                                $options: 'i', // options pour faire une recherche insensible à la casse
+                            },
+                        },
+                    },
+                ])
+                .toArray();
 
+            redisClient.set(
+                `rues:${quartier}`,
+                JSON.stringify(data),
+                'EX',
+                600
+            );
+            res.status(200).json(success(message, data));
+        }
+        return;
+    }
     const message = '📄 Liste complète des rues';
     const inCache = await redisClient.get('rues:all');
     if (inCache) {
