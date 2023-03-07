@@ -213,6 +213,8 @@ const create = catchAsync(async (req, res) => {
         });
         value.agents = agentsID;
 
+        value.adresse.rue = new ObjectId(value.adresse.rue);
+
         const { ...rest } = value;
         const createdAt = new Date();
         const updatedAt = new Date();

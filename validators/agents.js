@@ -43,11 +43,11 @@ module.exports = {
 
                 adresse: {
                     bsonType: 'object',
-                    required: ['rue'],
                     properties: {
                         rue: {
                             bsonType: 'objectId',
-                            description: 'must be an objectId and is required',
+                            description:
+                                'must be an objectId and is not required',
                         },
                         numero: { bsonType: 'string' },
                     },

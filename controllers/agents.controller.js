@@ -277,7 +277,7 @@ const create = catchAsync(async (req, res) => {
         const existingUser = await collection.findOne({
             email,
         });
-
+        value.adresse.rue = new ObjectId(value.adresse.rue);
         if (existingUser) {
             return res.status(409).json({ message: 'Email already exists' });
         }
@@ -322,6 +322,7 @@ const updateOne = catchAsync(async (req, res) => {
         return res.status(400).json({ message: error.details[0].message });
     }
     try {
+        value.adresse.rue = new ObjectId(value.adresse.rue);
         const updatedAt = new Date();
         const { modifiedCount } = await collection.updateOne(
             { _id: ObjectId(id) },
