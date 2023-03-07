@@ -62,6 +62,13 @@ https://github.com/geo6/geocoder-php-spw-provider
 ### ✨ CRUD voitures
 ### ✨ CRUD horaires
 ### ✨ CRUD categories
+### ✨ Seed update
+### ✨ Send Rapport mail
+### ✨ CRUD Dailies update
+### ✨ CRUD Rapports update
+### ✨ status controller
+### ✨ query 
+
 
 
 

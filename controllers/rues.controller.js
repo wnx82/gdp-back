@@ -9,12 +9,26 @@ const Joi = require('joi');
 const ObjectId = require('mongodb').ObjectId;
 
 const schema = Joi.object({
-    adresse: Joi.string().allow(null).optional().empty(''),
+    nom: Joi.string().allow(null).optional().empty(''),
     denomination: Joi.string().allow(null).optional().empty(''),
+    quartier: Joi.string().allow(null).optional().empty(''),
     cp: Joi.number().allow(null).optional().empty(''),
     localite: Joi.string().allow(null).optional().empty(''),
     codeRue: Joi.string().allow(null).optional().empty(''),
     traductionNl: Joi.string().allow(null).optional().empty(''),
+    xMin: Joi.alternatives()
+        .try(Joi.string().empty(''), Joi.number())
+        .required(),
+    xMax: Joi.alternatives()
+        .try(Joi.string().empty(''), Joi.number())
+        .required(),
+    yMin: Joi.alternatives()
+        .try(Joi.string().empty(''), Joi.number())
+        .required(),
+    yMax: Joi.alternatives()
+        .try(Joi.string().empty(''), Joi.number())
+        .required(),
+    idTronconCentral: Joi.string().allow(null).optional().empty(''),
 });
 
 const findAll = catchAsync(async (req, res, next) => {
@@ -182,6 +196,12 @@ const updateOne = catchAsync(async (req, res) => {
     let updateValue = { ...value };
 
     try {
+        // Vérifier si l'ID de la rue existe dans la collection
+        const rue = await collection.findOne({ _id: ObjectId(id) });
+        if (!rue) {
+            return res.status(404).json({ message: 'ID Rue not found' });
+        }
+
         const updatedAt = new Date();
         const { modifiedCount } = await collection.findOneAndUpdate(
             { _id: ObjectId(id) },
@@ -189,7 +209,7 @@ const updateOne = catchAsync(async (req, res) => {
             { returnDocument: 'after' }
         );
         if (modifiedCount === 0) {
-            return res.status(404).json({ message: 'Constat not found' });
+            return res.status(404).json({ message: 'Rue not modified' });
         }
         res.status(200).json(success(message, value));
         redisClient.del('rues:all');
@@ -199,6 +219,7 @@ const updateOne = catchAsync(async (req, res) => {
         res.status(500).json({ message: 'Server error' });
     }
 });
+
 const deleteOne = catchAsync(async (req, res) => {
     const { id } = req.params;
     const { force } = req.query;
