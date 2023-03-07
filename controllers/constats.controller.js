@@ -56,112 +56,537 @@ const schema = Joi.object({
         .optional(),
 });
 
+// const findAll = catchAsync(async (req, res) => {
+//     let immatriculation = req.query.immatriculation;
+//     let rue = req.query.rue;
+//     let localite = req.query.localite;
+//     if (immatriculation) {
+//         const message = `📄 Liste des constats avec l'immatriculation ${immatriculation}`;
+//         const inCache = await redisClient.get(
+//             `constats:immat:${immatriculation}`
+//         );
+//         if (inCache) {
+//             res.status(200).json(success(message, JSON.parse(inCache)));
+//         } else {
+//             console.log(
+//                 `Executing query for immatriculation: ${immatriculation}`
+//             );
+//             const data = await collection
+//                 .aggregate([
+//                     {
+//                         $match: {
+//                             'vehicule.immatriculation': {
+//                                 $regex: immatriculation,
+//                                 $options: 'i', // options pour faire une recherche insensible à la casse
+//                             },
+//                         },
+//                     },
+//                 ])
+//                 .toArray();
+
+//             redisClient.set(
+//                 `constats:immat:${immatriculation}`,
+//                 JSON.stringify(data),
+//                 'EX',
+//                 600
+//             );
+//             res.status(200).json(success(message, data));
+//         }
+//         return;
+//     }
+//     if (rue) {
+//         const message = `📄 Liste des constats avec la rue ${rue}`;
+//         const inCache = await redisClient.get(`constats:rue:${rue}`);
+//         if (inCache) {
+//             res.status(200).json(success(message, JSON.parse(inCache)));
+//         } else {
+//             const data = await collection
+//                 .aggregate([
+//                     {
+//                         $lookup: {
+//                             from: 'rues',
+//                             localField: 'adresse.rue',
+//                             foreignField: '_id',
+//                             as: 'adresseData',
+//                         },
+//                     },
+//                     {
+//                         $lookup: {
+//                             from: 'agents',
+//                             localField: 'agents',
+//                             foreignField: '_id',
+//                             as: 'agentsData',
+//                         },
+//                     },
+//                     {
+//                         $group: {
+//                             _id: '$_id',
+//                             agents: {
+//                                 $first: '$agentsData.matricule',
+//                             },
+//                             date: {
+//                                 $first: '$date',
+//                             },
+//                             vehicule: {
+//                                 $first: '$vehicule',
+//                             },
+//                             personne: {
+//                                 $first: '$personne',
+//                             },
+//                             adresse: {
+//                                 $push: {
+//                                     numero: '$adresse.numero',
+//                                     nom: {
+//                                         $first: '$adresseData.nom',
+//                                     },
+//                                     denomination: {
+//                                         $first: '$adresseData.denomination',
+//                                     },
+//                                     quartier: {
+//                                         $first: '$adresseData.quartier',
+//                                     },
+//                                     cp: {
+//                                         $first: '$adresseData.cp',
+//                                     },
+//                                     localite: {
+//                                         $first: '$adresseData.localite',
+//                                     },
+//                                 },
+//                             },
+//                             geolocation: {
+//                                 $first: '$geolocation',
+//                             },
+//                             infractions: {
+//                                 $first: '$infractions',
+//                             },
+//                             pv: {
+//                                 $first: '$pv',
+//                             },
+//                             notes: {
+//                                 $first: '$notes',
+//                             },
+//                             annexes: {
+//                                 $first: '$annexes',
+//                             },
+//                             createdAt: {
+//                                 $first: '$createdAt',
+//                             },
+//                             updatedAt: {
+//                                 $first: '$updatedAt',
+//                             },
+//                         },
+//                     },
+//                     {
+//                         $match: {
+//                             'adresse.nom': {
+//                                 $regex: rue,
+//                                 $options: 'i', // options pour faire une recherche insensible à la casse
+//                             },
+//                         },
+//                     },
+//                 ])
+//                 .toArray();
+
+//             redisClient.set(
+//                 `constats:rue:${rue}`,
+//                 JSON.stringify(data),
+//                 'EX',
+//                 600
+//             );
+//             res.status(200).json(success(message, data));
+//         }
+//         return;
+//     }
+//     if (localite) {
+//         const message = `📄 Liste des constats avec la localité ${localite}`;
+//         const inCache = await redisClient.get(`constats:loc:${localite}`);
+//         if (inCache) {
+//             res.status(200).json(success(message, JSON.parse(inCache)));
+//         } else {
+//             const data = await collection
+//                 .aggregate([
+//                     {
+//                         $lookup: {
+//                             from: 'rues',
+//                             localField: 'adresse.rue',
+//                             foreignField: '_id',
+//                             as: 'adresseData',
+//                         },
+//                     },
+//                     {
+//                         $lookup: {
+//                             from: 'agents',
+//                             localField: 'agents',
+//                             foreignField: '_id',
+//                             as: 'agentsData',
+//                         },
+//                     },
+//                     {
+//                         $group: {
+//                             _id: '$_id',
+//                             agents: {
+//                                 $first: '$agentsData.matricule',
+//                             },
+//                             date: {
+//                                 $first: '$date',
+//                             },
+//                             vehicule: {
+//                                 $first: '$vehicule',
+//                             },
+//                             personne: {
+//                                 $first: '$personne',
+//                             },
+//                             adresse: {
+//                                 $push: {
+//                                     numero: '$adresse.numero',
+//                                     nom: {
+//                                         $first: '$adresseData.nom',
+//                                     },
+//                                     denomination: {
+//                                         $first: '$adresseData.denomination',
+//                                     },
+//                                     quartier: {
+//                                         $first: '$adresseData.quartier',
+//                                     },
+//                                     cp: {
+//                                         $first: '$adresseData.cp',
+//                                     },
+//                                     localite: {
+//                                         $first: '$adresseData.localite',
+//                                     },
+//                                 },
+//                             },
+//                             geolocation: {
+//                                 $first: '$geolocation',
+//                             },
+//                             infractions: {
+//                                 $first: '$infractions',
+//                             },
+//                             pv: {
+//                                 $first: '$pv',
+//                             },
+//                             notes: {
+//                                 $first: '$notes',
+//                             },
+//                             annexes: {
+//                                 $first: '$annexes',
+//                             },
+//                             createdAt: {
+//                                 $first: '$createdAt',
+//                             },
+//                             updatedAt: {
+//                                 $first: '$updatedAt',
+//                             },
+//                         },
+//                     },
+//                     {
+//                         $match: {
+//                             'adresse.localite': {
+//                                 $regex: localite,
+//                                 $options: 'i', // options pour faire une recherche insensible à la casse
+//                             },
+//                         },
+//                     },
+//                 ])
+//                 .toArray();
+
+//             redisClient.set(
+//                 `constats:loc:${localite}`,
+//                 JSON.stringify(data),
+//                 'EX',
+//                 600
+//             );
+//             res.status(200).json(success(message, data));
+//         }
+//         return;
+//     }
+//     const message = '📄 Liste complète des constats';
+//     const inCache = await redisClient.get('constats:all');
+//     if (inCache) {
+//         res.status(200).json(success(message, JSON.parse(inCache)));
+//     } else {
+//         const pipeline = [
+//             {
+//                 $lookup: {
+//                     from: 'rues',
+//                     localField: 'adresse.rue',
+//                     foreignField: '_id',
+//                     as: 'adresseData',
+//                 },
+//             },
+//             {
+//                 $lookup: {
+//                     from: 'agents',
+//                     localField: 'agents',
+//                     foreignField: '_id',
+//                     as: 'agentsData',
+//                 },
+//             },
+//             {
+//                 $group: {
+//                     _id: '$_id',
+//                     agents: {
+//                         $first: '$agentsData.matricule',
+//                     },
+//                     date: {
+//                         $first: '$date',
+//                     },
+//                     vehicule: {
+//                         $first: '$vehicule',
+//                     },
+//                     personne: {
+//                         $first: '$personne',
+//                     },
+//                     adresse: {
+//                         $push: {
+//                             numero: '$adresse.numero',
+//                             nom: {
+//                                 $first: '$adresseData.nom',
+//                             },
+//                             denomination: {
+//                                 $first: '$adresseData.denomination',
+//                             },
+//                             quartier: {
+//                                 $first: '$adresseData.quartier',
+//                             },
+//                             cp: {
+//                                 $first: '$adresseData.cp',
+//                             },
+//                             localite: {
+//                                 $first: '$adresseData.localite',
+//                             },
+//                         },
+//                     },
+//                     geolocation: {
+//                         $first: '$geolocation',
+//                     },
+//                     infractions: {
+//                         $first: '$infractions',
+//                     },
+//                     pv: {
+//                         $first: '$pv',
+//                     },
+//                     notes: {
+//                         $first: '$notes',
+//                     },
+//                     annexes: {
+//                         $first: '$annexes',
+//                     },
+//                     createdAt: {
+//                         $first: '$createdAt',
+//                     },
+//                     updatedAt: {
+//                         $first: '$updatedAt',
+//                     },
+//                 },
+//             },
+//         ];
+//         const data = await collection.aggregate(pipeline).toArray();
+//         redisClient.set('constats:all', JSON.stringify(data), 'EX', 600);
+//         res.status(200).json(success(message, data));
+//     }
+//     return;
+// });
+const pipeline = [
+    {
+        $lookup: {
+            from: 'rues',
+            localField: 'adresse.rue',
+            foreignField: '_id',
+            as: 'adresseData',
+        },
+    },
+    {
+        $lookup: {
+            from: 'agents',
+            localField: 'agents',
+            foreignField: '_id',
+            as: 'agentsData',
+        },
+    },
+    {
+        $group: {
+            _id: '$_id',
+            agents: {
+                $first: '$agentsData.matricule',
+            },
+            date: {
+                $first: '$date',
+            },
+            vehicule: {
+                $first: '$vehicule',
+            },
+            personne: {
+                $first: '$personne',
+            },
+            adresse: {
+                $push: {
+                    numero: '$adresse.numero',
+                    nom: {
+                        $first: '$adresseData.nom',
+                    },
+                    denomination: {
+                        $first: '$adresseData.denomination',
+                    },
+                    quartier: {
+                        $first: '$adresseData.quartier',
+                    },
+                    cp: {
+                        $first: '$adresseData.cp',
+                    },
+                    localite: {
+                        $first: '$adresseData.localite',
+                    },
+                },
+            },
+            geolocation: {
+                $first: '$geolocation',
+            },
+            infractions: {
+                $first: '$infractions',
+            },
+            pv: {
+                $first: '$pv',
+            },
+            notes: {
+                $first: '$notes',
+            },
+            annexes: {
+                $first: '$annexes',
+            },
+            createdAt: {
+                $first: '$createdAt',
+            },
+            updatedAt: {
+                $first: '$updatedAt',
+            },
+        },
+    },
+];
+
 const findAll = catchAsync(async (req, res) => {
-    let immatriculation = req.query.immatriculation;
-    let rue = req.query.rue;
-    let localite = req.query.localite;
-    if (immatriculation) {
-        const message = `📄 Liste des constats avec l'immatriculation ${immatriculation}`;
-        const inCache = await redisClient.get(
-            `constats:immat:${immatriculation}`
-        );
+    const { immatriculation, rue, localite } = req.query;
+
+    const immatriculationPromise = immatriculation
+        ? (async () => {
+              const message = `📄 Liste des constats avec l'immatriculation ${immatriculation}`;
+              const inCache = await redisClient.get(
+                  `constats:immat:${immatriculation}`
+              );
+              if (inCache) {
+                  res.status(200).json(success(message, JSON.parse(inCache)));
+                  return;
+              }
+              const immatriculationPipeline = [...pipeline];
+              immatriculationPipeline.unshift({
+                  $match: {
+                      'vehicule.immatriculation': {
+                          $regex: immatriculation,
+                          $options: 'i',
+                      },
+                  },
+              });
+              const data = await collection
+                  .aggregate(immatriculationPipeline)
+                  .toArray();
+              await redisClient
+                  .multi()
+                  .set(
+                      `constats:immat:${immatriculation}`,
+                      JSON.stringify(data),
+                      'EX',
+                      600
+                  )
+                  .exec();
+              res.status(200).json(success(message, data));
+          })()
+        : null;
+
+    const ruePromise = rue
+        ? (async () => {
+              const message = `📄 Liste des constats avec la rue ${rue}`;
+              const inCache = await redisClient.get(`constats:rue:${rue}`);
+              if (inCache) {
+                  res.status(200).json(success(message, JSON.parse(inCache)));
+                  return;
+              }
+              const ruePipeline = [
+                  ...pipeline,
+                  {
+                      $match: {
+                          'adresse.nom': {
+                              $regex: rue,
+                              $options: 'i',
+                          },
+                      },
+                  },
+              ];
+              const data = await collection.aggregate(ruePipeline).toArray();
+
+              await redisClient
+                  .multi()
+                  .set(`constats:rue:${rue}`, JSON.stringify(data), 'EX', 600)
+                  .exec();
+              res.status(200).json(success(message, data));
+          })()
+        : null;
+
+    const localitePromise = localite
+        ? (async () => {
+              const message = `📄 Liste des constats avec la localité ${localite}`;
+              const inCache = await redisClient.get(`constats:loc:${localite}`);
+              if (inCache) {
+                  res.status(200).json(success(message, JSON.parse(inCache)));
+                  return;
+              }
+              const localitePipeline = [
+                  ...pipeline,
+                  {
+                      $match: {
+                          'adresse.localite': {
+                              $regex: localite,
+                              $options: 'i',
+                          },
+                      },
+                  },
+              ];
+              const data = await collection
+                  .aggregate(localitePipeline)
+                  .toArray();
+              await redisClient
+                  .multi()
+                  .set(
+                      `constats:loc:${localite}`,
+                      JSON.stringify(data),
+                      'EX',
+                      600
+                  )
+                  .exec();
+              res.status(200).json(success(message, data));
+          })()
+        : null;
+
+    const [immatriculationResult, rueResult, localiteResult] =
+        await Promise.all([
+            immatriculationPromise,
+            ruePromise,
+            localitePromise,
+        ]);
+
+    if (!immatriculation && !rue && !localite) {
+        const message = '📄 Liste complète des constats';
+        const inCache = await redisClient.get('constats:all');
         if (inCache) {
             res.status(200).json(success(message, JSON.parse(inCache)));
-        } else {
-            console.log(
-                `Executing query for immatriculation: ${immatriculation}`
-            );
-            const data = await collection
-                .aggregate([
-                    {
-                        $match: {
-                            'vehicule.immatriculation': {
-                                $regex: immatriculation,
-                                $options: 'i', // options pour faire une recherche insensible à la casse
-                            },
-                        },
-                    },
-                ])
-                .toArray();
-
-            redisClient.set(
-                `constats:immat:${immatriculation}`,
-                JSON.stringify(data),
-                'EX',
-                600
-            );
-            res.status(200).json(success(message, data));
+            return;
         }
-        return;
-    }
-    // if (rue) {
-    //     const message = `📄 Liste des constats avec la rue ${rue}`;
-    //     const inCache = await redisClient.get(`constats:rue:${rue}`);
-    //     if (inCache) {
-    //         res.status(200).json(success(message, JSON.parse(inCache)));
-    //     } else {
-    //         const data = await collection
-    //             .aggregate([
-    //                 {
-    //                     $match: {
-    //                         'adresse.rue': {
-    //                             $regex: rue,
-    //                             $options: 'i', // options pour faire une recherche insensible à la casse
-    //                         },
-    //                     },
-    //                 },
-    //             ])
-    //             .toArray();
-
-    //         redisClient.set(
-    //             `constats:rue:${rue}`,
-    //             JSON.stringify(data),
-    //             'EX',
-    //             600
-    //         );
-    //         res.status(200).json(success(message, data));
-    //     }
-    //     return;
-    // }
-    if (localite) {
-        const message = `📄 Liste des constats avec la localité ${localite}`;
-        const inCache = await redisClient.get(`constats:loc:${localite}`);
-        if (inCache) {
-            res.status(200).json(success(message, JSON.parse(inCache)));
-        } else {
-            const data = await collection
-                .aggregate([
-                    {
-                        $match: {
-                            'adresse.localite': {
-                                $regex: localite,
-                                $options: 'i', // options pour faire une recherche insensible à la casse
-                            },
-                        },
-                    },
-                ])
-                .toArray();
-
-            redisClient.set(
-                `constats:loc:${localite}`,
-                JSON.stringify(data),
-                'EX',
-                600
-            );
-            res.status(200).json(success(message, data));
-        }
-        return;
-    }
-    const message = '📄 Liste complète des constats';
-    const inCache = await redisClient.get('constats:all');
-    if (inCache) {
-        res.status(200).json(success(message, JSON.parse(inCache)));
-    } else {
-        const data = await collection.find({}).toArray();
-        redisClient.set('constats:all', JSON.stringify(data), 'EX', 600);
+        const data = await collection.aggregate(pipeline).toArray();
+        await redisClient
+            .multi()
+            .set('constats:all', JSON.stringify(data), 'EX', 600)
+            .exec();
         res.status(200).json(success(message, data));
     }
-    return;
 });
 
 const findOne = catchAsync(async (req, res) => {
@@ -174,7 +599,88 @@ const findOne = catchAsync(async (req, res) => {
         if (inCache) {
             return res.status(200).json(success(message, JSON.parse(inCache)));
         } else {
-            data = await collection.findOne({ _id: new ObjectId(id) });
+            const pipeline = [
+                {
+                    $match: {
+                        _id: new ObjectId(id),
+                    },
+                },
+                {
+                    $lookup: {
+                        from: 'rues',
+                        localField: 'adresse.rue',
+                        foreignField: '_id',
+                        as: 'adresseData',
+                    },
+                },
+                {
+                    $lookup: {
+                        from: 'agents',
+                        localField: 'agents',
+                        foreignField: '_id',
+                        as: 'agentsData',
+                    },
+                },
+                {
+                    $group: {
+                        _id: '$_id',
+                        agents: {
+                            $first: '$agentsData.matricule',
+                        },
+                        date: {
+                            $first: '$date',
+                        },
+                        vehicule: {
+                            $first: '$vehicule',
+                        },
+                        personne: {
+                            $first: '$personne',
+                        },
+                        adresse: {
+                            $push: {
+                                numero: '$adresse.numero',
+                                nom: {
+                                    $first: '$adresseData.nom',
+                                },
+                                denomination: {
+                                    $first: '$adresseData.denomination',
+                                },
+                                quartier: {
+                                    $first: '$adresseData.quartier',
+                                },
+                                cp: {
+                                    $first: '$adresseData.cp',
+                                },
+                                localite: {
+                                    $first: '$adresseData.localite',
+                                },
+                            },
+                        },
+                        geolocation: {
+                            $first: '$geolocation',
+                        },
+                        infractions: {
+                            $first: '$infractions',
+                        },
+                        pv: {
+                            $first: '$pv',
+                        },
+                        notes: {
+                            $first: '$notes',
+                        },
+                        annexes: {
+                            $first: '$annexes',
+                        },
+                        createdAt: {
+                            $first: '$createdAt',
+                        },
+                        updatedAt: {
+                            $first: '$updatedAt',
+                        },
+                    },
+                },
+            ];
+            data = await collection.aggregate(pipeline).toArray();
             redisClient.set(`constat:${id}`, JSON.stringify(data), 'EX', 600);
         }
 
@@ -212,9 +718,7 @@ const create = catchAsync(async (req, res) => {
             return new ObjectId(p);
         });
         value.agents = agentsID;
-
         value.adresse.rue = new ObjectId(value.adresse.rue);
-
         const { ...rest } = value;
         const createdAt = new Date();
         const updatedAt = new Date();
@@ -242,6 +746,16 @@ const updateOne = catchAsync(async (req, res) => {
     if (!id) {
         return res.status(400).json({ message: 'No id provided' });
     }
+    try {
+        const constat = await collection.findOne({ _id: ObjectId(id) });
+        if (!constat) {
+            return res.status(404).json({ message: 'Constat not found' });
+        }
+    } catch (err) {
+        console.log(err);
+        return res.status(500).json({ message: 'Server error' });
+    }
+
     const message = `📝 Mise à jour du constat ${id}`;
     const { body } = req;
     const { value, error } = schema.validate(body);
@@ -259,6 +773,7 @@ const updateOne = catchAsync(async (req, res) => {
     }
 
     try {
+        value.adresse.rue = new ObjectId(value.adresse.rue);
         const updatedAt = new Date();
         const { modifiedCount } = await collection.findOneAndUpdate(
             { _id: ObjectId(id) },

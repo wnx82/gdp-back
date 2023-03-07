@@ -9,11 +9,21 @@ const bodyParser = require('body-parser');
 const prettier = require('prettier');
 const morgan = require('morgan');
 const fs = require('fs');
-
+const { dbClient, redisClient } = require('./utils/');
 const accessLogStream = fs.createWriteStream(
     path.join(__dirname, 'access.log'),
     { flags: 'a' }
 );
+
+const flushCache = async (req, res, next) => {
+    try {
+        await redisClient.flushall();
+        res.status(200).send('Cache Redis vidé avec succès');
+    } catch (err) {
+        console.error(err);
+        next(err);
+    }
+};
 
 require('./passport');
 var app = express();
@@ -34,7 +44,7 @@ var quartiersRouter = require('./routes/quartiers');
 var missionsRouter = require('./routes/missions');
 var validationsRouter = require('./routes/validations');
 var vehiculesRouter = require('./routes/vehicules');
-
+app.post('/flushall', flushCache);
 app.post('login', async (req, res) => {
     res.json({ ok: 'ok' });
 });

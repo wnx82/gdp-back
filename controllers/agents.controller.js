@@ -311,8 +311,19 @@ const updateOne = catchAsync(async (req, res) => {
     if (!id) {
         return res.status(400).json({ message: 'No id provided' });
     }
-    const message = `📝 Mise à jour de l'agent ${id}`;
 
+    // add this block to check if the agent with the given ID exists
+    try {
+        const agent = await collection.findOne({ _id: ObjectId(id) });
+        if (!agent) {
+            return res.status(404).json({ message: 'Agent not found' });
+        }
+    } catch (err) {
+        console.log(err);
+        return res.status(500).json({ message: 'Server error' });
+    }
+
+    const message = `📝 Mise à jour de l'agent ${id}`;
     const { body } = req;
     if (!body.email) {
         return res.status(400).json({ message: 'Email field is required' });

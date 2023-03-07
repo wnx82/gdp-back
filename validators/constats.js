@@ -51,7 +51,6 @@ module.exports = {
                 },
                 adresse: {
                     bsonType: 'object',
-                    required: ['rue'],
                     properties: {
                         rue: {
                             bsonType: 'objectId',
