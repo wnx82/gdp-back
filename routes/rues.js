@@ -10,6 +10,5 @@ router.get('/:id', validateId, controller.findOne);
 router.post('/', controller.create);
 router.patch('/:id', validateId, controller.updateOne);
 router.delete('/:id', validateId, controller.deleteOne);
-router.get('/localite/:localite', controller.localite);
 
 module.exports = router;

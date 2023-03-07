@@ -18,36 +18,41 @@ const schema = Joi.object({
 });
 
 const findAll = catchAsync(async (req, res) => {
-    const message = '📄 Liste des rues';
-    const inCache = await redisClient.get('rues:all');
-    if (inCache) {
-        return res.status(200).json(success(message, JSON.parse(inCache)));
-    } else {
-        const data = await collection.find({}).toArray();
-        redisClient.set('rues:all', JSON.stringify(data), 'EX', 600);
-        res.status(200).json(success(message, data));
-    }
-});
-
-const localite = catchAsync(async (req, res) => {
-    let localite = req.params.localite;
-    localite = localite.charAt(0).toUpperCase() + localite.slice(1);
-    const message = `📄 Liste des rues de ${localite}`;
-    const inCache = await redisClient.get(`rues:${localite}`);
-    if (inCache) {
-        return res.status(200).json(success(message, JSON.parse(inCache)));
-    } else {
-        const data = await collection
-            .aggregate([
-                {
-                    $match: {
-                        localite: localite,
+    let { localite } = req.query;
+    if (localite) {
+        localite = localite.charAt(0).toUpperCase() + localite.slice(1);
+        const message = `📄 Liste des rues de ${localite}`;
+        const inCache = await redisClient.get(`rues:${localite}`);
+        if (inCache) {
+            return res.status(200).json(success(message, JSON.parse(inCache)));
+        } else {
+            const data = await collection
+                .aggregate([
+                    {
+                        $match: {
+                            localite: localite,
+                        },
                     },
-                },
-            ])
-            .toArray();
-        redisClient.set(`rues:${localite}`, JSON.stringify(data), 'EX', 600);
-        res.status(200).json(success(message, data));
+                ])
+                .toArray();
+            redisClient.set(
+                `rues:${localite}`,
+                JSON.stringify(data),
+                'EX',
+                600
+            );
+            res.status(200).json(success(message, data));
+        }
+    } else {
+        const message = '📄 Liste complète des rues';
+        const inCache = await redisClient.get('rues:all');
+        if (inCache) {
+            return res.status(200).json(success(message, JSON.parse(inCache)));
+        } else {
+            const data = await collection.find({}).toArray();
+            redisClient.set('rues:all', JSON.stringify(data), 'EX', 600);
+            res.status(200).json(success(message, data));
+        }
     }
 });
 
@@ -184,7 +189,6 @@ const deleteOne = catchAsync(async (req, res) => {
 
 module.exports = {
     findAll,
-    localite,
     findOne,
     create,
     updateOne,

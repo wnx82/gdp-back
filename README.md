@@ -27,7 +27,7 @@
 
 ## Description
 
-Backend pour GDP - Portal
+Backend pour GDP - Portal 🆙
 
 
 | Back | Front | GDP Web Application |
@@ -45,7 +45,7 @@ Alimenter les rues
 https://github.com/geo6/geocoder-php-spw-provider
 
 
-## Addons
+## 🔎 Addons
 
 ### Jwt on /users 
 ### ValidateId on routes
@@ -58,10 +58,10 @@ https://github.com/geo6/geocoder-php-spw-provider
 ### ✨ CRUD missions
 ### ✨ CRUD Dailies
 ### ✨ Rapports
-### ✨CRUD Rues
-### ✨CRUD voitures
-### ✨CRUD horaires
-### ✨CRUD categories
+### ✨ CRUD Rues
+### ✨ CRUD voitures
+### ✨ CRUD horaires
+### ✨ CRUD categories
 
 
 
@@ -116,7 +116,6 @@ https://github.com/geo6/geocoder-php-spw-provider
 [![MongoDb](https://img.shields.io/badge/MongoDb-18.13.0-4EA94B?style=for-the-badge&logo=MongoDb&logoColor=white&labelColor=101010)]()
 
 [![NodeJs](https://img.shields.io/badge/NodeJS-18.13.0-9146FF?style=for-the-badge&logo=Node.js&logoColor=white&labelColor=101010)]()
-
 
 [![Discord](https://img.shields.io/badge/Discord-Join_Us-5865F2?style=for-the-badge&logo=discord&logoColor=white&labelColor=101010)](https://discord.gg/xfz3WMrt)
 
