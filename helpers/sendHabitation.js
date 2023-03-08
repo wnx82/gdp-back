@@ -5,6 +5,7 @@ const fs = require('fs');
 const sendHabitation = async function (agentData, habitationData, note) {
     const dataSubject = '✅ Nouvelle entrée pour ' + habitationData.adresse.rue;
     const dataMessage = '';
+    const dataMailTo = process.env.MAIL_TO_HABITATIONS;
     const dataHTML = `
 <html>
 
@@ -134,7 +135,7 @@ const sendHabitation = async function (agentData, habitationData, note) {
 </html>
     `;
 
-    sendMail(dataSubject, dataMessage, dataHTML)
+    sendMail(dataSubject, dataMessage, dataHTML, dataMailTo)
         .then(() => console.log('📄 Mail rapport envoyé avec succès'))
         .catch(err =>
             console.error("Erreur lors de l'envoi du rapport :", err)

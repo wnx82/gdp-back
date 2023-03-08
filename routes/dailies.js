@@ -13,6 +13,9 @@ router.delete('/:id', controller.deleteOne);
 //ajouter supprimer agent du daily
 router.get('/:id/agents', validateId, controller.findAgents);
 router.post('/:id/agents', validateId, controller.addAgent);
+//envoi de la daily par mail aux agents
+router.post('/:id/send', validateId, controller.sendDaily);
+//efface
 router.delete('/:id/agents/:agentId', validateId, controller.removeAgent);
 //ajouter supprimer quartier du daily
 router.get('/:id/quartiers', validateId, controller.findQuartiers);

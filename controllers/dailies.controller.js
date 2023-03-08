@@ -25,6 +25,7 @@ const schema = Joi.object({
     annexes: Joi.array()
         .items(Joi.string().allow(null).optional().empty(''))
         .optional(),
+    sent: Joi.date().allow(null).optional().empty(''),
 });
 
 const findAll = catchAsync(async (req, res) => {
@@ -145,6 +146,10 @@ const updateOne = catchAsync(async (req, res) => {
     }
 
     try {
+        const daily = await collection.findOne({ _id: ObjectId(id) });
+        if (!daily) {
+            return res.status(404).json({ message: 'Daily not found' });
+        }
         const updatedAt = new Date();
         const { modifiedCount } = await collection.findOneAndUpdate(
             { _id: ObjectId(id) },
@@ -565,6 +570,85 @@ const removeQuartier = async (req, res) => {
     }
 };
 
+const sendDaily = catchAsync(async (req, res) => {
+    const { id } = req.params;
+    const sendMailDaily = require('../helpers/sendMailDaily');
+
+    // Récupération des données par aggregate et envoi de la validation par mail
+    const result = await collection
+        .aggregate([
+            {
+                $match: {
+                    _id: new ObjectId(id),
+                },
+            },
+            {
+                $lookup: {
+                    from: 'agents',
+                    localField: 'agents',
+                    foreignField: '_id',
+                    as: 'agentsData',
+                },
+            },
+            {
+                $lookup: {
+                    from: 'quartiers',
+                    localField: 'quartiers',
+                    foreignField: '_id',
+                    as: 'quartiersData',
+                },
+            },
+            {
+                $lookup: {
+                    from: 'missions',
+                    localField: 'missions',
+                    foreignField: '_id',
+                    as: 'missionsData',
+                },
+            },
+            {
+                $lookup: {
+                    from: 'missions',
+                    localField: 'quartiersData.missions',
+                    foreignField: '_id',
+                    as: 'quartiersMissionsData',
+                },
+            },
+            {
+                $project: {
+                    'agentsData.password': 0,
+                },
+            },
+        ])
+        .next();
+    // console.log(result);
+    // return;
+    if (!result) {
+        return res.status(404).json({ message: 'No data found' });
+    }
+    // const { data } = result;
+
+    // console.log(data);
+    sendMailDaily(id, result);
+    // console.log(data[0].matricules);
+
+    const daily = await collection.findOneAndUpdate(
+        { _id: ObjectId(id) },
+        { $set: { sent: new Date() } },
+        { new: true }
+    );
+    if (!daily) {
+        return res.status(404).json({ message: 'Daily not found' });
+    }
+
+    const message = `📝 Mise à jour du daily ${id}`;
+    res.status(200).json(
+        success(message, `Mail envoyé aux agents le ${daily.sent}`)
+    );
+
+    redisClient.del(`daily:${id}`);
+});
+
 module.exports = {
     findAll,
     findOne,
@@ -580,4 +664,5 @@ module.exports = {
     findQuartiers,
     addQuartier,
     removeQuartier,
+    sendDaily,
 };

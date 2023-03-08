@@ -50,6 +50,10 @@ module.exports = {
                     bsonType: 'array',
                     description: ' must be a arrray and is not required',
                 },
+                sent: {
+                    bsonType: 'date',
+                    description: ' must be a date and is required',
+                },
             },
         },
     },

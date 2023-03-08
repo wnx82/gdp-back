@@ -1,6 +1,11 @@
 const nodemailer = require('nodemailer');
 
-const SendMail = async function (dataSubject, dataMessage, dataHTML) {
+const SendMail = async function (
+    dataSubject,
+    dataMessage,
+    dataHTML,
+    dataMailTo
+) {
     // create reusable transporter object using the default SMTP transport
     let transporter = nodemailer.createTransport({
         host: process.env.MAIL_HOST,
@@ -16,12 +21,12 @@ const SendMail = async function (dataSubject, dataMessage, dataHTML) {
     // send mail with defined transport object
     let info = await transporter.sendMail({
         from: process.env.MAIL_FROM, // sender address
-        to: process.env.MAIL_TO, // list of receivers
+        to: dataMailTo, // list of receivers
         subject: dataSubject, // Subject line
         text: dataMessage, // plain text body
         html: dataHTML, // html body
     });
-
+    console.log('Mail sent @ ', dataMailTo);
     console.log('Message sent: %s', info.messageId);
     // Message sent: <b658f8ca-6296-ccf4-8306-87d57a0b4321@example.com>
 

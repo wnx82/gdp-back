@@ -2,24 +2,44 @@ const moment = require('moment');
 const sendMail = require('./sendMail');
 const fs = require('fs');
 
-const sendRapport = async function (id, data) {
+const sendMailDaily = async function (id, data) {
     // const dataSubject = '✅ Rapport ' + data.date;
     const dataSubject =
-        '📝 Rapport du ' + moment(data.date).format('YYYY/MM/DD');
+        '📝 Missions du ' + moment(data.date).format('YYYY/MM/DD');
     const dataMessage = '';
-    const dataMailTo = process.env.MAIL_TO_CHEF;
+
+    console.log(data.agentsData.matricule);
+
+    // accéder à l'attribut agentsData
+    const agentsData = data.agentsData;
+    console.log(agentsData);
+    // boucle pour accéder à chaque objet dans agentsData et afficher le matricule de chaque agent
+    data.agentsData.forEach(agentData => {
+        console.log(agentData.matricule);
+    });
+
+    const dataMailTo = `  ${data.agentsData
+        .map(agentData => {
+            return `${agentData.email}`;
+        })
+        .join(',')}`;
+
     console.log(data);
-    console.log(data.date);
-    console.log('rapport: ' + id);
-    console.log(data.notes);
-    console.log(data.matricules);
+
     const dataHTML = `
 <!DOCTYPE html>
 <html>
 
 <head>
-    <title>Rapport</title>
-    <style>
+    <title>Missions</title>
+        <style>
+            /* Reset styles */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+}
         /* CSS */
         body {
             font-family: Arial, sans-serif;
@@ -89,56 +109,78 @@ const sendRapport = async function (id, data) {
         .content p strong {
             font-weight: bold;
         }
+        /* Footer styles */
+.footer {
+  background-color: #333;
+  color: #fff;
+  padding: 10px;
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
+  text-align: center;
+}
+
+.footer img {
+  max-height: 50px;
+  margin-left: 10px;
+  margin-right: 10px;
+}
     </style>
+
 </head>
 
 <body>
     <div class="container">
         <div class="header">
-            <h1>📝 Rapport du ${moment(data.date).format('YYYY/MM/DD')}</h1>
+            <h1>📝 Ordre du ${moment(data.date).format('YYYY/MM/DD')}</h1>
+            <h2>Bonjour les loulous</h2>
             <p>ID unique: ${id}</p>
         </div>
         <div class="content">
-            <p><strong>🆔 Matricules:</strong></p>
-            <ul>
-                ${data.matricules
-                    .map(matricule => `<li>${matricule}</li>`)
-                    .join('')}
-            </ul>
-            <p><strong>👮 Agents:</strong></p>
-            <ul>
-                ${data.lastnames
-                    .map(lastname => `<li>${lastname}</li>`)
-                    .join('')}
-            </ul>
+<p><strong>👤 Agents:</strong></p>
+<ul>
+  ${data.agentsData
+      .map(agentData => {
+          return `<li>${agentData.matricule} - ${agentData.firstname} ${agentData.lastname}</li>`;
+      })
+      .join('')}
+</ul>
+
+
             <p><strong>📅 Horaire presté:</strong> ${data.horaire}</p>
             <p><strong>🚙 Véhicule:</strong> ${data.vehicule}</p>
-            <p><strong>📌 Quartiers effectués:</strong></p>
+            <p><strong>📌 Quartiers :</strong></p>
             <ul>
-                ${data.quartiers
-                    .map(quartier => `<li>${quartier}</li>`)
-                    .join('')}
+    <ul>
+  ${data.quartiersData
+      .map(quartiersData => {
+          return `<li>${quartiersData.title}</li>`;
+      })
+      .join('')}
+</ul>
             </ul>
-            <p><strong>📌 Missions quartier effectuées:</strong></p>
+            <p><strong>📌 Missions quartier(s) :</strong></p>
             <ul>
-                ${data.missionsQuartierValidate
-                    .map(
-                        missionsQuartierValidate =>
-                            `<li>${missionsQuartierValidate}</li>`
-                    )
-                    .join('')}
+  ${data.quartiersMissionsData
+      .map(quartiersMissionsData => {
+          return `<li>${quartiersMissionsData.title}</li><ul><li>${quartiersMissionsData.description}</li></ul>`;
+      })
+      .join('')}
             </ul>
-            <p><strong>📋 Liste des missions effectuées:</strong></p>
+            <p><strong>📋 Liste des missions supplémentaires:</strong></p>
             <ul>
-                ${data.missions.map(mission => `<li>${mission}</li>`).join('')}
+  ${data.missionsData
+      .map(missionsData => {
+          return `<li>${missionsData.title}</li><ul><li>${missionsData.description}</li></ul>`;
+      })
+      .join('')}
             </ul>
             <p><strong>📝 Notes:</strong></p>
             <ul>
-                ${data.notes.map(note => `<li>${note}</li>`).join('')}
+  ${data.notes}
             </ul>
             <p><strong>📑 Annexes:</strong></p>
             <ul>
-                ${data.annexes.map(annexe => `<li>${annexe}</li>`).join('')}
+  ${data.annexes}
             </ul><br><br>
             <p><strong>Envoyé le :</strong>${moment(data.createdAt)
                 .utcOffset('+0100')
@@ -160,8 +202,10 @@ const sendRapport = async function (id, data) {
     `;
 
     sendMail(dataSubject, dataMessage, dataHTML, dataMailTo)
-        .then(() => console.log('📄 Mail rapport envoyé avec succès'))
-        .catch(err => console.error("Erreur lors de l'envoi du rapport:", err));
+        .then(() => console.log('📄 Mail Daily envoyé avec succès'))
+        .catch(err =>
+            console.error("Erreur lors de l'envoi de la daily:", err)
+        );
 };
 
-module.exports = sendRapport;
+module.exports = sendMailDaily;

@@ -10543,6 +10543,7 @@ redisClient.flushall((err, reply) => {
     );
     // console.log('\u001b[1;32m---> Collection quartiers créée <---\u001b[0m ');
     bar1.update(i++);
+
     const dailiesDto = [...Array(15)].map(() => ({
         date: faker.date.recent(),
         agents: [

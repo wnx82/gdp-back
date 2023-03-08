@@ -15,9 +15,6 @@ const client = new MongoClient(url);
     } catch (e) {
         console.error(`Failed to connect to MongoDB: ${e}`);
         process.exit(1);
-    } finally {
-        // Ensures that the client will close when you finish/error
-        // await client.close();
     }
 })();
 

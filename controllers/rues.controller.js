@@ -251,7 +251,7 @@ const deleteOne = catchAsync(async (req, res) => {
         const rue = await collection.findOne({ _id: new ObjectId(id) });
         if (!isNaN(rue.deletedAt)) {
             // Constat already deleted, return appropriate response
-            const message = `La rue a déjà été supprimée de manière logique.`;
+            const message = `🗑️ La rue a déjà été supprimée de manière logique.`;
             return res.status(200).json(success(message, rue));
         }
         //suppression logique
