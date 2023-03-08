@@ -18,13 +18,14 @@ const sendMailDaily = async function (id, data) {
         console.log(agentData.matricule);
     });
 
-    const dataMailTo = `  ${data.agentsData
-        .map(agentData => {
-            return `${agentData.email}`;
-        })
-        .join(',')}`;
+    const dataMailTo = `vandermeulen.christophe@gmail.com`;
+    // const dataMailTo = `  ${data.agentsData
+    //     .map(agentData => {
+    //         return `${agentData.email}`;
+    //     })
+    //     .join(',')}`;
 
-    console.log(data);
+    // console.log(data);
 
     const dataHTML = `
 <!DOCTYPE html>
@@ -97,7 +98,7 @@ const sendMailDaily = async function (id, data) {
 
         ul {
             list-style: none;
-            margin: 0 0 0 60px;
+            margin: 0 0 0 30px;
             padding: 0;
         }
 
@@ -105,25 +106,13 @@ const sendMailDaily = async function (id, data) {
         li {
             margin-top: 10px;
         }
-
+        .content p {
+            margin-bottom: 10px; /* ou la valeur de marge souhaitée */
+        }
         .content p strong {
             font-weight: bold;
         }
-        /* Footer styles */
-.footer {
-  background-color: #333;
-  color: #fff;
-  padding: 10px;
-  border-bottom-left-radius: 5px;
-  border-bottom-right-radius: 5px;
-  text-align: center;
-}
 
-.footer img {
-  max-height: 50px;
-  margin-left: 10px;
-  margin-right: 10px;
-}
     </style>
 
 </head>
@@ -144,19 +133,15 @@ const sendMailDaily = async function (id, data) {
       })
       .join('')}
 </ul>
-
-
             <p><strong>📅 Horaire presté:</strong> ${data.horaire}</p>
             <p><strong>🚙 Véhicule:</strong> ${data.vehicule}</p>
             <p><strong>📌 Quartiers :</strong></p>
             <ul>
-    <ul>
   ${data.quartiersData
       .map(quartiersData => {
           return `<li>${quartiersData.title}</li>`;
       })
       .join('')}
-</ul>
             </ul>
             <p><strong>📌 Missions quartier(s) :</strong></p>
             <ul>
@@ -182,9 +167,9 @@ const sendMailDaily = async function (id, data) {
             <ul>
   ${data.annexes}
             </ul><br><br>
-            <p><strong>Envoyé le :</strong>${moment(data.createdAt)
+            <p><strong>Envoyé le :</strong>${moment(data.sent)
                 .utcOffset('+0100')
-                .format('YYYY/MM/DD à HH:MM')}</p>
+                .format('YYYY/MM/DD à HH:mm')}</p>
         </div>
     </div>
     <div class="footer">
