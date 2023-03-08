@@ -631,10 +631,10 @@ const sendDaily = catchAsync(async (req, res) => {
     // console.log(data);
     sendMailDaily(id, result);
     // console.log(data[0].matricules);
-
+    let sent = new Date();
     const daily = await collection.findOneAndUpdate(
         { _id: ObjectId(id) },
-        { $set: { sent: new Date() } },
+        { $set: { sent } },
         { new: true }
     );
     if (!daily) {
@@ -643,7 +643,12 @@ const sendDaily = catchAsync(async (req, res) => {
 
     const message = `📝 Mise à jour du daily ${id}`;
     res.status(200).json(
-        success(message, `Mail envoyé aux agents le ${daily.sent}`)
+        await success(
+            message,
+            `Mail envoyé aux agents le ${moment(sent)
+                .utcOffset('+0100')
+                .format('YYYY/MM/DD à HH:mm')}`
+        )
     );
 
     redisClient.del(`daily:${id}`);
