@@ -25,52 +25,44 @@
   <strong>🌍 Constantly updated front-end resources, tutorials, opinions. </strong>
 </div>
 
-## Description
+## 📃 Description
 
 Backend pour GDP - Portal 🆙
 
+| [GDP Back](https://github.com/winnux82/gdp-back) | [GDP Front](https://github.com/winnux82/gdp-front) | GDP Android Application |
 
-| Back | Front | GDP Web Application |
 
-[GDP Back](https://github.com/winnux82/gdp-back)
-[GDP Front](https://github.com/winnux82/gdp-front)
+## 📥 Installation
 
-## A faire:
-
-Importer dans Postman la collection GDP back via le fichier GDP Back.
-
-Fichier dispo dossier racine: postman_collection.json
-
-Alimenter les rues
-https://github.com/geo6/geocoder-php-spw-provider
+-   env.example disponible
+-   Importer dans Postman la collection GDP back via le fichier GDP Back.postman_collection dans le dossier racine.
 
 
 ## ✨ Features
-
-### Jwt on /users 
-### ValidateId on routes
-### sendEmail for validations
-### habitations valides dates
-### Joi Validate Update
-### Agent Level Access
-### Constats geolocation
-### ✨ CRUD infractions
-### ✨ CRUD missions
-### ✨ CRUD Dailies
-### ✨ Rapports
-### ✨ CRUD Rues
-### ✨ CRUD voitures
-### ✨ CRUD horaires
-### ✨ CRUD categories
-### ✨ Seed update
-### ✨ Send Rapport mail
-### ✨ CRUD Dailies update
-### ✨ CRUD Rapports update
-### ✨ status controller
-### ✨ query 
-
-
-
+-   CRUD Vehicules : Liste des véhicules du service
+-   JWT on /users
+-   ValidateId sur les routes pour vérifier la validité des id
+-   sendMail pour la validations des surveillances, daily et rapports journaliers
+-   Json Validator & Joi verification
+-   Agent Level Access
+-   Status controller
+-   FlushAll Redis
+-   Recherche par immatriculation, localité, rue pour les constats
+-   Tri des rues par localité, cp, nom, quartier
+-   CRUD Agents/Users
+-   CRUD catégories pour notes des rapports
+-   CRUD Constats qui permet aux agents de créer des constats sur le terrain
+Constats possible sur 1 véhicule ou 1 personne avec adresse, l'infraction, PV bool, notes, annexes
+-   CRUD Dailies : Créations de futures "tâches journalières" par équipe d'agents avec définition d'un quartier et les missions d'un quartier, ajout de missions supplémentaires.
+🔖Possibilité d'envoyer par mail un "daily" aux agents concerné  
+-   CRUD Habitations : Créations de futures surveillances habitations. Lors de leurs départ en vacances, des citoyens demandent un passage pour que les agents vérifient leur habitation. Les habitations déjà passées ou que la date de début est supérieur à la date du jour ne sont pas visibles. "HabitationsValides"
+-   CRUD Horaires : Listes des différents horaires des agents
+-   CRUD Infractions : Listes des infractions les plus verbalisées, triées par catégories et comprenant un tableau avec une liste des articles et le nom des infractions.
+-   CRUD Missions : Liste non exhaustive des missions journalières ou occasionnelles.  Un quartier comprend une liste des missions.
+-   CRUD Quartiers : Liste des différents quartiers de Mouscron. Chaque quartier comprend ses missions spécifiques.
+-   CRUD Rapports : Dès qu'un agent reçoit sa "Daily" par mail (tâches journalières), il doit, à sa fin de service remplir un rapport.  Le rapport reprend la totalité de la daily mais avec un tableau des missions de quartiers effectuées et un tableau des missions globales effectuées. Dès qu'il soumet son rapport, un mail est envoyé à la responsable.
+-   CRUD Rues : Liste de la totalité des Rues de l'entité Mouscronnoise. Au début, j'ai voulu interrogé une API du SPW mais ma responsable a demandé de pouvoir introduire elle même les futures Rues.
+-   CRUD Validations : Une validation est réalisée à chaque surveillances habitations réalisée.  Un mail est alors envoyé à la responsable et au référent de la Police de Mouscron.
 
 
 
@@ -80,6 +72,11 @@ https://github.com/geo6/geocoder-php-spw-provider
 -   [**Git Emojis**](https://gitmoji.dev/)
 -   [**emojidb**](https://emojidb.org/facebook-emojis?user_typed_query=1&utm_source=user_search)
 -   [**Listing Emojis**](emoji.md)
+
+
+
+
+
 
 -   [Tuto Get Data From server ✨](https://angular.io/tutorial/tour-of-heroes/toh-pt6)
 
