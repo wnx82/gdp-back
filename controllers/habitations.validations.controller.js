@@ -130,6 +130,29 @@ const create = catchAsync(async (req, res) => {
             return new ObjectId(p);
         });
         value.habitation = habitationsID;
+        const agents = await database
+            .collection('agents')
+            .find({
+                _id: { $in: agentsID },
+            })
+            .toArray();
+        const habitations = await database
+            .collection('habitations')
+            .find({
+                _id: { $in: habitationsID },
+            })
+            .toArray();
+
+        if (agents.length !== agentsID.length) {
+            return res
+                .status(400)
+                .json({ message: 'Invalid agent ID provided' });
+        }
+        if (habitations.length !== habitationsID.length) {
+            return res
+                .status(400)
+                .json({ message: 'Invalid habitation ID provided' });
+        }
 
         const { ...rest } = value;
 

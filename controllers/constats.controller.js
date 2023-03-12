@@ -887,6 +887,14 @@ const addAgent = async (req, res) => {
     }
 
     const agentId = new ObjectId(body.agentId);
+    console.log(agentId);
+    // Check if agent exists
+    const agent = await agentCollection.findOne({ _id: agentId });
+    if (!agent) {
+        res.status(404).json({ message: 'Agent not found' });
+        return;
+    }
+
     const data = await collection.findOneAndUpdate(
         {
             _id: new ObjectId(id),

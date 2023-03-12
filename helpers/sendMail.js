@@ -15,6 +15,10 @@ const SendMail = async function (
             user: process.env.MAIL_USER, // generated ethereal user
             pass: process.env.MAIL_PASSWORD, // generated ethereal password
         },
+        //à enlever si pas docker
+        tls: {
+            rejectUnauthorized: false,
+        },
         logger: true,
     });
 

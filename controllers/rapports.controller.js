@@ -102,11 +102,13 @@ const create = catchAsync(async (req, res) => {
             return new ObjectId(p);
         });
         value.quartiers = quartiersID;
+
         //mettre missionsID en object
         const missionsID = value.missions.map(p => {
             return new ObjectId(p);
         });
         value.missions = missionsID;
+
         //mettre quartierMissionsValidateID en object
         const quartierMissionsValidateID = value.quartierMissionsValidate.map(
             p => {
@@ -115,6 +117,53 @@ const create = catchAsync(async (req, res) => {
         );
         value.quartierMissionsValidate = quartierMissionsValidateID;
 
+        const agents = await database
+            .collection('agents')
+            .find({
+                _id: { $in: agentsID },
+            })
+            .toArray();
+        const quartiers = await database
+            .collection('quartiers')
+            .find({
+                _id: { $in: quartiersID },
+            })
+            .toArray();
+        const missions = await database
+            .collection('missions')
+            .find({
+                _id: { $in: missionsID },
+            })
+            .toArray();
+        const quartierMissionsValidate = await database
+            .collection('missions')
+            .find({
+                _id: { $in: quartierMissionsValidateID },
+            })
+            .toArray();
+        if (agents.length !== agentsID.length) {
+            return res
+                .status(400)
+                .json({ message: 'Invalid agent ID provided' });
+        }
+        if (quartiers.length !== quartiersID.length) {
+            return res
+                .status(400)
+                .json({ message: 'Invalid quartier ID provided' });
+        }
+        if (missions.length !== missionsID.length) {
+            return res
+                .status(400)
+                .json({ message: 'Invalid mission ID provided' });
+        }
+        if (
+            quartierMissionsValidate.length !==
+            quartierMissionsValidateID.length
+        ) {
+            return res
+                .status(400)
+                .json({ message: 'Invalid mission quartier ID provided' });
+        }
         const { ...rest } = value;
         const createdAt = new Date();
         const updatedAt = new Date();

@@ -28,7 +28,12 @@
 ## 📃 Description
 
 Backend pour GDP - Portal 🆙
+<pre>
+Cette API est une application de gestion pour le service GDP de la Ville de Mouscron. Elle permet la gestion de véhicules, des utilisateurs avec JWT pour la sécurité des données, la validation des identifiants pour les différentes routes, l'envoi de mails pour la validation des surveillances, des daily et des rapports journaliers. Elle offre également la validation JSON avec Joi, un accès avec différents niveaux d'autorisation, un contrôleur d'état, un système de mise en cache Redis, une recherche par immatriculation, localité et rue pour les constats ainsi qu'un tri des rues par localité, code postal, nom et quartier. Elle permet également la gestion des agents et des utilisateurs, des catégories pour les notes de rapports, des constats sur le terrain, des tâches journalières pour les équipes d'agents avec envoi de mail, des surveillances habitations, des horaires d'agents, des infractions les plus verbalisées, des missions journalières ou occasionnelles, des quartiers avec missions spécifiques, des rapports journaliers, des rues et des validations pour chaque surveillance d'habitation.
 
+Elle me servira également comme travail de TFE d'où sa complexité.
+
+</pre>
 | [GDP Back](https://github.com/winnux82/gdp-back) | [GDP Front](https://github.com/winnux82/gdp-front) | GDP Android Application |
 
 
@@ -75,7 +80,16 @@ Constats possible sur 1 véhicule ou 1 personne avec adresse, l'infraction, PV b
 -   [**csv2json**](https://csvjson.com/csv2json)
 -   [**Learn JWT**](https://medium.com/front-end-weekly/learn-using-jwt-with-passport-authentication-9761539c4314)
 
+## 🐉 Notes!
 
+-   à enlever dans le fichier ./helpers/sendMail.js si pas docker car dès que je passe par docker j'ai une erreur 
+<pre>
+<code>
+tls: {
+    rejectUnauthorized: false,
+},
+</code>
+</pre>
 
 
 

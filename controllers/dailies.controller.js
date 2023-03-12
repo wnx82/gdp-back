@@ -90,14 +90,51 @@ const create = catchAsync(async (req, res) => {
             return new ObjectId(p);
         });
         value.agents = agentsID;
+
         const quartiersID = value.quartiers.map(p => {
             return new ObjectId(p);
         });
         value.quartiers = quartiersID;
+
         const missionsID = value.missions.map(p => {
             return new ObjectId(p);
         });
         value.missions = missionsID;
+
+        const agents = await database
+            .collection('agents')
+            .find({
+                _id: { $in: agentsID },
+            })
+            .toArray();
+        const quartiers = await database
+            .collection('quartiers')
+            .find({
+                _id: { $in: quartiersID },
+            })
+            .toArray();
+        const missions = await database
+            .collection('missions')
+            .find({
+                _id: { $in: missionsID },
+            })
+            .toArray();
+
+        if (agents.length !== agentsID.length) {
+            return res
+                .status(400)
+                .json({ message: 'Invalid agent ID provided' });
+        }
+        if (quartiers.length !== quartiersID.length) {
+            return res
+                .status(400)
+                .json({ message: 'Invalid quartier ID provided' });
+        }
+        if (missions.length !== missionsID.length) {
+            return res
+                .status(400)
+                .json({ message: 'Invalid mission ID provided' });
+        }
 
         const { ...rest } = value;
         const createdAt = new Date();
@@ -648,7 +685,7 @@ const sendDaily = catchAsync(async (req, res) => {
         return res.status(404).json({ message: 'Daily not found' });
     }
 
-    const message = `📝 Mise à jour du daily ${id}`;
+    const message = `📝 Envoi du daily ${id}`;
     res.status(200).json(
         await success(
             message,
