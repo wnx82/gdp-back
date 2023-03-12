@@ -36,8 +36,8 @@ Elle offre également la validation JSON avec Joi, un accès avec différents ni
 
 Elle permet également la gestion des agents et des utilisateurs, des catégories pour les notes de rapports, des constats sur le terrain, des tâches journalières pour les équipes d'agents avec envoi de mail, des surveillances habitations, des horaires d'agents, des infractions les plus verbalisées, des missions journalières ou occasionnelles, des quartiers avec missions spécifiques, des rapports journaliers, des rues et des validations pour chaque surveillance d'habitation.
 
-Elle me servira également comme travail de TFE d'où sa complexité.
-Le front sera réalisé via Angular et le déploiement sur un serveur du service informatique.
+Elle me servira également comme TFE & déploiement pour mon stage de fin d'étude d'où sa complexité et le temps consacré!
+Le front sera réalisé via Angular et le déploiement sur un serveur du service informatique de la Ville de Mouscron.
 
 
 | [GDP Back](https://github.com/winnux82/gdp-back) | [GDP Front](https://github.com/winnux82/gdp-front) | GDP Android Application |
@@ -90,12 +90,13 @@ Constats possible sur 1 véhicule ou 1 personne avec adresse, l'infraction, PV b
 ## 🐉 Notes!
 
 -   à enlever dans le fichier ./helpers/sendMail.js si pas docker car dès que je passe par docker j'ai une erreur 
--   protéger tous les dossiers autres que users grace à JWT une fois la phase déploiement lancée
 <code>
 tls: {
     rejectUnauthorized: false,
 },
 </code>
+
+-   protéger tous les dossiers autres que users grace à JWT une fois la phase déploiement lancée
 
 
 
