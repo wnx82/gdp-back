@@ -77,6 +77,13 @@ const findOne = catchAsync(async (req, res) => {
         const message = `📄 Détails de la validation`;
         const { id } = req.params;
         let data = null;
+        data = await collection.findOne({ _id: new ObjectId(id) });
+        if (!data) {
+            res.status(404).json({
+                message: `⛔ No validation found with id ${id}`,
+            });
+            return;
+        }
         const inCache = await redisClient.get(`validation:${id}`);
         if (inCache) {
             return res.status(200).json(success(message, JSON.parse(inCache)));

@@ -25,6 +25,14 @@ const findOne = catchAsync(async (req, res) => {
         const message = `📄 Détails du quartier`;
         const { id } = req.params;
         let data = null;
+
+        data = await collection.findOne({ _id: new ObjectId(id) });
+        if (!data) {
+            res.status(404).json({
+                message: `No quartier found with id ${id}`,
+            });
+            return;
+        }
         const inCache = await redisClient.get(`quartier:${id}`);
         if (inCache) {
             return res.status(200).json(success(message, JSON.parse(inCache)));
@@ -77,7 +85,7 @@ const findOne = catchAsync(async (req, res) => {
         }
         if (!data) {
             res.status(404).json({
-                message: `No quartier found with id ${id}`,
+                message: `⛔ No quartier found with id ${id}`,
             });
             return;
         } else {

@@ -20,7 +20,10 @@ const schema = Joi.object({
     birthday: Joi.date().allow(null).optional().empty(''),
     tel: Joi.string().max(30).allow(null).optional().empty(''),
     adresse: {
-        rue: Joi.string().regex(/^[0-9a-fA-F]{24}$/),
+        rue: Joi.string()
+            .regex(/^[0-9a-fA-F]{24}$/)
+            .allow(null)
+            .optional(),
         numero: Joi.string().allow(null).optional().empty(''),
     },
     picture: Joi.string().allow(null).optional().empty(''),
@@ -134,6 +137,13 @@ const findOne = catchAsync(async (req, res) => {
         const message = `📄 Détails de l'agent`;
         const { id } = req.params;
         let data;
+        data = await collection.findOne({ _id: new ObjectId(id) });
+        if (!data) {
+            res.status(404).json({
+                message: `⛔ No agent found with id ${id}`,
+            });
+            return;
+        }
         const inCache = await redisClient.get(`agent:${id}`);
         if (inCache) {
             return res.status(200).json(success(message, JSON.parse(inCache)));
@@ -252,7 +262,7 @@ const create = catchAsync(async (req, res) => {
     const message = `✏️ Création d'un agent`;
 
     const { body } = req;
-    console.log(body.email);
+
     if (typeof body.email === 'undefined') {
         return res.status(400).json({ message: 'Email field is required' });
     }
@@ -277,7 +287,10 @@ const create = catchAsync(async (req, res) => {
         const existingUser = await collection.findOne({
             email,
         });
-        value.adresse.rue = new ObjectId(value.adresse.rue);
+
+        if (value.adresse) {
+            value.adresse.rue = new ObjectId(value.adresse.rue);
+        }
         if (existingUser) {
             return res.status(409).json({ message: 'Email already exists' });
         }

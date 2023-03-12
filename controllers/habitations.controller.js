@@ -183,6 +183,13 @@ const findOne = catchAsync(async (req, res) => {
         const message = `📄 Détails de l'habitation`;
         const { id } = req.params;
         let data = null;
+        data = await collection.findOne({ _id: new ObjectId(id) });
+        if (!data) {
+            res.status(404).json({
+                message: `⛔ No habitation found with id ${id}`,
+            });
+            return;
+        }
         const inCache = await redisClient.get(`habitation:${id}`);
 
         if (inCache) {

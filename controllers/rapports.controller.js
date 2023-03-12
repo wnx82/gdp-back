@@ -49,6 +49,13 @@ const findOne = catchAsync(async (req, res) => {
         const message = `📄 Détails du rapport`;
         const { id } = req.params;
         let data = null;
+        data = await collection.findOne({ _id: new ObjectId(id) });
+        if (!data) {
+            res.status(404).json({
+                message: `⛔ No rapport found with id ${id}`,
+            });
+            return;
+        }
         const inCache = await redisClient.get(`rapport:${id}`);
 
         if (inCache) {
@@ -60,7 +67,7 @@ const findOne = catchAsync(async (req, res) => {
 
         if (!data) {
             res.status(404).json({
-                message: `No rapport found with id ${id}`,
+                message: `⛔ No rapport found with id ${id}`,
             });
             return;
         } else {

@@ -594,6 +594,13 @@ const findOne = catchAsync(async (req, res) => {
         const message = `📄 Détails du constat`;
         const { id } = req.params;
         let data = null;
+        data = await collection.findOne({ _id: new ObjectId(id) });
+        if (!data) {
+            res.status(404).json({
+                message: `⛔ No constat found with id ${id}`,
+            });
+            return;
+        }
         const inCache = await redisClient.get(`constat:${id}`);
 
         if (inCache) {

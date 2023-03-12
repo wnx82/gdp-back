@@ -25,6 +25,13 @@ const findOne = catchAsync(async (req, res) => {
         const message = `📄 Détails de la mission`;
         const { id } = req.params;
         let data = null;
+        data = await collection.findOne({ _id: new ObjectId(id) });
+        if (!data) {
+            res.status(404).json({
+                message: `⛔ No mission found with id ${id}`,
+            });
+            return;
+        }
         const inCache = await redisClient.get(`mission:${id}`);
         if (inCache) {
             return res.status(200).json(success(message, JSON.parse(inCache)));
