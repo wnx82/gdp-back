@@ -1,2112 +1,1931 @@
 {
-	"info": {
-		"_postman_id": "7d291766-557b-4f86-934f-fd7ed45961b9",
-		"name": "GDP Back",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "24891427"
-	},
-	"item": [
-		{
-			"name": "Token",
-			"item": [
-				{
-					"name": "Add admin",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"firstname\": \"Administrator\",\r\n    \"lastname\": \"Administrator\",\r\n    \"email\": \"admin@admin.com\",\r\n    \"matricule\": \"A113\",\r\n    \"adresse\": {\r\n        \"rue\": \"74288 Keven Pass\",\r\n        \"cp\": \"93999-7873\",\r\n        \"localite\": \"O'Connerfurt\"\r\n    },\r\n    \"picture\": \"https://cdn-icons-png.flaticon.com/512/1946/1946392.png\",\r\n    \"password\": \"123456789\"\r\n\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "http://localhost:3003/agents",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "3003",
-							"path": [
-								"agents"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "http://localhost:3003/login",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "urlencoded",
-							"urlencoded": [
-								{
-									"key": "email",
-									"value": "admin@admin.com",
-									"type": "text"
-								},
-								{
-									"key": "password",
-									"value": "123456789",
-									"type": "text"
-								}
-							]
-						},
-						"url": {
-							"raw": "http://localhost:3003/login",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "3003",
-							"path": [
-								"login"
-							],
-							"query": [
-								{
-									"key": "email",
-									"value": "admin@admin.com",
-									"disabled": true
-								},
-								{
-									"key": "password",
-									"value": "123456789",
-									"disabled": true
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Users with token",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2M2Y1ZGEyYTQ4ZWJkMDJjNzlhNzE2YTMiLCJmaXJzdG5hbWUiOiJBZG1pbmlzdHJhdG9yIiwibGFzdG5hbWUiOiJBZG1pbmlzdHJhdG9yIiwiZW1haWwiOiJhZG1pbkBhZG1pbi5jb20iLCJtYXRyaWN1bGUiOiJBMTEzIiwiYWRyZXNzZSI6eyJydWUiOiI3NDI4OCBLZXZlbiBQYXNzIiwiY3AiOiI5Mzk5OS03ODczIiwibG9jYWxpdGUiOiJPJ0Nvbm5lcmZ1cnQifSwicGljdHVyZSI6Imh0dHBzOi8vY2RuLWljb25zLXBuZy5mbGF0aWNvbi5jb20vNTEyLzE5NDYvMTk0NjM5Mi5wbmciLCJjcmVhdGVkQXQiOiIyMDIzLTAyLTIyVDA5OjAyOjM0LjM1NloiLCJ1cGRhdGVkQXQiOiIyMDIzLTAyLTIyVDA5OjAyOjM0LjM1NloiLCJpYXQiOjE2NzcwNTc3MjR9.J7pOB6BBXl73KXW0NqW54zEkfYNkG9J3O5zIej_ak0Q",
-									"type": "string"
-								}
-							]
-						},
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:3003/users",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "3003",
-							"path": [
-								"users"
-							]
-						}
-					},
-					"response": []
-				}
-			]
-		},
-		{
-			"name": "Gets",
-			"item": [
-				{
-					"name": "Get Agents",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:3003/agents/",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "3003",
-							"path": [
-								"agents",
-								""
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get 1 Agent",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:3003/agents/6404c451034b9c5582914798",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "3003",
-							"path": [
-								"agents",
-								"6404c451034b9c5582914798"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get Categories",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:3003/categories/",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "3003",
-							"path": [
-								"categories",
-								""
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get Constats",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:3003/constats/",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "3003",
-							"path": [
-								"constats",
-								""
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get Dailies",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:3003/dailies/",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "3003",
-							"path": [
-								"dailies",
-								""
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get Rapports",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:3003/rapports/",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "3003",
-							"path": [
-								"rapports",
-								""
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get Habitations",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:3003/habitations",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "3003",
-							"path": [
-								"habitations"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get Horaires",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:3003/horaires",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "3003",
-							"path": [
-								"horaires"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get Infractions",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:3003/infractions/",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "3003",
-							"path": [
-								"infractions",
-								""
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get Quartiers",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:3003/quartiers/",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "3003",
-							"path": [
-								"quartiers",
-								""
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get Rues",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:3003/rues/",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "3003",
-							"path": [
-								"rues",
-								""
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get Missions",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:3003/missions/",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "3003",
-							"path": [
-								"missions",
-								""
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get Validations",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:3003/validations",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "3003",
-							"path": [
-								"validations"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get Vehicules",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:3003/vehicules/",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "3003",
-							"path": [
-								"vehicules",
-								""
-							]
-						}
-					},
-					"response": []
-				}
-			]
-		},
-		{
-			"name": "Posts",
-			"item": [
-				{
-					"name": "New Agent",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "    {\r\n        \"email\": \"Zaria_Rauqdfqsfd125@gmail.com\",\r\n        \"password\": \"password\",\r\n        \"matricule\": \"A188\",\r\n        \"firstname\": \"COCO\",\r\n        \"userAccess\" : 1,\r\n        \"lastname\": \"CHannel\",\r\n        \"birthday\": \"1982-04-26T12:08:38.266Z\",\r\n        \"tel\": \"+32 470432093\",\r\n        \"adresse\": {\r\n            \"rue\": \"77838 Wilmer Walks\",\r\n            \"cp\": \"84057\",\r\n            \"localite\": \"Lake Orion\"\r\n        },\r\n        \"picture\": \"https://cdn-icons-png.flaticon.com/512/1946/1946392.png\",\r\n        \"formations\": [\r\n            858,\r\n            \"AK/eoq63b(\"\r\n        ]\r\n    }",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "http://localhost:3003/agents",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "3003",
-							"path": [
-								"agents"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "New Category",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "        {\r\n            \"title\": \"Essai\"\r\n        }",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "http://localhost:3003/categories/",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "3003",
-							"path": [
-								"categories",
-								""
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "New Constat",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n        \"agents\": [\r\n            \"63f5da2b48ebd02c79a716ad\",\r\n            \"63f5da2b48ebd02c79a716a9\"\r\n        ],\r\n        \"date\": \"2023-02-21T23:58:58.153Z\",\r\n        \"vehicule\": {\r\n            \"marque\": \"Volkswagen\",\r\n            \"modele\": \"Wrangler\",\r\n            \"couleur\": \"turquoise\",\r\n            \"type\": \"Cargo Van\",\r\n            \"immatriculation\": \"CD57WYA\"\r\n        },\r\n            \"personne\": {\r\n        \"firstname\": \"Lilian\",\r\n        \"lastname\": \"Huels\",\r\n        \"birthday\": \"2022-05-07T03:08:49.655Z\",\r\n        \"nationalNumber\": 97165057668,\r\n        \"tel\": \"+32 470196002\",\r\n        \"adresse\": {\r\n            \"rue\": \"1685 Francisca Ridges\",\r\n            \"cp\": \"08755-1313\",\r\n            \"localite\": \"New Celestine\"\r\n        }\r\n            },\r\n        \"adresse\": {\r\n            \"rue\": \"33854 Gilda Rapids\",\r\n            \"cp\": \"48084-3064\",\r\n            \"localite\": \"Lake Bransonport\"\r\n        },\r\n        \"geolocation\": {\r\n            \"latitude\": \"-67.7178\",\r\n            \"longitude\": \"-92.9903\",\r\n            \"horodatage\": \"2023-02-21T23:58:58.153Z\"\r\n        },\r\n        \"infractions\": [\r\n            \"aut incidunt eaque\",\r\n            \"at adipisci quia\"\r\n        ],\r\n        \"pv\": false,\r\n        \"notes\": \"porro voluptatibus minima\"}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "http://localhost:3003/constats/",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "3003",
-							"path": [
-								"constats",
-								""
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "New Daily",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "        {\r\n            \"date\": \"2023-03-01T21:16:54.617Z\",\r\n            \"agents\": [\r\n                \"64004e3ad436598a8b4e858c\",\r\n                \"64004e3ad436598a8b4e858e\"\r\n            ],\r\n            \"horaire\": \"08h30-16h\",\r\n            \"vehicule\": \"Dacia\",\r\n            \"quartiers\": [\r\n                \"64004e3ad436598a8b4e85da\"\r\n            ],\r\n            \"missions\": [\r\n                \"64004e3ad436598a8b4e85d5\",\r\n                \"64004e3ad436598a8b4e85d6\",\r\n                \"64004e3ad436598a8b4e85d6\",\r\n                \"64004e3ad436598a8b4e85d5\",\r\n                \"64004e3ad436598a8b4e85d5\"\r\n            ],\r\n            \"notes\": [],\r\n            \"annexes\":[]\r\n        }",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "http://localhost:3003/dailies/",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "3003",
-							"path": [
-								"dailies",
-								""
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "New Habitation",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"adresse\": {\r\n        \"rue\": \"222222222222222222222\",\r\n        \"cp\": \"222222222222222222222\",\r\n        \"localite\": \"222222222222222222222\"\r\n    },\r\n    \"demandeur\": {\r\n        \"nom\": \"Harber Braeden\",\r\n        \"tel\": \"+32 478 767 096\"\r\n    },\r\n    \"date\": {\r\n        \"debut\": \"2023-01-08T17:57:01.451Z\",\r\n        \"fin\": \"2024-01-08T22:34:10.412Z\"\r\n    },\r\n    \"mesures\": [\r\n        \"Système d'alarme : Oui\",\r\n        \"Eclairage extérieur : Oui\",\r\n        \"Minuterie d'éclairage : Oui\",\r\n        \"Société gardiennage : Non\",\r\n        \"Chien : Non\",\r\n        \"Présence d'un tiers : Non\",\r\n        \"Autres : volets roulants programmables, éclairage programmé entrée et chambres\"\r\n    ],\r\n    \"vehicule\": \"Impala\",\r\n    \"googlemap\": \"https://true-mailer.name\"\r\n\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "http://localhost:3003/habitations",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "3003",
-							"path": [
-								"habitations"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "New Horaire",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "        {\r\n\r\n            \"horaire\": \"10h-18h\"\r\n        }",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "http://localhost:3003/horaires",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "3003",
-							"path": [
-								"horaires"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "New Infractions",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "        {\r\n            \"category\": \"Déchets\",\r\n            \"priority\": 3,\r\n            \"list\": [\r\n                [\r\n                    \"Art. 126\",\r\n                    \"Jets de déchets\"\r\n                ],\r\n                [\r\n                    \"Art. 158 b\",\r\n                    \"PAV (Point d'apport volontaire)\"\r\n                ],\r\n                [\r\n                    \"Art. 165\",\r\n                    \"Dépôt sauvage\"\r\n                ]\r\n            ]\r\n        }",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "http://localhost:3003/infractions",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "3003",
-							"path": [
-								"infractions"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "New Quartier",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"title\": \"Centre\",\r\n    \"missions\": [\r\n        \"63ff522bbf249f4b106d4cb5\",\r\n        \"63ff522bbf249f4b106d4cb6\",\r\n        \"63ff522bbf249f4b106d4cb6\",\r\n        \"63ff522bbf249f4b106d4cb6\",\r\n        \"63ff522bbf249f4b106d4cb6\"\r\n    ]\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "http://localhost:3003/quartiers",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "3003",
-							"path": [
-								"quartiers"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "New Rue",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "        {\r\n            \"adresse\": \"Abattoir\",\r\n            \"denomination\": \"rue de l'\",\r\n            \"cp\": 7700,\r\n            \"localite\": \"Mouscron\",\r\n            \"codeRue\": \"*0316\",\r\n            \"traductionNl\": \"Slachthuisstraat\"\r\n        }",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "http://localhost:3003/rues",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "3003",
-							"path": [
-								"rues"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "New Mission",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"title\": \"Zone de livraison 2\",\r\n    \"description\": \"azerazer\",\r\n    \"category\": \"azerazer\",\r\n    \"horaire\": \"\",\r\n    \"contact\": \"\"\r\n    \r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "http://localhost:3003/missions",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "3003",
-							"path": [
-								"missions"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "New Rapport",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "        {\r\n            \"daily\": \"6405ef053e334da12b07ee09\",\r\n            \"date\": \"2023-03-06T00:25:23.844Z\",\r\n            \"horaire\": \"07h30-15h\",\r\n            \"agents\": [\r\n                \"6405ef053e334da12b07eda3\",\r\n                \"6405ef053e334da12b07eda2\"\r\n            ],\r\n            \"vehicule\": \"Skoda\",\r\n            \"quartiers\": [\r\n                \"6405ef053e334da12b07edfc\"\r\n            ],\r\n            \"quartierMissionsValidate\": [\r\n                \"6405ef053e334da12b07ede9\",\r\n                \"6405ef053e334da12b07ede3\",\r\n                \"6405ef053e334da12b07eded\",\r\n                \"6405ef053e334da12b07ede3\",\r\n                \"6405ef053e334da12b07ede8\",\r\n                \"6405ef053e334da12b07edf0\"\r\n            ],\r\n            \"missions\": [\r\n                \"6405ef053e334da12b07ede4\",\r\n                \"6405ef053e334da12b07edf3\",\r\n                \"6405ef053e334da12b07ede7\",\r\n                \"6405ef053e334da12b07ede9\",\r\n                \"6405ef053e334da12b07ede3\"\r\n            ],\r\n            \"notes\": [\r\n                \"eos vero aut\",\r\n                \"atque est temporibus\",\r\n                \"sapiente minima rem\",\r\n                \"ex maiores nisi\"\r\n            ],\r\n            \"annexes\": [\r\n                \"eligendi reiciendis voluptatibus\",\r\n                \"quisquam repellendus et\",\r\n                \"ipsa eos quod\",\r\n                \"voluptates libero ut\"\r\n            ]\r\n        }",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "http://localhost:3003/rapports/",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "3003",
-							"path": [
-								"rapports",
-								""
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "New Validations",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "    {\r\n\r\n        \"date\": \"2023-02-21T19:40:53.214Z\",\r\n        \"agent\" : [\"63f5c7b4f3f90d575d769050\"],\r\n        \"habitation\":[\"63f5c7b4f3f90d575d769061\"],\r\n        \"note\": \"RAS\"\r\n\r\n    }",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "http://localhost:3003/validations",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "3003",
-							"path": [
-								"validations"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "New Vehicule",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "        {\r\n\r\n            \"marque\": \"Dacia222\",\r\n            \"modele\": \"\",\r\n            \"immatriculation\": \"1GFV206\"\r\n        }",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "http://localhost:3003/vehicules",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "3003",
-							"path": [
-								"vehicules"
-							]
-						}
-					},
-					"response": []
-				}
-			]
-		},
-		{
-			"name": "Ajout/Supp agents contats",
-			"item": [
-				{
-					"name": "Get Constats - Agents",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:3003/constats/63f5f540ea3970f57e2760be/agents",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "3003",
-							"path": [
-								"constats",
-								"63f5f540ea3970f57e2760be",
-								"agents"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get Constats - Post Agent",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"agentId\":\"63f5f53fea3970f57e276090\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "http://localhost:3003/constats/63f5f540ea3970f57e2760be/agents",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "3003",
-							"path": [
-								"constats",
-								"63f5f540ea3970f57e2760be",
-								"agents"
-							],
-							"query": [
-								{
-									"key": "agentId",
-									"value": "63f5f53fea3970f57e276090",
-									"disabled": true
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get Constats - Agent Remove",
-					"request": {
-						"method": "DELETE",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:3003/constats/63f5f540ea3970f57e2760be/63f5f540ea3970f57e2760be",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "3003",
-							"path": [
-								"constats",
-								"63f5f540ea3970f57e2760be",
-								"63f5f540ea3970f57e2760be"
-							]
-						}
-					},
-					"response": []
-				}
-			]
-		},
-		{
-			"name": "CRUD Daily",
-			"item": [
-				{
-					"name": "Get Agents from Dailies",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:3003/dailies/6400a555dd235c068a8d780b/",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "3003",
-							"path": [
-								"dailies",
-								"6400a555dd235c068a8d780b",
-								""
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get missions from Dailies",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:3003/dailies/6400a555dd235c068a8d780b/missions",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "3003",
-							"path": [
-								"dailies",
-								"6400a555dd235c068a8d780b",
-								"missions"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get quartiers from Dailies",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:3003/dailies/6400a555dd235c068a8d780b/quartiers",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "3003",
-							"path": [
-								"dailies",
-								"6400a555dd235c068a8d780b",
-								"quartiers"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Post Agent on _id dailies",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"agentId\":\"6400a555dd235c068a8d77bb\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "http://localhost:3003/dailies/6400a555dd235c068a8d780b/agents",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "3003",
-							"path": [
-								"dailies",
-								"6400a555dd235c068a8d780b",
-								"agents"
-							],
-							"query": [
-								{
-									"key": "agentId",
-									"value": "63f5f53fea3970f57e276090",
-									"disabled": true
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Post Mission on _id dailies",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"missionId\":\"63f5f53fea3970f57e276090\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "http://localhost:3003/dailies/6404c451034b9c55829147fe/missions",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "3003",
-							"path": [
-								"dailies",
-								"6404c451034b9c55829147fe",
-								"missions"
-							],
-							"query": [
-								{
-									"key": "agentId",
-									"value": "63f5f53fea3970f57e276090",
-									"disabled": true
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Post quartier on _id dailies",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"quartierId\":\"6404c6ffe92bac1965914d3e\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "http://localhost:3003/dailies/6404c451034b9c55829147fe/quartiers",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "3003",
-							"path": [
-								"dailies",
-								"6404c451034b9c55829147fe",
-								"quartiers"
-							],
-							"query": [
-								{
-									"key": "agentId",
-									"value": "63f5f53fea3970f57e276090",
-									"disabled": true
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Remove Agent from _id Daily",
-					"request": {
-						"method": "DELETE",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:3003/dailies/6404c451034b9c55829147fe/agents/640085cf846e08568586c99a",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "3003",
-							"path": [
-								"dailies",
-								"6404c451034b9c55829147fe",
-								"agents",
-								"640085cf846e08568586c99a"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Remove mission from _id Daily",
-					"request": {
-						"method": "DELETE",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:3003/dailies/6404c451034b9c55829147fe/missions/640085cf846e08568586c99a",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "3003",
-							"path": [
-								"dailies",
-								"6404c451034b9c55829147fe",
-								"missions",
-								"640085cf846e08568586c99a"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Remove quartier from _id Daily",
-					"request": {
-						"method": "DELETE",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:3003/dailies/6400a555dd235c068a8d780b/quartiers/63f5f53fea3970f57e276090",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "3003",
-							"path": [
-								"dailies",
-								"6400a555dd235c068a8d780b",
-								"quartiers",
-								"63f5f53fea3970f57e276090"
-							]
-						}
-					},
-					"response": []
-				}
-			]
-		},
-		{
-			"name": "CRUD Rapports",
-			"item": [
-				{
-					"name": "Get Agents from Rapports",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:3003/rapports/6406569e243913f161043e81/agents",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "3003",
-							"path": [
-								"rapports",
-								"6406569e243913f161043e81",
-								"agents"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get missions from Rapports",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:3003/rapports/6406569e243913f161043e81/missions",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "3003",
-							"path": [
-								"rapports",
-								"6406569e243913f161043e81",
-								"missions"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get quartiers from Rapports",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:3003/rapports/6406569e243913f161043e81/quartiers",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "3003",
-							"path": [
-								"rapports",
-								"6406569e243913f161043e81",
-								"quartiers"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get quartierMissionsValidate from Rapports",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:3003/rapports/6406569e243913f161043e81/quartierMissionsValidate",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "3003",
-							"path": [
-								"rapports",
-								"6406569e243913f161043e81",
-								"quartierMissionsValidate"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Post Agent on _id Rapport",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"agentId\":\"6400a555dd235c068a8d77bb\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "http://localhost:3003/rapports/6406569e243913f161043e81/agents",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "3003",
-							"path": [
-								"rapports",
-								"6406569e243913f161043e81",
-								"agents"
-							],
-							"query": [
-								{
-									"key": "agentId",
-									"value": "63f5f53fea3970f57e276090",
-									"disabled": true
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Post Mission on _id Rapport",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"missionId\":\"63f5f53fea3970f57e276090\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "http://localhost:3003/rapports/6406569e243913f161043e81/missions",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "3003",
-							"path": [
-								"rapports",
-								"6406569e243913f161043e81",
-								"missions"
-							],
-							"query": [
-								{
-									"key": "agentId",
-									"value": "63f5f53fea3970f57e276090",
-									"disabled": true
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Post Mission on _id Rapport Copy",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"missionId\":\"63f5f53fea3970f57e276090\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "http://localhost:3003/rapports/6406569e243913f161043e81/missions",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "3003",
-							"path": [
-								"rapports",
-								"6406569e243913f161043e81",
-								"missions"
-							],
-							"query": [
-								{
-									"key": "agentId",
-									"value": "63f5f53fea3970f57e276090",
-									"disabled": true
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Post quartier on _id Rapport",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"quartierId\":\"6404c6ffe92bac1965914d3e\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "http://localhost:3003/rapports/6405ef053e334da12b07ee11/quartiers",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "3003",
-							"path": [
-								"rapports",
-								"6405ef053e334da12b07ee11",
-								"quartiers"
-							],
-							"query": [
-								{
-									"key": "agentId",
-									"value": "63f5f53fea3970f57e276090",
-									"disabled": true
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Remove Agent from _id Daily",
-					"request": {
-						"method": "DELETE",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:3003/rapports/6405ef053e334da12b07ee11/agents/640085cf846e08568586c99a",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "3003",
-							"path": [
-								"rapports",
-								"6405ef053e334da12b07ee11",
-								"agents",
-								"640085cf846e08568586c99a"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Remove mission from _id Daily",
-					"request": {
-						"method": "DELETE",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:3003/rapports/6405ef053e334da12b07ee11/missions/640085cf846e08568586c99a",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "3003",
-							"path": [
-								"rapports",
-								"6405ef053e334da12b07ee11",
-								"missions",
-								"640085cf846e08568586c99a"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Remove mission from quartierMissionsValidate",
-					"request": {
-						"method": "DELETE",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:3003/rapports/6406569e243913f161043e81/quartierMissionsValidate/640655ead38cc71e73e3057c",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "3003",
-							"path": [
-								"rapports",
-								"6406569e243913f161043e81",
-								"quartierMissionsValidate",
-								"640655ead38cc71e73e3057c"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Remove quartier from _id Daily",
-					"request": {
-						"method": "DELETE",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:3003/rapports/6405ef053e334da12b07ee11/quartiers/63f5f53fea3970f57e276090",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "3003",
-							"path": [
-								"rapports",
-								"6405ef053e334da12b07ee11",
-								"quartiers",
-								"63f5f53fea3970f57e276090"
-							]
-						}
-					},
-					"response": []
-				}
-			]
-		},
-		{
-			"name": "Deletes",
-			"item": [
-				{
-					"name": "Delete Agent",
-					"request": {
-						"method": "DELETE",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:3003/agents/63f5da2a48ebd02c79a716a5",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "3003",
-							"path": [
-								"agents",
-								"63f5da2a48ebd02c79a716a5"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Delete Agent force",
-					"request": {
-						"method": "DELETE",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:3003/agents/63f5da2a48ebd02c79a716a5?force=1",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "3003",
-							"path": [
-								"agents",
-								"63f5da2a48ebd02c79a716a5"
-							],
-							"query": [
-								{
-									"key": "force",
-									"value": "1"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Delete Constat",
-					"request": {
-						"method": "DELETE",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:3003/constats/63f5da2b48ebd02c79a716d2",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "3003",
-							"path": [
-								"constats",
-								"63f5da2b48ebd02c79a716d2"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Delete Category",
-					"request": {
-						"method": "DELETE",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:3003/categories/6401e2d1cbebe6cb5e04c104",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "3003",
-							"path": [
-								"categories",
-								"6401e2d1cbebe6cb5e04c104"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Delete Daily",
-					"request": {
-						"method": "DELETE",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:3003/constats/63f5da2b48ebd02c79a716d2",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "3003",
-							"path": [
-								"constats",
-								"63f5da2b48ebd02c79a716d2"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Delete habitation",
-					"request": {
-						"method": "DELETE",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:3003/habitations/63f5da2b48ebd02c79a716b3",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "3003",
-							"path": [
-								"habitations",
-								"63f5da2b48ebd02c79a716b3"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Delete horaire",
-					"request": {
-						"method": "DELETE",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:3003/horaires/6401deb1cfa93a1309b1de9f",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "3003",
-							"path": [
-								"horaires",
-								"6401deb1cfa93a1309b1de9f"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Delete infraction",
-					"request": {
-						"method": "DELETE",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:3003/infractions/63fdd02f2c290d3bbf235f27?force=1",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "3003",
-							"path": [
-								"infractions",
-								"63fdd02f2c290d3bbf235f27"
-							],
-							"query": [
-								{
-									"key": "force",
-									"value": "1"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Delete quartier",
-					"request": {
-						"method": "DELETE",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:3003/quartiers/63ff53af7745d21b6d59600b",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "3003",
-							"path": [
-								"quartiers",
-								"63ff53af7745d21b6d59600b"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Delete Rue",
-					"request": {
-						"method": "DELETE",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:3003/rues/6401d62bb4e36a5531ceb63b",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "3003",
-							"path": [
-								"rues",
-								"6401d62bb4e36a5531ceb63b"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Delete Mission",
-					"request": {
-						"method": "DELETE",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:3003/missions/63fe05d6d5b13a91c00ea714?force=1",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "3003",
-							"path": [
-								"missions",
-								"63fe05d6d5b13a91c00ea714"
-							],
-							"query": [
-								{
-									"key": "force",
-									"value": "1"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Delete Rapport",
-					"request": {
-						"method": "DELETE",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:3003/rapports/6401c85cd24bc9fbc7adc188",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "3003",
-							"path": [
-								"rapports",
-								"6401c85cd24bc9fbc7adc188"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Delete validation",
-					"request": {
-						"method": "DELETE",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:3003/validations/63f5da2b48ebd02c79a716c4",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "3003",
-							"path": [
-								"validations",
-								"63f5da2b48ebd02c79a716c4"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Delete vehicules",
-					"request": {
-						"method": "DELETE",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:3003/vehicules/6401db26f6db1c18d97d993e",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "3003",
-							"path": [
-								"vehicules",
-								"6401db26f6db1c18d97d993e"
-							]
-						}
-					},
-					"response": []
-				}
-			]
-		},
-		{
-			"name": "Patchs",
-			"item": [
-				{
-					"name": "Patch Agent",
-					"request": {
-						"method": "PATCH",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "    {\r\n        \"firstname\": \"aaaaaaaaaaaa\",\r\n        \"lastname\": \"bbbbbbbbbbbb\",\r\n        \"birthday\": \"1982-04-26T12:08:38.266Z\",\r\n        \"tel\": \"+32 470432093\",\r\n        \"email\": \"qdf@gmail.com\",\r\n                \"userAccess\" : 1,\r\n        \"matricule\": \"A188\",\r\n        \"adresse\": {\r\n            \"rue\": \"77838 Wilmer Walks\",\r\n            \"cp\": \"84057\",\r\n            \"localite\": \"Lake Orion\"\r\n        },\r\n        \"password\": \"password\",\r\n        \"picture\": \"https://cdn-icons-png.flaticon.com/512/1946/1946392.png\",\r\n        \"formations\": [\r\n            858,\r\n            \"AK/eoq63b(\"\r\n        ]\r\n    }",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "http://localhost:3003/agents/63fc6310d3906b5bfeda82b7",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "3003",
-							"path": [
-								"agents",
-								"63fc6310d3906b5bfeda82b7"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Patch Category",
-					"request": {
-						"method": "PATCH",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "        {\r\n\r\n\"title\":\"coucou\"\r\n        }",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "http://localhost:3003/categories/6401e214ae2483ebb838ca54",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "3003",
-							"path": [
-								"categories",
-								"6401e214ae2483ebb838ca54"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Patch Constat",
-					"request": {
-						"method": "PATCH",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"agents\": [\r\n        \"63fb8c2e7e7e9485f09ab621\",\r\n        \"63fb8c2e7e7e9485f09ab621\"\r\n    ],\r\n    \"date\": \"2023-02-25T23:34:58.034Z\",\r\n    \"vehicule\": {\r\n        \"marque\": \"aaaaaaaaaaaaaaaaaaaaaaaaa\",\r\n        \"modele\": \"LeBaron\",\r\n        \"couleur\": \"black\",\r\n        \"type\": \"Sedan\",\r\n        \"immatriculation\": \"OO24MWJ\"\r\n    },\r\n                \"personne\": {\r\n        \"firstname\": \"Lilian\",\r\n        \"lastname\": \"Huels\",\r\n        \"birthday\": \"2022-05-07T03:08:49.655Z\",\r\n        \"nationalNumber\": 97165057668,\r\n        \"tel\": \"+32 470196002\",\r\n        \"adresse\": {\r\n            \"rue\": \"1685 Francisca Ridges\",\r\n            \"cp\": \"08755-1313\",\r\n            \"localite\": \"New Celestine\"\r\n        }},\r\n    \"adresse\": {\r\n        \"rue\": \"346 Goodwin Alley\",\r\n        \"cp\": \"86117\",\r\n        \"localite\": \"Caesarshire\"\r\n    },\r\n    \"geolocation\": {\r\n        \"latitude\": \"-67.7178\",\r\n        \"longitude\": \"-92.9903\",\r\n        \"horodatage\": \"2023-02-21T23:58:58.153Z\"\r\n    },\r\n    \"infractions\": [\r\n        \"quasi fugiat rerum\",\r\n        \"at deleniti odio\"\r\n    ],\r\n    \"pv\": true,\r\n    \"notes\": \"tenetur provident labore\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "http://localhost:3003/constats/63fb91e7dd91e86735962237",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "3003",
-							"path": [
-								"constats",
-								"63fb91e7dd91e86735962237"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Patch Dailies",
-					"request": {
-						"method": "PATCH",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "        {\r\n            \"date\": \"2023-03-01T21:16:54.617Z\",\r\n            \"agents\": [\r\n                \"64004e3ad436598a8b4e858c\",\r\n                \"64004e3ad436598a8b4e858e\"\r\n            ],\r\n            \"horaire\": \"08h30-16h\",\r\n            \"vehicule\": \"Dacia\",\r\n            \"quartiers\": [\r\n                \"64004e3ad436598a8b4e85da\"\r\n            ],\r\n            \"missions\": [\r\n                \"64004e3ad436598a8b4e85d5\",\r\n                \"64004e3ad436598a8b4e85d6\",\r\n                \"64004e3ad436598a8b4e85d6\",\r\n                \"64004e3ad436598a8b4e85d5\",\r\n                \"64004e3ad436598a8b4e85d5\"\r\n            ],\r\n            \"notes\": [\"qsdfqsdfqsdf\"],\r\n            \"annexes\": [\"qsdfqsdfqsdf\"]\r\n        }",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "http://localhost:3003/dailies/6401b6225c0902a9dfb52434",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "3003",
-							"path": [
-								"dailies",
-								"6401b6225c0902a9dfb52434"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Patch Rapports",
-					"request": {
-						"method": "PATCH",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "        {\r\n            \"date\": \"2023-03-01T21:16:54.617Z\",\r\n            \"agents\": [\r\n                \"64004e3ad436598a8b4e858c\",\r\n                \"64004e3ad436598a8b4e858e\"\r\n            ],\r\n            \"horaire\": \"08h30-16h\",\r\n            \"vehicule\": \"Dacia\",\r\n            \"quartiers\": [\r\n                \"64004e3ad436598a8b4e85da\"\r\n            ],\r\n            \"missions\": [\r\n                \"64004e3ad436598a8b4e85d5\",\r\n                \"64004e3ad436598a8b4e85d6\",\r\n                \"64004e3ad436598a8b4e85d6\",\r\n                \"64004e3ad436598a8b4e85d5\",\r\n                \"64004e3ad436598a8b4e85d5\"\r\n            ],\r\n            \"notes\": [\"qsdfqsdfqsdf\"],\r\n            \"annexes\": [\"qsdfqsdfqsdf\"]\r\n        }",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "http://localhost:3003/rapports/6401c85cd24bc9fbc7adc188",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "3003",
-							"path": [
-								"rapports",
-								"6401c85cd24bc9fbc7adc188"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Patch Habitation",
-					"request": {
-						"method": "PATCH",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"adresse\": {\r\n        \"rue\": \"222222222222222222222\",\r\n        \"cp\": \"222222222222222222222\",\r\n        \"localite\": \"222222222222222222222\"\r\n    },\r\n    \"demandeur\": {\r\n        \"nom\": \"ZZZZZZZZZZZZZZZZzzz\",\r\n        \"tel\": \"+32 478 767 096\"\r\n    },\r\n    \"date\": {\r\n        \"debut\": \"2023-01-08T17:57:01.451Z\",\r\n        \"fin\": \"2024-01-08T22:34:10.412Z\"\r\n    },\r\n    \"mesures\": [\r\n        \"Système d'alarme : Oui\",\r\n        \"Eclairage extérieur : Oui\",\r\n        \"Minuterie d'éclairage : Oui\",\r\n        \"Société gardiennage : Non\",\r\n        \"Chien : Non\",\r\n        \"Présence d'un tiers : Non\",\r\n        \"Autres : volets roulants programmables, éclairage programmé entrée et chambres\"\r\n    ],\r\n    \"vehicule\": \"Impala\",\r\n    \"googlemap\": \"https://true-mailer.name\"\r\n\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "http://localhost:3003/habitations/63f5f53fea3970f57e2760a0",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "3003",
-							"path": [
-								"habitations",
-								"63f5f53fea3970f57e2760a0"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Patch Horaires",
-					"request": {
-						"method": "PATCH",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n\r\n        \"horaire\": \"22h-17h\"\r\n\r\n    }",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "http://localhost:3003/horaires/6401df02cfa93a1309b1dea0",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "3003",
-							"path": [
-								"horaires",
-								"6401df02cfa93a1309b1dea0"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Patch Infraction",
-					"request": {
-						"method": "PATCH",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "        {\r\n            \"category\": \"aaaaaaaaaaaaaaaaazerazer zerazerazerzaera\",\r\n            \"priority\": 3,\r\n            \"list\": [\r\n                [\r\n                    \"Art. 126\",\r\n                    \"Jets deaezrazerazerzr déchets\"\r\n                ],\r\n                [\r\n                    \"Art. 158 b\",\r\n                    \"PAV (Point d'apport volontaire)\"\r\n                ],\r\n                [\r\n                    \"Art. 165\",\r\n                    \"Dépôt sauvage\"\r\n                ]\r\n            ]\r\n        }",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "http://localhost:3003/infractions/63fdc6c1927bb5abd413762d",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "3003",
-							"path": [
-								"infractions",
-								"63fdc6c1927bb5abd413762d"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Patch Quartiers",
-					"request": {
-						"method": "PATCH",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "        {\r\n\r\n            \"title\": \"zzzzzzzzzzzzzzzzzzzzzzzzzzzzzz\",\r\n            \"missions\": [\r\n                \"63ff52c26a2392a4a7bdc9e3\",\r\n                \"63ff52c26a2392a4a7bdc9e2\",\r\n                \"63ff52c26a2392a4a7bdc9e3\",\r\n                \"63ff52c26a2392a4a7bdc9e5\",\r\n                \"63ff52c26a2392a4a7bdc9e2\"\r\n            ]\r\n        }",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "http://localhost:3003/quartiers/63ff53ad7745d21b6d596008",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "3003",
-							"path": [
-								"quartiers",
-								"63ff53ad7745d21b6d596008"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Patch Rues",
-					"request": {
-						"method": "PATCH",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "        {\r\n            \"adresse\": \"Abattoireeeeeeeeeeeeeeeeeeeeeeeeeeeee\",\r\n            \"denomination\": \"rue de l'\",\r\n            \"cp\": 7700,\r\n            \"localite\": \"Mouscron\",\r\n            \"codeRue\": \"*0316\",\r\n            \"traductionNl\": \"Slachthuisstraat\"\r\n        }",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "http://localhost:3003/rues/6401d62bb4e36a5531ceb63b",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "3003",
-							"path": [
-								"rues",
-								"6401d62bb4e36a5531ceb63b"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Patch Mission",
-					"request": {
-						"method": "PATCH",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"title\": \"Zone de livraisonnnnnnnnnnnnnnnnnnnnnnnnnnnn\",\r\n    \"description\": \"azerazer\",\r\n    \"horaire\": \"\",\r\n    \"contact\": \"\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "http://localhost:3003/missions/63fe05d5d5b13a91c00ea713",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "3003",
-							"path": [
-								"missions",
-								"63fe05d5d5b13a91c00ea713"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Patch Validation",
-					"request": {
-						"method": "PATCH",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "    {\r\n\r\n        \"date\": \"2023-02-21T19:40:53.214Z\",\r\n\r\n        \"agent\" : [\"63f5c7b4f3f90d575d769050\"],\r\n        \"habitation\":[\"63f5c7b4f3f90d575d769061\"],\r\n        \"note\": \"aaaaaaaaaaaaaaaaaaa\"\r\n\r\n    }",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "http://localhost:3003/validations/63f5f53fea3970f57e2760b1",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "3003",
-							"path": [
-								"validations",
-								"63f5f53fea3970f57e2760b1"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Patch Vehicule",
-					"request": {
-						"method": "PATCH",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "        {\r\n\r\n            \"marque\": \"Dacia222333333333\",\r\n            \"modele\": \"qdfqsdfqsf\",\r\n            \"immatriculation\": \"1GFV206\"\r\n        }",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "http://localhost:3003/vehicules/6401db26f6db1c18d97d993e",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "3003",
-							"path": [
-								"vehicules",
-								"6401db26f6db1c18d97d993e"
-							]
-						}
-					},
-					"response": []
-				}
-			]
-		}
-	]
+    "info": {
+        "_postman_id": "7d291766-557b-4f86-934f-fd7ed45961b9",
+        "name": "GDP Back",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+        "_exporter_id": "24891427"
+    },
+    "item": [
+        {
+            "name": "Token",
+            "item": [
+                {
+                    "name": "Add admin",
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\r\n    \"firstname\": \"Administrator\",\r\n    \"lastname\": \"Administrator\",\r\n    \"email\": \"admin@admin.com\",\r\n    \"matricule\": \"A113\",\r\n    \"userAccess\" :1,\r\n    \"picture\": \"https://cdn-icons-png.flaticon.com/512/1946/1946392.png\",\r\n    \"password\": \"123456789\"\r\n\r\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "http://localhost:3003/agents",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "3003",
+                            "path": ["agents"]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "http://localhost:3003/login",
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "urlencoded",
+                            "urlencoded": [
+                                {
+                                    "key": "email",
+                                    "value": "admin@admin.com",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "password",
+                                    "value": "123456789",
+                                    "type": "text"
+                                }
+                            ]
+                        },
+                        "url": {
+                            "raw": "http://localhost:3003/login",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "3003",
+                            "path": ["login"],
+                            "query": [
+                                {
+                                    "key": "email",
+                                    "value": "admin@admin.com",
+                                    "disabled": true
+                                },
+                                {
+                                    "key": "password",
+                                    "value": "123456789",
+                                    "disabled": true
+                                }
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Users with token",
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NDA3OTE1OTM3ZGJjZTc4ZTNmZmQxNDkiLCJlbWFpbCI6ImFkbWluQGFkbWluLmNvbSIsInVzZXJBY2Nlc3MiOjAsIm1hdHJpY3VsZSI6IkExMTMiLCJmaXJzdG5hbWUiOiJBZG1pbmlzdHJhdG9yIiwibGFzdG5hbWUiOiJBZG1pbmlzdHJhdG9yIiwiYWRyZXNzZSI6eyJydWUiOiI2NDA3OTE1ODM3ZGJjZTc4ZTNmZmQwYzMiLCJudW1lcm8iOiI5OCJ9LCJwaWN0dXJlIjoiaHR0cHM6Ly9jZG4taWNvbnMtcG5nLmZsYXRpY29uLmNvbS81MTIvMTk0Ni8xOTQ2MzkyLnBuZyIsImNyZWF0ZWRBdCI6IjIwMjMtMDMtMDdUMTk6MzI6NDAuODI0WiIsInVwZGF0ZWRBdCI6IjIwMjMtMDMtMDdUMTk6MzI6NDAuODI0WiIsImlhdCI6MTY3ODIxNzkxNX0.Z1mrEsbvnSC-T5GmRl5OHFnnvIJdDC2GnBSK4JQGuNM",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "http://localhost:3003/users",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "3003",
+                            "path": ["users"]
+                        }
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "Gets",
+            "item": [
+                {
+                    "name": "Get Agents",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "http://localhost:3003/agents/",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "3003",
+                            "path": ["agents", ""]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get 1 Agent",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "http://localhost:3003/agents/640793c546b8c9c069ba3e5f",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "3003",
+                            "path": ["agents", "640793c546b8c9c069ba3e5f"]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get Categories",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "http://localhost:3003/categories/",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "3003",
+                            "path": ["categories", ""]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get Constats",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "http://localhost:3003/constats/",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "3003",
+                            "path": ["constats", ""]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get Constats by Rue/Immatriculation",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "http://localhost:3003/constats/?immatriculation=KU23C",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "3003",
+                            "path": ["constats", ""],
+                            "query": [
+                                {
+                                    "key": "immatriculation",
+                                    "value": "KU23C"
+                                },
+                                {
+                                    "key": "localite",
+                                    "value": "Lake Lueboro",
+                                    "disabled": true
+                                },
+                                {
+                                    "key": "rue",
+                                    "value": "Dallin",
+                                    "disabled": true
+                                }
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get Dailies",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "http://localhost:3003/dailies/",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "3003",
+                            "path": ["dailies", ""]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get Rapports",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "http://localhost:3003/rapports/",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "3003",
+                            "path": ["rapports", ""]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get Habitations",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "http://localhost:3003/habitations/",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "3003",
+                            "path": ["habitations", ""]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get Horaires",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "http://localhost:3003/horaires/",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "3003",
+                            "path": ["horaires", ""]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get Infractions",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "http://localhost:3003/infractions/",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "3003",
+                            "path": ["infractions", ""]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get Quartiers",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "http://localhost:3003/quartiers/",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "3003",
+                            "path": ["quartiers", ""]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get Rues",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "http://localhost:3003/rues/",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "3003",
+                            "path": ["rues", ""]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get Rues by adresse/localite/cp",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "http://localhost:3003/rues/?nom=christ",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "3003",
+                            "path": ["rues", ""],
+                            "query": [
+                                {
+                                    "key": "localite",
+                                    "value": "Herseaux",
+                                    "disabled": true
+                                },
+                                {
+                                    "key": "cp",
+                                    "value": "7712",
+                                    "disabled": true
+                                },
+                                {
+                                    "key": "nom",
+                                    "value": "christ"
+                                },
+                                {
+                                    "key": "quartier",
+                                    "value": "dqsdf",
+                                    "disabled": true
+                                }
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get Status",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "http://localhost:3003/status",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "3003",
+                            "path": ["status"]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get Missions",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "http://localhost:3003/missions/",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "3003",
+                            "path": ["missions", ""]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get Validations",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "http://localhost:3003/validations",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "3003",
+                            "path": ["validations"]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get Vehicules",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "http://localhost:3003/vehicules/",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "3003",
+                            "path": ["vehicules", ""]
+                        }
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "Posts",
+            "item": [
+                {
+                    "name": "Flushall redis",
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "url": {
+                            "raw": "http://localhost:3003/flushall",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "3003",
+                            "path": ["flushall"],
+                            "query": [
+                                {
+                                    "key": "localite",
+                                    "value": "mouscron",
+                                    "disabled": true
+                                },
+                                {
+                                    "key": "rue",
+                                    "value": "Roelandt",
+                                    "disabled": true
+                                }
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "New Agent",
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "    {\r\n        \"email\": \"qdqdfqsdffqsdfqsf@gmail.com\",\r\n        \"password\": \"password\",\r\n        \"matricule\": \"A188\",\r\n        \"firstname\": \"COCO\",\r\n        \"userAccess\" : 1,\r\n        \"lastname\": \"CHannel\",\r\n        \"birthday\": \"1982-04-26T12:08:38.266Z\",\r\n        \"tel\": \"+32 470432093\",\r\n        \"adresse\": {\r\n            \"rue\": \"64078730ca4187a24ce86f4e\",\r\n            \"numero\": \"12\"\r\n        },\r\n        \"picture\": \"https://cdn-icons-png.flaticon.com/512/1946/1946392.png\",\r\n        \"formations\": [\r\n            858,\r\n            \"AK/eoq63b(\"\r\n        ]\r\n    }",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "http://localhost:3003/agents",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "3003",
+                            "path": ["agents"]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "New Category",
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "        {\r\n            \"title\": \"Essai\"\r\n        }",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "http://localhost:3003/categories/",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "3003",
+                            "path": ["categories", ""]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "New Constat",
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\r\n    \"agents\": [\r\n        \"63f5da2b48ebd02c79a716ad\",\r\n        \"63f5da2b48ebd02c79a716a9\"\r\n    ],\r\n    \"date\": \"2023-02-21T23:58:58.153Z\",\r\n    \"vehicule\": {\r\n        \"marque\": \"Volkswagen\",\r\n        \"modele\": \"Wrangler\",\r\n        \"couleur\": \"turquoise\",\r\n        \"type\": \"Cargo Van\",\r\n        \"immatriculation\": \"CD57WYA\"\r\n    },\r\n    \"personne\": {\r\n        \"firstname\": \"Lilian\",\r\n        \"lastname\": \"Huels\",\r\n        \"birthday\": \"2022-05-07T03:08:49.655Z\",\r\n        \"nationalNumber\": 97165057668,\r\n        \"tel\": \"+32 470196002\"\r\n    },\r\n    \"adresse\": {\r\n        \"rue\": \"6407a2a0676c38131b99864d\",\r\n        \"numero\": \"1\"\r\n    },\r\n    \"geolocation\": {\r\n        \"latitude\": \"-67.7178\",\r\n        \"longitude\": \"-92.9903\",\r\n        \"horodatage\": \"2023-02-21T23:58:58.153Z\"\r\n    },\r\n    \"infractions\": [\r\n        \"aut incidunt eaque\",\r\n        \"at adipisci quia\"\r\n    ],\r\n    \"pv\": false,\r\n    \"notes\": \"porro voluptatibus minima\"\r\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "http://localhost:3003/constats/",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "3003",
+                            "path": ["constats", ""]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "New Daily",
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "        {\r\n            \"date\": \"2023-03-01T21:16:54.617Z\",\r\n            \"agents\": [\r\n                \"64004e3ad436598a8b4e858c\",\r\n                \"64004e3ad436598a8b4e858e\"\r\n            ],\r\n            \"horaire\": \"08h30-16h\",\r\n            \"vehicule\": \"Dacia\",\r\n            \"quartiers\": [\r\n                \"64004e3ad436598a8b4e85da\"\r\n            ],\r\n            \"missions\": [\r\n                \"64004e3ad436598a8b4e85d5\",\r\n                \"64004e3ad436598a8b4e85d6\",\r\n                \"64004e3ad436598a8b4e85d6\",\r\n                \"64004e3ad436598a8b4e85d5\",\r\n                \"64004e3ad436598a8b4e85d5\"\r\n            ],\r\n            \"notes\": [],\r\n            \"annexes\":[]\r\n        }",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "http://localhost:3003/dailies/",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "3003",
+                            "path": ["dailies", ""]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "New Daily Send Mail",
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "        {\r\n            \"date\": \"2023-03-01T21:16:54.617Z\",\r\n            \"agents\": [\r\n                \"64004e3ad436598a8b4e858c\",\r\n                \"64004e3ad436598a8b4e858e\"\r\n            ],\r\n            \"horaire\": \"08h30-16h\",\r\n            \"vehicule\": \"Dacia\",\r\n            \"quartiers\": [\r\n                \"64004e3ad436598a8b4e85da\"\r\n            ],\r\n            \"missions\": [\r\n                \"64004e3ad436598a8b4e85d5\",\r\n                \"64004e3ad436598a8b4e85d6\",\r\n                \"64004e3ad436598a8b4e85d6\",\r\n                \"64004e3ad436598a8b4e85d5\",\r\n                \"64004e3ad436598a8b4e85d5\"\r\n            ],\r\n            \"notes\": [],\r\n            \"annexes\":[]\r\n        }",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "http://localhost:3003/dailies/6408343df91058beadd0851c/send",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "3003",
+                            "path": [
+                                "dailies",
+                                "6408343df91058beadd0851c",
+                                "send"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "New Habitation",
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\r\n    \"adresse\": {\r\n        \"rue\": \"6407a2a0676c38131b99864d\",\r\n        \"numero\": \"2\"\r\n\r\n    },\r\n    \"demandeur\": {\r\n        \"nom\": \"Harber Braeden\",\r\n        \"tel\": \"+32 478 767 096\"\r\n    },\r\n    \"date\": {\r\n        \"debut\": \"2023-01-08T17:57:01.451Z\",\r\n        \"fin\": \"2024-01-08T22:34:10.412Z\"\r\n    },\r\n    \"mesures\": [\r\n        \"Système d'alarme : Oui\",\r\n        \"Eclairage extérieur : Oui\",\r\n        \"Minuterie d'éclairage : Oui\",\r\n        \"Société gardiennage : Non\",\r\n        \"Chien : Non\",\r\n        \"Présence d'un tiers : Non\",\r\n        \"Autres : volets roulants programmables, éclairage programmé entrée et chambres\"\r\n    ],\r\n    \"vehicule\": \"Impala\",\r\n    \"googlemap\": \"https://true-mailer.name\"\r\n\r\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "http://localhost:3003/habitations",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "3003",
+                            "path": ["habitations"]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "New Horaire",
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "        {\r\n\r\n            \"horaire\": \"10h-18h\"\r\n        }",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "http://localhost:3003/horaires",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "3003",
+                            "path": ["horaires"]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "New Infractions",
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "        {\r\n            \"category\": \"Déchets\",\r\n            \"priority\": 3,\r\n            \"list\": [\r\n                [\r\n                    \"Art. 126\",\r\n                    \"Jets de déchets\"\r\n                ],\r\n                [\r\n                    \"Art. 158 b\",\r\n                    \"PAV (Point d'apport volontaire)\"\r\n                ],\r\n                [\r\n                    \"Art. 165\",\r\n                    \"Dépôt sauvage\"\r\n                ]\r\n            ]\r\n        }",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "http://localhost:3003/infractions",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "3003",
+                            "path": ["infractions"]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "New Quartier",
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\r\n    \"title\": \"Centre\",\r\n    \"missions\": [\r\n        \"63ff522bbf249f4b106d4cb5\",\r\n        \"63ff522bbf249f4b106d4cb6\",\r\n        \"63ff522bbf249f4b106d4cb6\",\r\n        \"63ff522bbf249f4b106d4cb6\",\r\n        \"63ff522bbf249f4b106d4cb6\"\r\n    ]\r\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "http://localhost:3003/quartiers",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "3003",
+                            "path": ["quartiers"]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "New Rue",
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\r\n\r\n            \"nom\": \"Abbé Christophe\",\r\n            \"denomination\": \"boulevard\",\r\n            \"quartier\": \"Centre\",\r\n            \"cp\": 7711,\r\n            \"localite\": \"Dottignies\",\r\n            \"codeRue\": \"*2108\",\r\n            \"traductionNl\": \"Priester L.M. Goormachtighlaan\",\r\n            \"xMin\": \"\",\r\n            \"xMax\": \"\",\r\n            \"yMin\": \"\",\r\n            \"yMax\": \"\",\r\n            \"idTronconCentral\": \"\"\r\n        }",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "http://localhost:3003/rues",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "3003",
+                            "path": ["rues"]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "New Mission",
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\r\n    \"title\": \"Zone de livraison 2\",\r\n    \"description\": \"azerazer\",\r\n    \"category\": \"azerazer\",\r\n    \"horaire\": \"\",\r\n    \"contact\": \"\"\r\n    \r\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "http://localhost:3003/missions",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "3003",
+                            "path": ["missions"]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "New Rapport",
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "        {\r\n            \"daily\": \"6405ef053e334da12b07ee09\",\r\n            \"date\": \"2023-03-06T00:25:23.844Z\",\r\n            \"horaire\": \"07h30-15h\",\r\n            \"agents\": [\r\n                \"6405ef053e334da12b07eda3\",\r\n                \"6405ef053e334da12b07eda2\"\r\n            ],\r\n            \"vehicule\": \"Skoda\",\r\n            \"quartiers\": [\r\n                \"6405ef053e334da12b07edfc\"\r\n            ],\r\n            \"quartierMissionsValidate\": [\r\n                \"6405ef053e334da12b07ede9\",\r\n                \"6405ef053e334da12b07ede3\",\r\n                \"6405ef053e334da12b07eded\",\r\n                \"6405ef053e334da12b07ede3\",\r\n                \"6405ef053e334da12b07ede8\",\r\n                \"6405ef053e334da12b07edf0\"\r\n            ],\r\n            \"missions\": [\r\n                \"6405ef053e334da12b07ede4\",\r\n                \"6405ef053e334da12b07edf3\",\r\n                \"6405ef053e334da12b07ede7\",\r\n                \"6405ef053e334da12b07ede9\",\r\n                \"6405ef053e334da12b07ede3\"\r\n            ],\r\n            \"notes\": [\r\n                \"eos vero aut\",\r\n                \"atque est temporibus\",\r\n                \"sapiente minima rem\",\r\n                \"ex maiores nisi\"\r\n            ],\r\n            \"annexes\": [\r\n                \"eligendi reiciendis voluptatibus\",\r\n                \"quisquam repellendus et\",\r\n                \"ipsa eos quod\",\r\n                \"voluptates libero ut\"\r\n            ]\r\n        }",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "http://localhost:3003/rapports/",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "3003",
+                            "path": ["rapports", ""]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "New Validations",
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "    {\r\n\r\n        \"date\": \"2023-02-21T19:40:53.214Z\",\r\n        \"agent\" : [\"6408343df91058beadd084b9\"],\r\n        \"habitation\":[\"6408343df91058beadd084bd\"],\r\n        \"note\": \"RAS\"\r\n\r\n    }",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "http://localhost:3003/validations",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "3003",
+                            "path": ["validations"]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "New Vehicule",
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "        {\r\n\r\n            \"marque\": \"Dacia222\",\r\n            \"modele\": \"\",\r\n            \"immatriculation\": \"1GFV206\"\r\n        }",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "http://localhost:3003/vehicules",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "3003",
+                            "path": ["vehicules"]
+                        }
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "Ajout/Supp agents contats",
+            "item": [
+                {
+                    "name": "Get Constats - Agents",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "http://localhost:3003/constats/63f5f540ea3970f57e2760be/agents",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "3003",
+                            "path": [
+                                "constats",
+                                "63f5f540ea3970f57e2760be",
+                                "agents"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get Constats - Post Agent",
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\r\n    \"agentId\":\"63f5f53fea3970f57e276090\"\r\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "http://localhost:3003/constats/63f5f540ea3970f57e2760be/agents",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "3003",
+                            "path": [
+                                "constats",
+                                "63f5f540ea3970f57e2760be",
+                                "agents"
+                            ],
+                            "query": [
+                                {
+                                    "key": "agentId",
+                                    "value": "63f5f53fea3970f57e276090",
+                                    "disabled": true
+                                }
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get Constats - Agent Remove",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [],
+                        "url": {
+                            "raw": "http://localhost:3003/constats/63f5f540ea3970f57e2760be/63f5f540ea3970f57e2760be",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "3003",
+                            "path": [
+                                "constats",
+                                "63f5f540ea3970f57e2760be",
+                                "63f5f540ea3970f57e2760be"
+                            ]
+                        }
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "CRUD Daily",
+            "item": [
+                {
+                    "name": "Get Agents from Dailies",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "http://localhost:3003/dailies/6408343df91058beadd08518/agents",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "3003",
+                            "path": [
+                                "dailies",
+                                "6408343df91058beadd08518",
+                                "agents"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get missions from Dailies",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "http://localhost:3003/dailies/6400a555dd235c068a8d780b/missions",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "3003",
+                            "path": [
+                                "dailies",
+                                "6400a555dd235c068a8d780b",
+                                "missions"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get quartiers from Dailies",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "http://localhost:3003/dailies/6400a555dd235c068a8d780b/quartiers",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "3003",
+                            "path": [
+                                "dailies",
+                                "6400a555dd235c068a8d780b",
+                                "quartiers"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Post Agent on _id dailies",
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\r\n    \"agentId\":\"6400a555dd235c068a8d77bb\"\r\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "http://localhost:3003/dailies/6400a555dd235c068a8d780b/agents",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "3003",
+                            "path": [
+                                "dailies",
+                                "6400a555dd235c068a8d780b",
+                                "agents"
+                            ],
+                            "query": [
+                                {
+                                    "key": "agentId",
+                                    "value": "63f5f53fea3970f57e276090",
+                                    "disabled": true
+                                }
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Post Mission on _id dailies",
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\r\n    \"missionId\":\"63f5f53fea3970f57e276090\"\r\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "http://localhost:3003/dailies/6404c451034b9c55829147fe/missions",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "3003",
+                            "path": [
+                                "dailies",
+                                "6404c451034b9c55829147fe",
+                                "missions"
+                            ],
+                            "query": [
+                                {
+                                    "key": "agentId",
+                                    "value": "63f5f53fea3970f57e276090",
+                                    "disabled": true
+                                }
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Post quartier on _id dailies",
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\r\n    \"quartierId\":\"6404c6ffe92bac1965914d3e\"\r\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "http://localhost:3003/dailies/6404c451034b9c55829147fe/quartiers",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "3003",
+                            "path": [
+                                "dailies",
+                                "6404c451034b9c55829147fe",
+                                "quartiers"
+                            ],
+                            "query": [
+                                {
+                                    "key": "agentId",
+                                    "value": "63f5f53fea3970f57e276090",
+                                    "disabled": true
+                                }
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Remove Agent from _id Daily",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [],
+                        "url": {
+                            "raw": "http://localhost:3003/dailies/6404c451034b9c55829147fe/agents/640085cf846e08568586c99a",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "3003",
+                            "path": [
+                                "dailies",
+                                "6404c451034b9c55829147fe",
+                                "agents",
+                                "640085cf846e08568586c99a"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Remove mission from _id Daily",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [],
+                        "url": {
+                            "raw": "http://localhost:3003/dailies/6404c451034b9c55829147fe/missions/640085cf846e08568586c99a",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "3003",
+                            "path": [
+                                "dailies",
+                                "6404c451034b9c55829147fe",
+                                "missions",
+                                "640085cf846e08568586c99a"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Remove quartier from _id Daily",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [],
+                        "url": {
+                            "raw": "http://localhost:3003/dailies/6400a555dd235c068a8d780b/quartiers/63f5f53fea3970f57e276090",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "3003",
+                            "path": [
+                                "dailies",
+                                "6400a555dd235c068a8d780b",
+                                "quartiers",
+                                "63f5f53fea3970f57e276090"
+                            ]
+                        }
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "CRUD Rapports",
+            "item": [
+                {
+                    "name": "Get Agents from Rapports",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "http://localhost:3003/rapports/6406569e243913f161043e81/agents",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "3003",
+                            "path": [
+                                "rapports",
+                                "6406569e243913f161043e81",
+                                "agents"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get missions from Rapports",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "http://localhost:3003/rapports/6406569e243913f161043e81/missions",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "3003",
+                            "path": [
+                                "rapports",
+                                "6406569e243913f161043e81",
+                                "missions"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get quartiers from Rapports",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "http://localhost:3003/rapports/6406569e243913f161043e81/quartiers",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "3003",
+                            "path": [
+                                "rapports",
+                                "6406569e243913f161043e81",
+                                "quartiers"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get quartierMissionsValidate from Rapports",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "http://localhost:3003/rapports/6406569e243913f161043e81/quartierMissionsValidate",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "3003",
+                            "path": [
+                                "rapports",
+                                "6406569e243913f161043e81",
+                                "quartierMissionsValidate"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Post Agent on _id Rapport",
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\r\n    \"agentId\":\"6400a555dd235c068a8d77bb\"\r\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "http://localhost:3003/rapports/6406569e243913f161043e81/agents",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "3003",
+                            "path": [
+                                "rapports",
+                                "6406569e243913f161043e81",
+                                "agents"
+                            ],
+                            "query": [
+                                {
+                                    "key": "agentId",
+                                    "value": "63f5f53fea3970f57e276090",
+                                    "disabled": true
+                                }
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Post Mission on _id Rapport",
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\r\n    \"missionId\":\"63f5f53fea3970f57e276090\"\r\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "http://localhost:3003/rapports/6406569e243913f161043e81/missions",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "3003",
+                            "path": [
+                                "rapports",
+                                "6406569e243913f161043e81",
+                                "missions"
+                            ],
+                            "query": [
+                                {
+                                    "key": "agentId",
+                                    "value": "63f5f53fea3970f57e276090",
+                                    "disabled": true
+                                }
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Post Mission on _id Rapport Copy",
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\r\n    \"missionId\":\"63f5f53fea3970f57e276090\"\r\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "http://localhost:3003/rapports/6406569e243913f161043e81/missions",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "3003",
+                            "path": [
+                                "rapports",
+                                "6406569e243913f161043e81",
+                                "missions"
+                            ],
+                            "query": [
+                                {
+                                    "key": "agentId",
+                                    "value": "63f5f53fea3970f57e276090",
+                                    "disabled": true
+                                }
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Post quartier on _id Rapport",
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\r\n    \"quartierId\":\"6404c6ffe92bac1965914d3e\"\r\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "http://localhost:3003/rapports/6405ef053e334da12b07ee11/quartiers",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "3003",
+                            "path": [
+                                "rapports",
+                                "6405ef053e334da12b07ee11",
+                                "quartiers"
+                            ],
+                            "query": [
+                                {
+                                    "key": "agentId",
+                                    "value": "63f5f53fea3970f57e276090",
+                                    "disabled": true
+                                }
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Remove Agent from _id Daily",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [],
+                        "url": {
+                            "raw": "http://localhost:3003/rapports/6405ef053e334da12b07ee11/agents/640085cf846e08568586c99a",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "3003",
+                            "path": [
+                                "rapports",
+                                "6405ef053e334da12b07ee11",
+                                "agents",
+                                "640085cf846e08568586c99a"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Remove mission from _id Daily",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [],
+                        "url": {
+                            "raw": "http://localhost:3003/rapports/6405ef053e334da12b07ee11/missions/640085cf846e08568586c99a",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "3003",
+                            "path": [
+                                "rapports",
+                                "6405ef053e334da12b07ee11",
+                                "missions",
+                                "640085cf846e08568586c99a"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Remove mission from quartierMissionsValidate",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [],
+                        "url": {
+                            "raw": "http://localhost:3003/rapports/6406569e243913f161043e81/quartierMissionsValidate/640655ead38cc71e73e3057c",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "3003",
+                            "path": [
+                                "rapports",
+                                "6406569e243913f161043e81",
+                                "quartierMissionsValidate",
+                                "640655ead38cc71e73e3057c"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Remove quartier from _id Daily",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [],
+                        "url": {
+                            "raw": "http://localhost:3003/rapports/6405ef053e334da12b07ee11/quartiers/63f5f53fea3970f57e276090",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "3003",
+                            "path": [
+                                "rapports",
+                                "6405ef053e334da12b07ee11",
+                                "quartiers",
+                                "63f5f53fea3970f57e276090"
+                            ]
+                        }
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "Deletes",
+            "item": [
+                {
+                    "name": "Delete Agent",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [],
+                        "url": {
+                            "raw": "http://localhost:3003/agents/63f5da2a48ebd02c79a716a5",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "3003",
+                            "path": ["agents", "63f5da2a48ebd02c79a716a5"]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Delete Agent force",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [],
+                        "url": {
+                            "raw": "http://localhost:3003/agents/63f5da2a48ebd02c79a716a5?force=1",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "3003",
+                            "path": ["agents", "63f5da2a48ebd02c79a716a5"],
+                            "query": [
+                                {
+                                    "key": "force",
+                                    "value": "1"
+                                }
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Delete Constat",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [],
+                        "url": {
+                            "raw": "http://localhost:3003/constats/63f5da2b48ebd02c79a716d2",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "3003",
+                            "path": ["constats", "63f5da2b48ebd02c79a716d2"]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Delete Category",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [],
+                        "url": {
+                            "raw": "http://localhost:3003/categories/6401e2d1cbebe6cb5e04c104",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "3003",
+                            "path": ["categories", "6401e2d1cbebe6cb5e04c104"]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Delete Daily",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [],
+                        "url": {
+                            "raw": "http://localhost:3003/constats/63f5da2b48ebd02c79a716d2",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "3003",
+                            "path": ["constats", "63f5da2b48ebd02c79a716d2"]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Delete habitation",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [],
+                        "url": {
+                            "raw": "http://localhost:3003/habitations/63f5da2b48ebd02c79a716b3",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "3003",
+                            "path": ["habitations", "63f5da2b48ebd02c79a716b3"]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Delete horaire",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [],
+                        "url": {
+                            "raw": "http://localhost:3003/horaires/6401deb1cfa93a1309b1de9f",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "3003",
+                            "path": ["horaires", "6401deb1cfa93a1309b1de9f"]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Delete infraction",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [],
+                        "url": {
+                            "raw": "http://localhost:3003/infractions/63fdd02f2c290d3bbf235f27?force=1",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "3003",
+                            "path": ["infractions", "63fdd02f2c290d3bbf235f27"],
+                            "query": [
+                                {
+                                    "key": "force",
+                                    "value": "1"
+                                }
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Delete quartier",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [],
+                        "url": {
+                            "raw": "http://localhost:3003/quartiers/63ff53af7745d21b6d59600b",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "3003",
+                            "path": ["quartiers", "63ff53af7745d21b6d59600b"]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Delete Rue",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [],
+                        "url": {
+                            "raw": "http://localhost:3003/rues/6401d62bb4e36a5531ceb63b",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "3003",
+                            "path": ["rues", "6401d62bb4e36a5531ceb63b"]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Delete Mission",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [],
+                        "url": {
+                            "raw": "http://localhost:3003/missions/63fe05d6d5b13a91c00ea714?force=1",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "3003",
+                            "path": ["missions", "63fe05d6d5b13a91c00ea714"],
+                            "query": [
+                                {
+                                    "key": "force",
+                                    "value": "1"
+                                }
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Delete Rapport",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [],
+                        "url": {
+                            "raw": "http://localhost:3003/rapports/6401c85cd24bc9fbc7adc188",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "3003",
+                            "path": ["rapports", "6401c85cd24bc9fbc7adc188"]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Delete validation",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [],
+                        "url": {
+                            "raw": "http://localhost:3003/validations/63f5da2b48ebd02c79a716c4",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "3003",
+                            "path": ["validations", "63f5da2b48ebd02c79a716c4"]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Delete vehicules",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [],
+                        "url": {
+                            "raw": "http://localhost:3003/vehicules/6401db26f6db1c18d97d993e",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "3003",
+                            "path": ["vehicules", "6401db26f6db1c18d97d993e"]
+                        }
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "Patchs",
+            "item": [
+                {
+                    "name": "Patch Agent",
+                    "request": {
+                        "method": "PATCH",
+                        "header": [],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "    {\r\n        \"firstname\": \"aaaaaaaaaaaa\",\r\n        \"lastname\": \"bbbbbbbbbbbb\",\r\n        \"birthday\": \"1982-04-26T12:08:38.266Z\",\r\n        \"tel\": \"+32 470432093\",\r\n        \"email\": \"qdf@gmail.com\",\r\n                \"userAccess\" : 1,\r\n        \"matricule\": \"A188\",\r\n        \"adresse\": {\r\n            \"rue\": \"64078730ca4187a24ce86f4e\",\r\n            \"numero\": \"12\"\r\n        },\r\n        \"password\": \"password\",\r\n        \"picture\": \"https://cdn-icons-png.flaticon.com/512/1946/1946392.png\",\r\n        \"formations\": [\r\n            858,\r\n            \"AK/eoq63b(\"\r\n        ]\r\n    }",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "http://localhost:3003/agents/6407a2a1676c38131b99890d",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "3003",
+                            "path": ["agents", "6407a2a1676c38131b99890d"]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Patch Category",
+                    "request": {
+                        "method": "PATCH",
+                        "header": [],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "        {\r\n\r\n\"title\":\"coucou\"\r\n        }",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "http://localhost:3003/categories/6401e214ae2483ebb838ca54",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "3003",
+                            "path": ["categories", "6401e214ae2483ebb838ca54"]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Patch Constat",
+                    "request": {
+                        "method": "PATCH",
+                        "header": [],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\r\n    \"agents\": [\r\n        \"63fb8c2e7e7e9485f09ab621\",\r\n        \"63fb8c2e7e7e9485f09ab621\"\r\n    ],\r\n    \"date\": \"2023-02-25T23:34:58.034Z\",\r\n    \"vehicule\": {\r\n        \"marque\": \"aaaaaaaaaaaaaaaaaaaaaaaaa\",\r\n        \"modele\": \"LeBaron\",\r\n        \"couleur\": \"black\",\r\n        \"type\": \"Sedan\",\r\n        \"immatriculation\": \"OO24MWJ\"\r\n    },\r\n                \"personne\": {\r\n        \"firstname\": \"Lilian\",\r\n        \"lastname\": \"Huels\",\r\n        \"birthday\": \"2022-05-07T03:08:49.655Z\",\r\n        \"nationalNumber\": 97165057668,\r\n        \"tel\": \"+32 470196002\",\r\n        \"adresse\": {\r\n            \"rue\": \"1685 Francisca Ridges\",\r\n            \"cp\": \"08755-1313\",\r\n            \"localite\": \"New Celestine\"\r\n        }},\r\n    \"adresse\": {\r\n        \"rue\": \"6407a2a0676c38131b99864d\",\r\n        \"numero\": \"1\"\r\n    },\r\n    \"geolocation\": {\r\n        \"latitude\": \"-67.7178\",\r\n        \"longitude\": \"-92.9903\",\r\n        \"horodatage\": \"2023-02-21T23:58:58.153Z\"\r\n    },\r\n    \"infractions\": [\r\n        \"quasi fugiat rerum\",\r\n        \"at deleniti odio\"\r\n    ],\r\n    \"pv\": true,\r\n    \"notes\": \"tenetur provident labore\"\r\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "http://localhost:3003/constats/63fb91e7dd91e86735962237",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "3003",
+                            "path": ["constats", "63fb91e7dd91e86735962237"]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Patch Dailies",
+                    "request": {
+                        "method": "PATCH",
+                        "header": [],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "        {\r\n            \"date\": \"2023-03-01T21:16:54.617Z\",\r\n            \"agents\": [\r\n                \"64004e3ad436598a8b4e858c\",\r\n                \"64004e3ad436598a8b4e858e\"\r\n            ],\r\n            \"horaire\": \"08h30-16h\",\r\n            \"vehicule\": \"Dacia\",\r\n            \"quartiers\": [\r\n                \"64004e3ad436598a8b4e85da\"\r\n            ],\r\n            \"missions\": [\r\n                \"64004e3ad436598a8b4e85d5\",\r\n                \"64004e3ad436598a8b4e85d6\",\r\n                \"64004e3ad436598a8b4e85d6\",\r\n                \"64004e3ad436598a8b4e85d5\",\r\n                \"64004e3ad436598a8b4e85d5\"\r\n            ],\r\n            \"notes\": [\"qsdfqsdfqsdf\"],\r\n            \"annexes\": [\"qsdfqsdfqsdf\"],            \"sent\": \"2023-03-01T21:16:54.617Z\"\r\n        }",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "http://localhost:3003/dailies/6401b6225c0902a9dfb52434",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "3003",
+                            "path": ["dailies", "6401b6225c0902a9dfb52434"]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Patch Rapports",
+                    "request": {
+                        "method": "PATCH",
+                        "header": [],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "        {\r\n            \"date\": \"2023-03-01T21:16:54.617Z\",\r\n            \"agents\": [\r\n                \"64004e3ad436598a8b4e858c\",\r\n                \"64004e3ad436598a8b4e858e\"\r\n            ],\r\n            \"horaire\": \"08h30-16h\",\r\n            \"vehicule\": \"Dacia\",\r\n            \"quartiers\": [\r\n                \"64004e3ad436598a8b4e85da\"\r\n            ],\r\n            \"missions\": [\r\n                \"64004e3ad436598a8b4e85d5\",\r\n                \"64004e3ad436598a8b4e85d6\",\r\n                \"64004e3ad436598a8b4e85d6\",\r\n                \"64004e3ad436598a8b4e85d5\",\r\n                \"64004e3ad436598a8b4e85d5\"\r\n            ],\r\n            \"notes\": [\"qsdfqsdfqsdf\"],\r\n            \"annexes\": [\"qsdfqsdfqsdf\"]\r\n        }",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "http://localhost:3003/rapports/6401c85cd24bc9fbc7adc188",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "3003",
+                            "path": ["rapports", "6401c85cd24bc9fbc7adc188"]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Patch Habitation",
+                    "request": {
+                        "method": "PATCH",
+                        "header": [],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\r\n    \"adresse\": {\r\n        \"rue\": \"6407a2a0676c38131b99864d\",\r\n        \"numero\": \"2\"\r\n\r\n    },\r\n    \"demandeur\": {\r\n        \"nom\": \"Harber Braeden\",\r\n        \"tel\": \"+32 478 767 096\"\r\n    },\r\n    \"date\": {\r\n        \"debut\": \"2023-01-08T17:57:01.451Z\",\r\n        \"fin\": \"2024-01-08T22:34:10.412Z\"\r\n    },\r\n    \"mesures\": [\r\n        \"Système d'alarme : Oui\",\r\n        \"Eclairage extérieur : Oui\",\r\n        \"Minuterie d'éclairage : Oui\",\r\n        \"Société gardiennage : Non\",\r\n        \"Chien : Non\",\r\n        \"Présence d'un tiers : Non\",\r\n        \"Autres : volets roulants programmables, éclairage programmé entrée et chambres\"\r\n    ],\r\n    \"vehicule\": \"Impala\",\r\n    \"googlemap\": \"https://true-mailer.name\"\r\n\r\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "http://localhost:3003/habitations/6407a2a1676c38131b998916",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "3003",
+                            "path": ["habitations", "6407a2a1676c38131b998916"]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Patch Horaires",
+                    "request": {
+                        "method": "PATCH",
+                        "header": [],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\r\n\r\n        \"horaire\": \"22h-17h\"\r\n\r\n    }",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "http://localhost:3003/horaires/6401df02cfa93a1309b1dea0",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "3003",
+                            "path": ["horaires", "6401df02cfa93a1309b1dea0"]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Patch Infraction",
+                    "request": {
+                        "method": "PATCH",
+                        "header": [],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "        {\r\n            \"category\": \"aaaaaaaaaaaaaaaaazerazer zerazerazerzaera\",\r\n            \"priority\": 3,\r\n            \"list\": [\r\n                [\r\n                    \"Art. 126\",\r\n                    \"Jets deaezrazerazerzr déchets\"\r\n                ],\r\n                [\r\n                    \"Art. 158 b\",\r\n                    \"PAV (Point d'apport volontaire)\"\r\n                ],\r\n                [\r\n                    \"Art. 165\",\r\n                    \"Dépôt sauvage\"\r\n                ]\r\n            ]\r\n        }",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "http://localhost:3003/infractions/63fdc6c1927bb5abd413762d",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "3003",
+                            "path": ["infractions", "63fdc6c1927bb5abd413762d"]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Patch Quartiers",
+                    "request": {
+                        "method": "PATCH",
+                        "header": [],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "        {\r\n\r\n            \"title\": \"zzzzzzzzzzzzzzzzzzzzzzzzzzzzzz\",\r\n            \"missions\": [\r\n                \"63ff52c26a2392a4a7bdc9e3\",\r\n                \"63ff52c26a2392a4a7bdc9e2\",\r\n                \"63ff52c26a2392a4a7bdc9e3\",\r\n                \"63ff52c26a2392a4a7bdc9e5\",\r\n                \"63ff52c26a2392a4a7bdc9e2\"\r\n            ]\r\n        }",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "http://localhost:3003/quartiers/63ff53ad7745d21b6d596008",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "3003",
+                            "path": ["quartiers", "63ff53ad7745d21b6d596008"]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Patch Rues",
+                    "request": {
+                        "method": "PATCH",
+                        "header": [],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "        {\r\n            \"adresse\": \"Abattoireeeeeeeeeeeeeeeeeeeeeeeeeeeee\",\r\n            \"denomination\": \"rue de l'\",\r\n            \"cp\": 7700,\r\n            \"localite\": \"Mouscron\",\r\n            \"codeRue\": \"*0316\",\r\n            \"traductionNl\": \"Slachthuisstraat\"\r\n        }",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "http://localhost:3003/rues/6401d62bb4e36a5531ceb63b",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "3003",
+                            "path": ["rues", "6401d62bb4e36a5531ceb63b"]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Patch Mission",
+                    "request": {
+                        "method": "PATCH",
+                        "header": [],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\r\n    \"title\": \"Zone de livraisonnnnnnnnnnnnnnnnnnnnnnnnnnnn\",\r\n    \"description\": \"azerazer\",\r\n    \"horaire\": \"\",\r\n    \"contact\": \"\"\r\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "http://localhost:3003/missions/63fe05d5d5b13a91c00ea713",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "3003",
+                            "path": ["missions", "63fe05d5d5b13a91c00ea713"]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Patch Validation",
+                    "request": {
+                        "method": "PATCH",
+                        "header": [],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "    {\r\n\r\n        \"date\": \"2023-02-21T19:40:53.214Z\",\r\n\r\n        \"agent\" : [\"63f5c7b4f3f90d575d769050\"],\r\n        \"habitation\":[\"63f5c7b4f3f90d575d769061\"],\r\n        \"note\": \"aaaaaaaaaaaaaaaaaaa\"\r\n\r\n    }",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "http://localhost:3003/validations/63f5f53fea3970f57e2760b1",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "3003",
+                            "path": ["validations", "63f5f53fea3970f57e2760b1"]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Patch Vehicule",
+                    "request": {
+                        "method": "PATCH",
+                        "header": [],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "        {\r\n\r\n            \"marque\": \"Dacia222333333333\",\r\n            \"modele\": \"qdfqsdfqsf\",\r\n            \"immatriculation\": \"1GFV206\"\r\n        }",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "http://localhost:3003/vehicules/6401db26f6db1c18d97d993e",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "3003",
+                            "path": ["vehicules", "6401db26f6db1c18d97d993e"]
+                        }
+                    },
+                    "response": []
+                }
+            ]
+        }
+    ]
 }
