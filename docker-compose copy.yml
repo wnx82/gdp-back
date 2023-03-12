@@ -15,7 +15,29 @@ services:
         depends_on:
             - mongodb
             - redis
-
+        # environment:
+        #     NODE_ENV: ${NODE_ENV}
+        #     MONGO_DB_HOST: mongodb
+        #     MONGO_DB_DATABASE: ${MONGO_DB_DATABASE}
+        #     MONGO_DB_PORT: ${MONGO_DB_PORT}
+        #     MONGO_INITDB_ROOT_USERNAME: ${MONGO_DB_USERNAME}
+        #     MONGO_INITDB_ROOT_PASSWORD: ${MONGO_DB_PWD}
+        #     REDIS_HOST: redis
+        #     REDIS_PORT: ${REDIS_PORT}
+        #     # REDIS_PASSWORD: ${REDIS_PASSWORD}
+        #     TOKEN_JWT_SECRET: ${TOKEN_JWT_SECRET}
+        #     ACCESS_TOKEN_VALIDITY_SEC: ${ACCESS_TOKEN_VALIDITY_SEC}
+        #     REFRESH_TOKEN_VALIDITY_SEC: ${REFRESH_TOKEN_VALIDITY_SEC}
+        #     CONTENT_CACHE_DURATION_MILLIS: ${CONTENT_CACHE_DURATION_MILLIS}
+        #     TZ: ${TZ}
+        #     MAIL_HOST: ${MAIL_HOST}
+        #     MAIL_PORT: ${MAIL_PORT}
+        #     MAIL_USER: ${MAIL_USER}
+        #     MAIL_PASSWORD: ${MAIL_PASSWORD}
+        #     MAIL_TO_CHEF: ${MAIL_TO_CHEF}
+        #     MAIL_TO_HABITATIONS: ${MAIL_TO_HABITATIONS}
+        #     MAIL_TO_POLICE: ${MAIL_TO_POLICE}
+        #     MAIL_FROM: ${MAIL_FROM}
         networks:
             networkgdp:
                 aliases:

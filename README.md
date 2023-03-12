@@ -67,11 +67,13 @@ Constats possible sur 1 véhicule ou 1 personne avec adresse, l'infraction, PV b
 
 
 
-## 🐉 Plus tard
+## 🐉 Utilz!
 
 -   [**Git Emojis**](https://gitmoji.dev/)
 -   [**emojidb**](https://emojidb.org/facebook-emojis?user_typed_query=1&utm_source=user_search)
 -   [**Listing Emojis**](emoji.md)
+-   [**csv2json**](https://csvjson.com/csv2json)
+-   [**Learn JWT**](https://medium.com/front-end-weekly/learn-using-jwt-with-passport-authentication-9761539c4314)
 
 
 

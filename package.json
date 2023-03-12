@@ -4,7 +4,7 @@
     "private": true,
     "scripts": {
         "seed": "nodemon seed.js",
-        "start": "nodemon ./bin/www",
+        "start": "node ./bin/www",
         "start:debug": "nodemon --inspect=0.0.0.0:9229 ./bin/www"
     },
     "dependencies": {
