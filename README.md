@@ -151,6 +151,16 @@ tls: {
 [![Linkdin](https://img.shields.io/badge/LinkedIn-vandermeulen_christophe-0077B5?style=for-the-badge&logo=LinkedIn&logoColor=white&labelColor=101010)](https://www.linkedin.com/in/vandermeulen-christophe/)
 
 
+## 👏 Congratulations
+
+-   🈺  [Constantin Maes](https://www.linkedin.com/in/constantinmaes/)
+-   🈺  [Samuel Lassoie](https://www.linkedin.com/in/samuel-lassoie-88769b91/)
+
+
+
+
+
+
 | :-: | :-: | :-: | :-: |
 
 | 😉 Vandermeulen Christophe | ✨ Constantin | 🎉 Samuel |
