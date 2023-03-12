@@ -140,7 +140,7 @@ tls: {
 
 [![eafcm](https://img.shields.io/badge/web-eafcm.be-916FF?style=for-the-badge&logo=Node.js&logoColor=white&labelColor=101010)](https://eafcm.be)
 
-[![MongoDb](https://img.shields.io/badge/MongoDb-18.13.0-4EA94B?style=for-the-badge&logo=MongoDb&logoColor=white&labelColor=101010)]()
+[![MongoDb](https://img.shields.io/badge/MongoDb-6.0.4-4EA94B?style=for-the-badge&logo=MongoDb&logoColor=white&labelColor=101010)]()
 
 [![NodeJs](https://img.shields.io/badge/NodeJS-18.13.0-9146FF?style=for-the-badge&logo=Node.js&logoColor=white&labelColor=101010)]()
 
@@ -163,7 +163,7 @@ tls: {
 
 | :-: | :-: | :-: | :-: |
 
-| 😉 Vandermeulen Christophe | ✨ Constantin | 🎉 Samuel |
+| 😉 Vandermeulen Christophe alias WnX |
 
 ## License
 
