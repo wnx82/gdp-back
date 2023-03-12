@@ -11,7 +11,7 @@ services:
         volumes:
             - ./:/app
         ports:
-            - 3009:3003
+            - 3003:3003
         depends_on:
             - mongodb
             - redis
