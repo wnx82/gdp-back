@@ -11,11 +11,10 @@ services:
         volumes:
             - ./:/app
         ports:
-            - ${SERVER_PORT}:3003
+            - 3009:3003
         depends_on:
             - mongodb
             - redis
-
         networks:
             networkgdp:
                 aliases:
@@ -24,10 +23,10 @@ services:
     mongodb:
         container_name: gdp-back-mongodb
         image: mongo
-        env_file: .env.docker
+
         restart: always
         ports:
-            - ${MONGO_DB_PORT}:27017
+            - 27030:27017
         environment:
             MONGO_INITDB_ROOT_USERNAME: ${MONGO_DB_USERNAME}
             MONGO_INITDB_ROOT_PASSWORD: ${MONGO_DB_PWD}
@@ -41,9 +40,9 @@ services:
     redis:
         container_name: gdp-back-redis
         image: redis
-        env_file: .env.docker
+
         ports:
-            - ${REDIS_PORT}:6379
+            - 6399:6379
         # environment:
         #     REDIS_PASSWORD: ${REDIS_PASSWORD}
         networks:
