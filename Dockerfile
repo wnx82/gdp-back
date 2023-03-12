@@ -6,8 +6,8 @@ FROM node:18-alpine AS builder
 WORKDIR /app
 # Copie le fichier package.json et le fichier package-lock.json
 COPY package*.json ./
-COPY .env.docker ./
-
+# Copie le fichier .env.docker vers .env
+COPY .env.docker ./.env
 # Crée une image légère pour l'application
 FROM node:18-alpine
 # Définit le répertoire de travail pour l'application
@@ -16,8 +16,6 @@ WORKDIR /app
 COPY --from=builder /app .
 # Ajoute le chemin node_modules/.bin au PATH
 ENV PATH /app/node_modules/.bin:$PATH
-# # Copie le code source de l'application
-# COPY .env.docker /app/.env
 # Installation des dépendances
 RUN npm install
 # Installation de nodemon
