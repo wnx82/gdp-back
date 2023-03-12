@@ -22,7 +22,7 @@
 </div>
 
 <div align="center">
-  <strong>🌍 Constantly updated front-end resources, tutorials, opinions. </strong>
+  <strong>🌍 Constantly updated ! </strong>
 </div>
 
 ## 📃 Description
@@ -32,6 +32,7 @@ Backend pour GDP - Portal 🆙
 Cette API est une application de gestion pour le service GDP de la Ville de Mouscron. Elle permet la gestion de véhicules, des utilisateurs avec JWT pour la sécurité des données, la validation des identifiants pour les différentes routes, l'envoi de mails pour la validation des surveillances, des daily et des rapports journaliers. Elle offre également la validation JSON avec Joi, un accès avec différents niveaux d'autorisation, un contrôleur d'état, un système de mise en cache Redis, une recherche par immatriculation, localité et rue pour les constats ainsi qu'un tri des rues par localité, code postal, nom et quartier. Elle permet également la gestion des agents et des utilisateurs, des catégories pour les notes de rapports, des constats sur le terrain, des tâches journalières pour les équipes d'agents avec envoi de mail, des surveillances habitations, des horaires d'agents, des infractions les plus verbalisées, des missions journalières ou occasionnelles, des quartiers avec missions spécifiques, des rapports journaliers, des rues et des validations pour chaque surveillance d'habitation.
 
 Elle me servira également comme travail de TFE d'où sa complexité.
+Le front sera réalisé via Angular et le déploiement sur un serveur du service informatique.
 
 </pre>
 | [GDP Back](https://github.com/winnux82/gdp-back) | [GDP Front](https://github.com/winnux82/gdp-front) | GDP Android Application |
@@ -68,7 +69,7 @@ Constats possible sur 1 véhicule ou 1 personne avec adresse, l'infraction, PV b
 -   CRUD Rapports : Dès qu'un agent reçoit sa "Daily" par mail (tâches journalières), il doit, à sa fin de service remplir un rapport.  Le rapport reprend la totalité de la daily mais avec un tableau des missions de quartiers effectuées et un tableau des missions globales effectuées. Dès qu'il soumet son rapport, un mail est envoyé à la responsable.
 -   CRUD Rues : Liste de la totalité des Rues de l'entité Mouscronnoise. Au début, j'ai voulu interrogé une API du SPW mais ma responsable a demandé de pouvoir introduire elle même les futures Rues.
 -   CRUD Validations : Une validation est réalisée à chaque surveillances habitations réalisée.  Un mail est alors envoyé à la responsable et au référent de la Police de Mouscron.
-
+-   Création d'un access.log
 
 
 
