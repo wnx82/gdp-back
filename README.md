@@ -77,7 +77,31 @@ Constats possible sur 1 véhicule ou 1 personne avec adresse, l'infraction, PV b
 -   CRUD Validations : Une validation est réalisée à chaque surveillances habitations réalisée.  Un mail est alors envoyé à la responsable et au référent de la Police de Mouscron.
 -   Création d'un access.log
 
+## 🐿️ Consignes : Projet de développement SGBD
 
+Pour ce projet, il vous est demandé de développer une API REST qui va interagir avec une base de données MongoDB
+
+Le projet sera à réaliser seul et devra respecter les contraintes suivantes :
+
+✔️ Être développé en NODEJS via le Framework Express
+✔️ Interagir avec MongoDB via le driver NODEJS MongoDB (ne pas utiliser Mongoose)
+✔️ Comporter au minimum 4 collections.
+✔️ Chaque collection devra avoir son Schema Validation
+✔️ Comporter au moins 3 requêtes d'aggregate
+✔️ Au moins 1 des collections doit comporter un sous document
+✔️ Au moins 2 des collections devront contenir des références à d’autres collections, plus utilisez des lookup pour joindre les documents.
+✔️ Vous devrez créer les différentes routes vous permettant d’ajouter, modifier, consulter et supprimer les données (provenant de MongoDb)
+✔️ Utiliser les codes HTTP et méthodes appropriés.
+✔️ A chaque endroit où vous posterez des informations, utilisez des validateurs afin de vérifier en amont les données.
+
+✔️ Le projet devra être versionné sous Github en mode privé et accessible par les chargés de cours. De plus, il est demandé de pousser vos changements en ligne à chaque fois que vous travaillerez sur le projet.
+
+Le sujet est libre, mais devra être validé au préalable par le chargé de cours (via email pour garder une trace).  De plus le projet vous servira de Backend pour votre projet d'intégration de développement
+
+Attention : Ne commencez pas le développement sans validation au préalable et n’utilisez pas des librairies externes non validées par les chargés de cours.
+
+L’application devra être remise au plus tard le mercredi 12 mars par email à l’adresse suivante :
+constantinmaes@gmail.com samuel.lassoie@gmail.com
 
 ## 🐉 Utilz!
 
