@@ -5,7 +5,7 @@ const controller = require('../controllers/agents.controller');
 const validateId = require('../helpers/validateId');
 
 /* GET agents listing. */
-router.get('/', cors(), controller.findAll);
+router.get('/', controller.findAll);
 router.get('/:id', validateId, controller.findOne);
 router.post('/', controller.create);
 router.patch('/:id', validateId, controller.updateOne);
