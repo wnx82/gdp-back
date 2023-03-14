@@ -1,20 +1,134 @@
-./views/index.ejs
+<!-- ./views/index.ejs -->
 <!DOCTYPE html>
 <html>
 
 <head>
+  <meta charset="UTF-8">
   <title>
     <%= title %>
   </title>
+  <style>
+    body {
+      font-family: 'Helvetica Neue', sans-serif;
+      font-size: 16px;
+      line-height: 1.5;
+      color: #333;
+    }
 
+    h1 {
+      font-size: 28px;
+      font-weight: bold;
+      margin-top: 40px;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    p {
+      font-size: 18px;
+      margin-bottom: 20px;
+    }
+
+    ul {
+      list-style-type: none;
+      margin-top: 0;
+      padding-left: 0;
+    }
+
+    li {
+      margin-bottom: 10px;
+    }
+
+    a {
+      color: #06c;
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+  </style>
 </head>
 
 <body>
-  <h1>
-    <%= title %>
-  </h1>
-  <p>Welcome to <%= title %>
-  </p>
+  <header>
+    <h1>
+      <%= title %>
+    </h1>
+  </header>
+  <main>
+    <p align="center"><img src="http://www.peruwelz.be/uploads/page324/86c361ea300e6d3bccbe46573caa688a.jpg"
+        alt="GDP Logo">
+    </p>
+    <p>Bienvenue sur la page de présentation de l'API de gestion pour le service GDP de la Ville de Mouscron.</p>
+
+    Source Github : <a href="https://github.com/winnux82/gdp-back/">https://github.com/winnux82/gdp-back/</a>
+    <section>
+      <h2>Description</h2>
+      <p>Cette API permet la gestion des véhicules, des utilisateurs, des surveillances d'habitations, des rapports
+        journaliers et bien plus encore pour le service GDP de la Ville de Mouscron. Elle utilise JWT pour la sécurité
+        des
+        données, Joi pour la validation JSON, et Redis pour le stockage en cache.</p>
+    </section>
+
+    <section>
+      <h2>Fonctionnalités</h2>
+      <ul>
+        <li>CRUD Véhicules : permet de lister les véhicules du service</li>
+        <li>JWT sur /users : garantit la sécurité des données des utilisateurs</li>
+        <li>ValidateId : vérifie la validité des identifiants sur les différentes routes</li>
+        <li>sendMail : permet la validation des surveillances, daily et rapports journaliers</li>
+        <li>Json Validator & Joi verification : assure la validation des données JSON</li>
+        <li>Accès avec différents niveaux d'autorisation pour les agents</li>
+        <li>Contrôleur d'état pour la surveillance de la santé du système</li>
+        <li>Système de mise en cache Redis pour une performance accrue</li>
+        <li>Recherche par immatriculation, localité, rue pour les constats</li>
+        <li>Tri des rues par localité, code postal, nom, quartier</li>
+        <li>CRUD Agents/Users : gestion des agents et des utilisateurs</li>
+        <li>CRUD catégories pour les notes de rapports</li>
+        <li>CRUD Constats : permet aux agents de créer des constats sur le terrain</li>
+        <li>CRUD Dailies : création de futures "tâches journalières" par équipe d'agents avec envoi de mail</li>
+        <li>CRUD Habitations : création de futures surveillances habitations</li>
+        <li>CRUD Horaires : listes des différents horaires des agents</li>
+        <li>CRUD Infractions : listes des infractions les plus verbalisées, triées par catégories</li>
+        <li>CRUD Missions : liste non exhaustive des missions journalières ou occasionnelles</li>
+        <li>CRUD Quartiers : liste des différents quartiers de Mouscron avec missions spécifiques</li>
+        <li>CRUD Rapports : permet aux agents de remplir un rapport en fin de service</li>
+        <li>CRUD Rues : liste de la totalité des rues de l'entité Mouscronnoise</li>
+        <li>CRUD Validations : validation réalisée à chaque surveillance d'habitation, avec envoi de mail à la
+          responsable et au
+          référent de la Police de Mouscron</li>
+        <li>Création d'un access.log pour la traçabilité</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Installation</h2>
+      <p>Pour installer l'API, suivez les étapes suivantes :</p>
+      <ol>
+        <li>Clonez le repository :</li>
+        <pre>git clone https://github.com/winnux82/gdp-back.git</pre>
+        <li>Installez les dépendances :</li>
+        <pre>npm install</pre>
+        <li>Configurez le fichier .env :</li>
+        <pre>cp env.example .env</pre>
+        <li>Configurez le fichier docker-compose.yml :</li>
+        <pre>docker-compose up -d</pre>
+        <li>Importez dans Postman la collection GDP back via le fichier GDP Back.postman_collection dans le dossier
+          racine.
+        </li>
+      </ol>
+    </section>
+
+    <section>
+      <h2>Références</h2>
+      <ul>
+        <li><a href="https://github.com/winnux82/gdp-back" target="_blank">GDP Back</a></li>
+        <li><a href="https://github.com/winnux82/gdp-front" target="_blank">GDP Front</a></li>
+        <li><a href="#" target="_blank">GDP Android Application</a></li>
+      </ul>
+    </section>
+
+  </main>
 </body>
 
 </html>

@@ -18,7 +18,6 @@ const status = async (req, res) => {
             }
         };
         const mongoStatus = await checkMongo();
-
         // Redis status
         const checkRedis = () => {
             return new Promise((resolve, reject) => {
@@ -27,16 +26,20 @@ const status = async (req, res) => {
                     resolve('✅ Redis is connected');
                 } else {
                     console.log('⛔ Redis is not connected');
-                    throw new Error('⛔ Redis is not connected');
+                    reject(new Error('⛔ Redis is not connected'));
                 }
             });
         };
         const redisStatus = await checkRedis();
 
-        res.json({ mongo: mongoStatus, redis: redisStatus });
+        if (!res.headersSent) {
+            res.json({ mongo: mongoStatus, redis: redisStatus });
+        }
     } catch (error) {
         console.error(error);
-        res.status(500).send('Server error: ' + error.message);
+        if (!res.headersSent) {
+            res.status(500).send('Server error: ' + error.message);
+        }
     }
 };
 

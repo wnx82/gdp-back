@@ -2,7 +2,6 @@
 
 <h1 align="center">GDP Portail</h1>
 
-
 <div align="center">
   <a href="https://github.com/winnux82/habitations-back">
     <img src="https://img.shields.io/github/license/winnux82/nice-front-end-tutorial.svg" alt="LICENSE">
@@ -22,35 +21,35 @@
 </div>
 
 <div align="center">
-  <strong>🌍 Constantly updated ! 🆙 </strong>
+  <strong>🌍 Constantly updated ! ☢️ </strong>
 </div>
 
 ## 📃 Description
 
-Backend pour GDP - Portal 🆙
+☢️ Backend pour GDP - Portail ☢️ 🆙
 
+Cette API est une application de gestion pour le service GDP de la Ville de Mouscron. Elle permet la gestion de véhicules, des utilisateurs avec JWT pour la sécurité des données, la validation des identifiants pour les différentes routes, l'envoi de mails pour la validation des surveillances, des daily et des rapports journaliers.
 
-Cette API est une application de gestion pour le service GDP de la Ville de Mouscron. Elle permet la gestion de véhicules, des utilisateurs avec JWT pour la sécurité des données, la validation des identifiants pour les différentes routes, l'envoi de mails pour la validation des surveillances, des daily et des rapports journaliers. 
-
-Elle offre également la validation JSON avec Joi, un accès avec différents niveaux d'autorisation, un contrôleur d'état, un système de mise en cache Redis, une recherche par immatriculation, localité et rue pour les constats ainsi qu'un tri des rues par localité, code postal, nom et quartier. 
+Elle offre également la validation JSON avec Joi, un accès avec différents niveaux d'autorisation, un contrôleur d'état, un système de mise en cache Redis, une recherche par immatriculation, localité et rue pour les constats ainsi qu'un tri des rues par localité, code postal, nom et quartier.
 
 Elle permet également la gestion des agents et des utilisateurs, des catégories pour les notes de rapports, des constats sur le terrain, des tâches journalières pour les équipes d'agents avec envoi de mail, des surveillances habitations, des horaires d'agents, des infractions les plus verbalisées, des missions journalières ou occasionnelles, des quartiers avec missions spécifiques, des rapports journaliers, des rues et des validations pour chaque surveillance d'habitation.
 
 Elle me servira également comme TFE & déploiement pour mon stage de fin d'étude d'où sa complexité et le temps consacré!
 Le front sera réalisé via Angular et le déploiement sur un serveur du service informatique de la Ville de Mouscron.
 
-
 | [GDP Back](https://github.com/winnux82/gdp-back) | [GDP Front](https://github.com/winnux82/gdp-front) | GDP Android Application |
 
-
 ## 📥 Installation
+
 <pre>
 -   🐳 docker-compose up -d
 -   📨 Importer dans Postman la collection GDP back via le fichier GDP Back.postman_collection dans le dossier racine.
 -   env.example disponible
 
 </pre>
+
 ## ✨ Features
+
 -   CRUD Vehicules : Liste des véhicules du service
 -   JWT on /users
 -   ValidateId sur les routes pour vérifier la validité des id
@@ -64,17 +63,17 @@ Le front sera réalisé via Angular et le déploiement sur un serveur du service
 -   CRUD Agents/Users
 -   CRUD catégories pour notes des rapports
 -   CRUD Constats qui permet aux agents de créer des constats sur le terrain
-Constats possible sur 1 véhicule ou 1 personne avec adresse, l'infraction, PV bool, notes, annexes
+    Constats possible sur 1 véhicule ou 1 personne avec adresse, l'infraction, PV bool, notes, annexes
 -   CRUD Dailies : Créations de futures "tâches journalières" par équipe d'agents avec définition d'un quartier et les missions d'un quartier, ajout de missions supplémentaires.
-🔖Possibilité d'envoyer par mail un "daily" aux agents concerné  
+    🔖Possibilité d'envoyer par mail un "daily" aux agents concerné
 -   CRUD Habitations : Créations de futures surveillances habitations. Lors de leurs départ en vacances, des citoyens demandent un passage pour que les agents vérifient leur habitation. Les habitations déjà passées ou que la date de début est supérieur à la date du jour ne sont pas visibles. "HabitationsValides"
 -   CRUD Horaires : Listes des différents horaires des agents
 -   CRUD Infractions : Listes des infractions les plus verbalisées, triées par catégories et comprenant un tableau avec une liste des articles et le nom des infractions.
--   CRUD Missions : Liste non exhaustive des missions journalières ou occasionnelles.  Un quartier comprend une liste des missions.
+-   CRUD Missions : Liste non exhaustive des missions journalières ou occasionnelles. Un quartier comprend une liste des missions.
 -   CRUD Quartiers : Liste des différents quartiers de Mouscron. Chaque quartier comprend ses missions spécifiques.
--   CRUD Rapports : Dès qu'un agent reçoit sa "Daily" par mail (tâches journalières), il doit, à sa fin de service remplir un rapport.  Le rapport reprend la totalité de la daily mais avec un tableau des missions de quartiers effectuées et un tableau des missions globales effectuées. Dès qu'il soumet son rapport, un mail est envoyé à la responsable.
+-   CRUD Rapports : Dès qu'un agent reçoit sa "Daily" par mail (tâches journalières), il doit, à sa fin de service remplir un rapport. Le rapport reprend la totalité de la daily mais avec un tableau des missions de quartiers effectuées et un tableau des missions globales effectuées. Dès qu'il soumet son rapport, un mail est envoyé à la responsable.
 -   CRUD Rues : Liste de la totalité des Rues de l'entité Mouscronnoise. Au début, j'ai voulu interrogé une API du SPW mais ma responsable a demandé de pouvoir introduire elle même les futures Rues.
--   CRUD Validations : Une validation est réalisée à chaque surveillances habitations réalisée.  Un mail est alors envoyé à la responsable et au référent de la Police de Mouscron.
+-   CRUD Validations : Une validation est réalisée à chaque surveillances habitations réalisée. Un mail est alors envoyé à la responsable et au référent de la Police de Mouscron.
 -   Création d'un access.log
 
 ## 🐿️ Consignes : Projet de développement SGBD
@@ -93,7 +92,6 @@ Le projet sera à réaliser seul et devra respecter les contraintes suivantes :
 ✔️ Vous devrez créer les différentes routes vous permettant d’ajouter, modifier, consulter et supprimer les données (provenant de MongoDb)
 ✔️ Utiliser les codes HTTP et méthodes appropriés.
 ✔️ A chaque endroit où vous posterez des informations, utilisez des validateurs afin de vérifier en amont les données.
-
 ✔️ Le projet devra être versionné sous Github en mode privé et accessible par les chargés de cours. De plus, il est demandé de pousser vos changements en ligne à chaque fois que vous travaillerez sur le projet.
 
 Le sujet est libre, mais devra être validé au préalable par le chargé de cours (via email pour garder une trace).  De plus le projet vous servira de Backend pour votre projet d'intégration de développement
@@ -113,52 +111,38 @@ constantinmaes@gmail.com samuel.lassoie@gmail.com
 
 ## ✍️ Notes!
 
--   à enlever dans le fichier ./helpers/sendMail.js si pas docker car dès que je passe par docker j'ai une erreur 
-<code>
-tls: {
+-   à enlever dans le fichier ./helpers/sendMail.js si pas docker car dès que je passe par docker j'ai une erreur
+    <code>
+    tls: {
     rejectUnauthorized: false,
-},
-</code>
+    },
+    </code>
 
 -   protéger tous les dossiers autres que users grace à JWT une fois la phase déploiement lancée
-
-
-
-
-
 
 ## 🎨 Front-End Tutorial
 
 -   [Angular](#)
 -   [Tuto Get Data From server ✨](https://angular.io/tutorial/tour-of-heroes/toh-pt6)
 
-
-
-
 ## 👽 Back-End Tutorial
 
 -   [Nodejs](https://github.com/geo6/geocoder-php-spw-provider)
 -   [JWT](https://medium.com/front-end-weekly/learn-using-jwt-with-passport-authentication-9761539c4314)
 
-
-
 ## 🎣 Front-Back-End Tools
 
 -   [csv2json](https://csvjson.com/csv2json)
 
-
 ## 🔨 Other Wizards List
 
--   [Docker 👏](/Docker.md) 
--   [Shields.io 👏](https://shields.io/) 
--   [Markdown Badges 👏](https://github.com/Ileriayo/markdown-badges) 
--   [Badge for github 👏](https://dev.to/envoy_/150-badges-for-github-pnk) 
--   [Codes de réponses HTTP 👏](https://developer.mozilla.org/fr/docs/Web/HTTP/Status) 
-
-
+-   [Docker 👏](/Docker.md)
+-   [Shields.io 👏](https://shields.io/)
+-   [Markdown Badges 👏](https://github.com/Ileriayo/markdown-badges)
+-   [Badge for github 👏](https://dev.to/envoy_/150-badges-for-github-pnk)
+-   [Codes de réponses HTTP 👏](https://developer.mozilla.org/fr/docs/Web/HTTP/Status)
 
 ## Liens connexes
-
 
 [![eKreativ](https://img.shields.io/badge/web-eKreativ.be-916FF?style=for-the-badge&logo=Node.js&logoColor=white&labelColor=101010)](https://eKreativ.be)
 
@@ -174,30 +158,21 @@ tls: {
 
 [![Linkdin](https://img.shields.io/badge/LinkedIn-vandermeulen_christophe-0077B5?style=for-the-badge&logo=LinkedIn&logoColor=white&labelColor=101010)](https://www.linkedin.com/in/vandermeulen-christophe/)
 
-
 ## 👏 Congratulations
 
--   🈺  [Constantin Maes](https://www.linkedin.com/in/constantinmaes/)
--   🈺  [Samuel Lassoie](https://www.linkedin.com/in/samuel-lassoie-88769b91/)
-
-
-
-
-
+-   🈺 [Constantin Maes](https://www.linkedin.com/in/constantinmaes/)
+-   🈺 [Samuel Lassoie](https://www.linkedin.com/in/samuel-lassoie-88769b91/)
 
 | :-: | :-: | :-: | :-: |
 
-| 😉 Vandermeulen Christophe alias WnX |
+| 😉 Vandermeulen Christophe alias WnX 📎🏴‍☠️ |
 
 ## License
 
 [MIT](http://opensource.org/licenses/MIT)
 
-
-
-Copyright (c) 2023-present, 
+Copyright (c) 2023-present,
 
 [winnux82](https://github.com/winnux82)
-
 
 [![Web](https://img.shields.io/badge/GitHub-winnux82-14a1f0?style=for-the-badge&logo=github&logoColor=white&labelColor=101010)](https://github.com/winnux82)
