@@ -3,7 +3,6 @@ var express = require('express');
 var router = express.Router();
 const controller = require('../controllers/agents.controller');
 const validateId = require('../helpers/validateId');
-var cors = require('cors');
 
 /* GET agents listing. */
 router.get('/', cors(), controller.findAll);
