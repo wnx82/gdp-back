@@ -36,11 +36,11 @@ const findAll = catchAsync(async (req, res) => {
     const message = '📄 Liste des rapports';
     const inCache = await redisClient.get('rapports:all');
     if (inCache) {
-        return res.status(200).json(success(message, JSON.parse(inCache)));
+        return res.status(200).json(JSON.parse(inCache));
     } else {
         const data = await collection.find({}).toArray();
         redisClient.set('rapports:all', JSON.stringify(data), 'EX', 600);
-        res.status(200).json(success(message, data));
+        res.status(200).json(data);
     }
 });
 
@@ -59,7 +59,7 @@ const findOne = catchAsync(async (req, res) => {
         const inCache = await redisClient.get(`rapport:${id}`);
 
         if (inCache) {
-            return res.status(200).json(success(message, JSON.parse(inCache)));
+            return res.status(200).json(JSON.parse(inCache));
         } else {
             data = await collection.findOne({ _id: new ObjectId(id) });
             redisClient.set(`rapport:${id}`, JSON.stringify(data), 'EX', 600);
@@ -71,7 +71,7 @@ const findOne = catchAsync(async (req, res) => {
             });
             return;
         } else {
-            res.status(200).json(success(message, data));
+            res.status(200).json(data);
         }
     } catch (e) {
         console.error(e);
@@ -178,7 +178,7 @@ const create = catchAsync(async (req, res) => {
                     `----------->Le rapport a bien été créé<-----------`
                 )
             );
-        res.status(201).json(success(message, donnees));
+        res.status(201).json(donnees);
         redisClient.del('rapports:all');
         // Récupérer l'insertedId
         const insertedId = donnees.insertedId;
@@ -327,7 +327,7 @@ const updateOne = catchAsync(async (req, res) => {
         if (modifiedCount === 0) {
             return res.status(404).json({ message: 'Constat not found' });
         }
-        res.status(200).json(success(message, value));
+        res.status(200).json(value);
         redisClient.del('rapports:all');
         redisClient.del(`rapport:${id}`);
     } catch (err) {
@@ -344,7 +344,7 @@ const deleteOne = catchAsync(async (req, res) => {
         if (!isNaN(rapport.deletedAt)) {
             // Constat already deleted, return appropriate response
             const message = `Le rapport a déjà été supprimé de manière logique.`;
-            return res.status(200).json(success(message, rapport));
+            return res.status(200).json(rapport);
         }
         //suppression logique
         const message = `🗑️ Suppression d'un rapport de manière logique`;
@@ -356,7 +356,7 @@ const deleteOne = catchAsync(async (req, res) => {
                 $set: { deletedAt: new Date() },
             }
         );
-        res.status(200).json(success(message, data));
+        res.status(200).json(data);
         redisClient.del('rapports:all');
         redisClient.del(`rapport:${id}`);
     } else if (parseInt(force, 10) === 1) {

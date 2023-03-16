@@ -3,18 +3,13 @@
 require('dotenv').config({ path: '.env' });
 const { dbClient, redisClient } = require('./utils/');
 const { faker } = require('@faker-js/faker');
-// const dbClient = require('./utils/db-client.util');
 const bcrypt = require('bcrypt');
 const validators = require('./validators');
-// const { string, array } = require('joi');
 const ObjectId = require('mongodb').ObjectId;
-
 const cliProgress = require('cli-progress');
-
 const bar1 = new cliProgress.SingleBar({}, cliProgress.Presets.shades_classic);
 
 // Flush Redis
-
 redisClient.flushall((err, reply) => {
     if (err) {
         console.error(err);
@@ -22,7 +17,6 @@ redisClient.flushall((err, reply) => {
         console.log(reply);
     }
 });
-
 (async () => {
     const db = dbClient.db(process.env.MONGO_DB_DATABASE);
     const collections = [
@@ -50,24 +44,26 @@ redisClient.flushall((err, reply) => {
     //on efface les données et on les recrée
     console.log('\u001b[1;32m--------> Redis Flushing <--------\u001b[0m ');
 
-    collections.forEach(async c => {
-        try {
-            if (names.includes(c)) {
-                console.log(`Dropping collection: ${c}`);
-                await db.dropCollection(c);
-            } else console.log(`Creating collection: ${c}`);
-            await db.createCollection(c, validators[c] ?? null);
-        } catch (e) {
-            console.error(`Failed to connect to MongoDB: ${e}`);
-            process.exit(1);
-        } finally {
-            // await client.close();
-        }
-    });
+for (const c of collections) {
+  try {
+    if (names.includes(c)) {
+      console.log(`Dropping collection: ${c}`);
+      await db.dropCollection(c);
+    }
+    if (!await db.listCollections({ name: c }).hasNext()) {
+      console.log(`Creating collection: ${c}`);
+      await db.createCollection(c, validators[c] ?? null);
+    } else {
+      console.log(`Collection ${c} already exists.`);
+    }
+  } catch (e) {
+    console.error(`Failed to create collection ${c}: ${e}`);
+    process.exit(1);
+  }
+}
 
     //Dto Data Transfert Objects
     bar1.update(i++);
-
     const horairesDto = [
         {
             horaire: '07h30-15h',

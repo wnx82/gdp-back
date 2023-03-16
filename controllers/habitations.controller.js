@@ -30,7 +30,7 @@ const findAll = catchAsync(async (req, res) => {
     const message = '📄 Liste des habitations';
     const inCache = await redisClient.get('habitations:all');
     if (inCache) {
-        return res.status(200).json(success(message, JSON.parse(inCache)));
+        return res.status(200).json(JSON.parse(inCache));
     } else {
         const pipeline = [
             {
@@ -90,7 +90,7 @@ const findAll = catchAsync(async (req, res) => {
         ];
         const data = await collection.aggregate(pipeline).toArray();
         redisClient.set('habitations:all', JSON.stringify(data), 'EX', 600);
-        res.status(200).json(success(message, data));
+        res.status(200).json(data);
     }
 });
 
@@ -98,7 +98,7 @@ const findActiveHabitations = catchAsync(async (req, res) => {
     const message = '📄 Liste des habitations';
     const inCache = await redisClient.get('habitations:active');
     if (inCache) {
-        return res.status(200).json(success(message, JSON.parse(inCache)));
+        return res.status(200).json(JSON.parse(inCache));
     } else {
         const pipeline = [
             {
@@ -174,7 +174,7 @@ const findActiveHabitations = catchAsync(async (req, res) => {
         ];
         const data = await collection.aggregate(pipeline).toArray();
         redisClient.set('habitations:active', JSON.stringify(data), 'EX', 600);
-        res.status(200).json(success(message, data));
+        res.status(200).json(data);
     }
 });
 
@@ -193,7 +193,7 @@ const findOne = catchAsync(async (req, res) => {
         const inCache = await redisClient.get(`habitation:${id}`);
 
         if (inCache) {
-            return res.status(200).json(success(message, JSON.parse(inCache)));
+            return res.status(200).json(JSON.parse(inCache));
         } else {
             const pipeline = [
                 {
@@ -270,7 +270,7 @@ const findOne = catchAsync(async (req, res) => {
             });
             return;
         } else {
-            res.status(200).json(success(message, data));
+            res.status(200).json(data);
         }
 
         // res.status(200).json(success(`Détails l'agent : `, data));
@@ -308,7 +308,7 @@ const create = catchAsync(async (req, res) => {
                     `----------->L\'habitation a bien été créé<-----------`
                 )
             );
-        res.status(201).json(success(message, data));
+        res.status(201).json(data);
         console.log('on efface le redis');
         redisClient.del('habitations:all');
     } catch (err) {
@@ -339,7 +339,7 @@ const updateOne = catchAsync(async (req, res) => {
         if (modifiedCount === 0) {
             return res.status(404).json({ message: 'Habitation not found' });
         }
-        res.status(200).json(success(message, value));
+        res.status(200).json(value);
         redisClient.del('habitations:all');
         redisClient.del(`habitation:${id}`);
     } catch (err) {
@@ -357,7 +357,7 @@ const deleteOne = catchAsync(async (req, res) => {
         if (!isNaN(habitation.deletedAt)) {
             // Constat already deleted, return appropriate response
             const message = `L'habitation a déjà été supprimée de manière logique.`;
-            return res.status(200).json(success(message, habitation));
+            return res.status(200).json(habitation);
         }
         //suppression logique
         const message = `🗑️ Suppression d'une habitation de manière logique`;
@@ -369,7 +369,7 @@ const deleteOne = catchAsync(async (req, res) => {
                 $set: { deletedAt: new Date() },
             }
         );
-        res.status(200).json(success(message, data));
+        res.status(200).json(data);
         redisClient.del('habitations:all');
         redisClient.del(`habitation:${id}`);
     } else if (parseInt(force, 10) === 1) {

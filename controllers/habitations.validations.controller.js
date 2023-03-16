@@ -26,7 +26,7 @@ const findAll = catchAsync(async (req, res) => {
     const message = '📄 Liste des validations';
     const inCache = await redisClient.get('validations:all');
     if (inCache) {
-        return res.status(200).json(success(message, JSON.parse(inCache)));
+        return res.status(200).json(JSON.parse(inCache));
     } else {
         const pipeline = [
             {
@@ -68,7 +68,7 @@ const findAll = catchAsync(async (req, res) => {
         ];
         const data = await collection.aggregate(pipeline).toArray();
         redisClient.set('validations:all', JSON.stringify(data), 'EX', 600);
-        res.status(200).json(success(message, data));
+        res.status(200).json(data);
     }
 });
 
@@ -86,7 +86,7 @@ const findOne = catchAsync(async (req, res) => {
         }
         const inCache = await redisClient.get(`validation:${id}`);
         if (inCache) {
-            return res.status(200).json(success(message, JSON.parse(inCache)));
+            return res.status(200).json(JSON.parse(inCache));
         } else {
             data = await collection.findOne({ _id: new ObjectId(id) });
             redisClient.set(
@@ -102,7 +102,7 @@ const findOne = catchAsync(async (req, res) => {
             });
             return;
         } else {
-            res.status(200).json(success(message, data));
+            res.status(200).json(data);
         }
 
         // res.status(200).json(success(`Détails l'agent : `, data));
@@ -169,7 +169,7 @@ const create = catchAsync(async (req, res) => {
                     `----------->La validation a bien été créé<-----------`
                 )
             );
-        res.status(201).json(success(message, data));
+        res.status(201).json(data);
         redisClient.del('validations:all');
         // Récupérer l'insertedId
         const insertedId = data.insertedId;
@@ -270,7 +270,7 @@ const updateOne = catchAsync(async (req, res) => {
         if (modifiedCount === 0) {
             return res.status(404).json({ message: 'Validation not found' });
         }
-        res.status(200).json(success(message, value));
+        res.status(200).json(value);
         redisClient.del('validations:all');
         redisClient.del(`validation:${id}`);
     } catch (err) {
@@ -288,7 +288,7 @@ const deleteOne = catchAsync(async (req, res) => {
         if (!isNaN(validation.deletedAt)) {
             // Constat already deleted, return appropriate response
             const message = `La validation a déjà été supprimée de manière logique.`;
-            return res.status(200).json(success(message, validation));
+            return res.status(200).json(validation);
         }
         //suppression logique
         const message = `🗑️ Suppression d'une validation de manière logique`;
@@ -300,7 +300,7 @@ const deleteOne = catchAsync(async (req, res) => {
                 $set: { deletedAt: new Date() },
             }
         );
-        res.status(200).json(success(message, data));
+        res.status(200).json(data);
         redisClient.del('validations:all');
         redisClient.del(`validation:${id}`);
     } else if (parseInt(force, 10) === 1) {

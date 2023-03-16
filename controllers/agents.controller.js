@@ -33,7 +33,7 @@ const findAll = catchAsync(async (req, res) => {
     const message = '📄 Liste des agents';
     const inCache = await redisClient.get('agents:all');
     if (inCache) {
-        return res.status(200).json(success(message, JSON.parse(inCache)));
+        return res.status(200).json(JSON.parse(inCache));
     } else {
         const pipeline = [
             {
@@ -128,7 +128,7 @@ const findAll = catchAsync(async (req, res) => {
         ];
         const data = await collection.aggregate(pipeline).toArray();
         redisClient.set('agents:all', JSON.stringify(data), 'EX', 600);
-        res.status(200).json(success(message, data));
+        res.status(200).json(data);
     }
 });
 
@@ -146,7 +146,7 @@ const findOne = catchAsync(async (req, res) => {
         }
         const inCache = await redisClient.get(`agent:${id}`);
         if (inCache) {
-            return res.status(200).json(success(message, JSON.parse(inCache)));
+            return res.status(200).json(JSON.parse(inCache));
         } else {
             const pipeline = [
                 {
@@ -251,7 +251,7 @@ const findOne = catchAsync(async (req, res) => {
             res.status(404).json({ message: `No agent found with id ${id}` });
             return;
         } else {
-            res.status(200).json(success(message, data));
+            res.status(200).json(data);
         }
     } catch (e) {
         console.error(e);
@@ -311,7 +311,7 @@ const create = catchAsync(async (req, res) => {
             .then(
                 console.log(`----------->L\'agent a bien été créé<-----------`)
             );
-        res.status(201).json(success(message, data));
+        res.status(201).json(data);
         redisClient.del('agents:all');
         // res.status(201).json(data);
     } catch (err) {
@@ -356,7 +356,7 @@ const updateOne = catchAsync(async (req, res) => {
         if (modifiedCount === 0) {
             return res.status(404).json({ message: 'Agent not found' });
         }
-        res.status(200).json(success(message, value));
+        res.status(200).json(value);
         redisClient.del('agents:all');
         redisClient.del(`agent:${id}`);
     } catch (err) {
@@ -376,7 +376,7 @@ const deleteOne = catchAsync(async (req, res) => {
         if (!isNaN(agent.deletedAt)) {
             // Agent already deleted, return appropriate response
             const message = `L'agent a déjà été supprimé de manière logique.`;
-            return res.status(200).json(success(message, agent));
+            return res.status(200).json(agent);
         }
 
         //suppression logique
@@ -390,7 +390,7 @@ const deleteOne = catchAsync(async (req, res) => {
                 $set: { deletedAt: new Date() },
             }
         );
-        res.status(200).json(success(message, data));
+        res.status(200).json(data);
         redisClient.del('agents:all');
         redisClient.del(`agent:${id}`);
         // res.status(200).json({

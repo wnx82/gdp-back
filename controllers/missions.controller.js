@@ -12,11 +12,11 @@ const findAll = catchAsync(async (req, res) => {
     const message = '📄 Liste des missions';
     const inCache = await redisClient.get('missions:all');
     if (inCache) {
-        return res.status(200).json(success(message, JSON.parse(inCache)));
+        return res.status(200).json(JSON.parse(inCache));
     } else {
         const data = await collection.find({}).toArray();
         redisClient.set('missions:all', JSON.stringify(data), 'EX', 600);
-        res.status(200).json(success(message, data));
+        res.status(200).json(data);
     }
 });
 
@@ -34,7 +34,7 @@ const findOne = catchAsync(async (req, res) => {
         }
         const inCache = await redisClient.get(`mission:${id}`);
         if (inCache) {
-            return res.status(200).json(success(message, JSON.parse(inCache)));
+            return res.status(200).json(JSON.parse(inCache));
         } else {
             data = await collection.findOne({ _id: new ObjectId(id) });
             redisClient.set(`mission:${id}`, JSON.stringify(data), 'EX', 600);
@@ -45,7 +45,7 @@ const findOne = catchAsync(async (req, res) => {
             });
             return;
         } else {
-            res.status(200).json(success(message, data));
+            res.status(200).json(data);
         }
     } catch (e) {
         console.error(e);
@@ -88,7 +88,7 @@ const create = catchAsync(async (req, res) => {
                 )
             );
         // res.status(201).json(data);
-        res.status(201).json(success(message, data));
+        res.status(201).json(data);
         redisClient.del('missions:all');
     } catch (err) {
         console.log(err);
@@ -117,7 +117,7 @@ const updateOne = catchAsync(async (req, res) => {
         if (modifiedCount === 0) {
             return res.status(404).json({ message: 'Mission not found' });
         }
-        res.status(200).json(success(message, value));
+        res.status(200).json(value);
         redisClient.del('missions:all');
         redisClient.del(`mission:${id}`);
     } catch (err) {
@@ -137,7 +137,7 @@ const deleteOne = catchAsync(async (req, res) => {
         if (!isNaN(mission.deletedAt)) {
             // Mission already deleted, return appropriate response
             const message = `La mission a déjà été supprimé de manière logique.`;
-            return res.status(200).json(success(message, mission));
+            return res.status(200).json(mission);
         }
 
         //suppression logique
@@ -151,7 +151,7 @@ const deleteOne = catchAsync(async (req, res) => {
                 $set: { deletedAt: new Date() },
             }
         );
-        res.status(200).json(success(message, data));
+        res.status(200).json(data);
         redisClient.del('missions:all');
         redisClient.del(`mission:${id}`);
         // res.status(200).json({

@@ -3,7 +3,12 @@ var express = require('express');
 var router = express.Router();
 const controller = require('../controllers/status.controller');
 
-/* GET habitations listing. */
+/* GET status. */
 router.get('/', controller.status);
+
+
+
+
+
 
 module.exports = router;
