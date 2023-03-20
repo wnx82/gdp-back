@@ -9884,17 +9884,17 @@ for (const c of collections) {
         email: 'admin@admin.com',
         password: await bcrypt.hash('123456789', 10),
         userAccess: faker.datatype.number({ min: 1, max: 10 }),
-        userAccess: 0,
-        matricule: 'A113',
-        firstname: 'Administrator',
-        lastname: 'Administrator',
+        userAccess: 10,
+        matricule: 'A101',
+        firstname: 'admin',
+        lastname: 'admin',
         adresse: {
             rue: new ObjectId(
                 createdRues[Math.floor(Math.random() * 690)].insertedId
             ),
             numero: faker.random.numeric(2),
         },
-        picture: 'https://cdn-icons-png.flaticon.com/512/1946/1946392.png',
+        picture: 'https://icons.veryicon.com/png/o/miscellaneous/yuanql/icon-admin.png',
         // formations: faker.datatype.array(2),
         createdAt: new Date(),
         updatedAt: new Date(),

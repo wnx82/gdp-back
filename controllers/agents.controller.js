@@ -61,6 +61,7 @@ const findAll = catchAsync(async (req, res) => {
                     picture: 1,
                     createdAt: 1,
                     updatedAt: 1,
+                    deletedAt: 1,
                     formations: 1,
                     'adresse.numero': 1,
                     'adresseData.nom': 1,
@@ -102,6 +103,9 @@ const findAll = catchAsync(async (req, res) => {
                     },
                     updatedAt: {
                         $first: '$updatedAt',
+                    },
+                    deletedAt: {
+                        $first: '$deletedAt',
                     },
                     adresse: {
                         $push: {
@@ -179,6 +183,7 @@ const findOne = catchAsync(async (req, res) => {
                         picture: 1,
                         createdAt: 1,
                         updatedAt: 1,
+                        deletedAt: 1,
                         formations: 1,
                         'adresse.numero': 1,
                         'adresseData.nom': 1,
@@ -220,6 +225,9 @@ const findOne = catchAsync(async (req, res) => {
                         },
                         updatedAt: {
                             $first: '$updatedAt',
+                        },
+                        deletedAt: {
+                            $first: '$deletedAt',
                         },
                         adresse: {
                             $push: {
@@ -375,8 +383,17 @@ const deleteOne = catchAsync(async (req, res) => {
         redisClient.flushall();
         if (!isNaN(agent.deletedAt)) {
             // Agent already deleted, return appropriate response
-            const message = `L'agent a déjà été supprimé de manière logique.`;
+            const message = `🗑️ L'agent a déjà été supprimé de manière logique.`;
             return res.status(200).json(agent);
+        }
+        // Vérification si l'agent a le matricule A101
+        if (
+            agent.matricule === '101' ||
+            agent.lastname === 'admin' ||
+            agent.firstname === 'admin'
+        ) {
+            const message = `🚫 Impossible de supprimer l'agent avec le matricule A101.`;
+            return res.status(403).json({ message });
         }
 
         //suppression logique

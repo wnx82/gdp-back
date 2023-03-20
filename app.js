@@ -6,7 +6,7 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const passport = require('passport');
 const bodyParser = require('body-parser');
-const prettier = require('prettier');
+// const prettier = require('prettier');
 const morgan = require('morgan');
 const fs = require('fs');
 const { dbClient, redisClient } = require('./utils/');
@@ -44,6 +44,7 @@ var quartiersRouter = require('./routes/quartiers');
 var missionsRouter = require('./routes/missions');
 var validationsRouter = require('./routes/validations');
 var vehiculesRouter = require('./routes/vehicules');
+var imageController = require('./controllers/image.controller');
 
 const swaggerUi = require('swagger-ui-express');
 const swaggerJSDoc = require('swagger-jsdoc');
@@ -111,7 +112,7 @@ app.use('/status', statusRouter);
 app.use('/missions', missionsRouter);
 app.use('/validations', validationsRouter);
 app.use('/vehicules', vehiculesRouter);
-
+app.post('/save-image', imageController.saveImage);
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
     next(createError(404));
