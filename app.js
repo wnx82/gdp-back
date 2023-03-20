@@ -44,6 +44,31 @@ var quartiersRouter = require('./routes/quartiers');
 var missionsRouter = require('./routes/missions');
 var validationsRouter = require('./routes/validations');
 var vehiculesRouter = require('./routes/vehicules');
+
+const swaggerUi = require('swagger-ui-express');
+const swaggerJSDoc = require('swagger-jsdoc');
+
+const options = {
+    definition: {
+        openapi: '3.0.0',
+        info: {
+            title: 'My API',
+            version: '1.0.0',
+            description: 'My API description',
+        },
+        servers: [
+            {
+                url: 'http://localhost:3003',
+            },
+        ],
+    },
+    apis: ['./routes/*.js'],
+};
+
+const swaggerSpec = swaggerJSDoc(options);
+
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
 app.post('/flushall', flushCache);
 app.post('login', async (req, res) => {
     res.json({ ok: 'ok' });

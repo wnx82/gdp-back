@@ -1,4 +1,20 @@
 //./routes/categories.js
+/**
+ * @swagger
+ * /categories:
+ *   get:
+ *     summary: Get all categories
+ *     description: Retrieve a list of all categories.
+ *     responses:
+ *       200:
+ *         description: A list of categories.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/categories'
+ */
 var express = require('express');
 var router = express.Router();
 const controller = require('../controllers/categories.controller');
