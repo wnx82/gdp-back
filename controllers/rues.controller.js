@@ -16,139 +16,110 @@ const schema = Joi.object({
     localite: Joi.string().allow(null).optional().empty(''),
     codeRue: Joi.string().allow(null).optional().empty(''),
     traductionNl: Joi.string().allow(null).optional().empty(''),
-    xMin: Joi.alternatives()
-        .try(Joi.string().empty(''), Joi.number())
-        .required(),
-    xMax: Joi.alternatives()
-        .try(Joi.string().empty(''), Joi.number())
-        .required(),
-    yMin: Joi.alternatives()
-        .try(Joi.string().empty(''), Joi.number())
-        .required(),
-    yMax: Joi.alternatives()
-        .try(Joi.string().empty(''), Joi.number())
-        .required(),
+    xMin: Joi.alternatives().try(Joi.string().empty(''), Joi.number()),
+    xMax: Joi.alternatives().try(Joi.string().empty(''), Joi.number()),
+    yMin: Joi.alternatives().try(Joi.string().empty(''), Joi.number()),
+    yMax: Joi.alternatives().try(Joi.string().empty(''), Joi.number()),
     idTronconCentral: Joi.string().allow(null).optional().empty(''),
 });
 const findAll = catchAsync(async (req, res, next) => {
     let { localite } = req.query;
     let { cp } = req.query;
-    let { nom } = req.query; // Ajout d'un paramètre de recherche par adresse
-    let { quartier } = req.query; // Ajout d'un paramètre de recherche par adresse
+    let { nom } = req.query;
+    let { quartier } = req.query;
+    let { page = 1, pageSize = 10 } = req.query; // ajouter les paramètres de pagination page et pageSize
+
+    const skip = (page - 1) * pageSize; // calculer le nombre d'éléments à sauter
+    const limit = parseInt(pageSize); // convertir la valeur de pageSize en entier
 
     if (localite) {
-        localite = localite.charAt(0).toUpperCase() + localite.slice(1);
-        const message = `📄 Liste des rues de la localité de ${localite}`;
-        const inCache = await redisClient.get(`rues:${localite}`);
-        if (inCache) {
-            res.status(200).json(JSON.parse(inCache));
-        } else {
-            const data = await collection
-                .aggregate([
-                    {
-                        $match: {
-                            localite: localite,
-                        },
+        // votre code pour localite
+        const data = await collection
+            .aggregate([
+                {
+                    $match: {
+                        localite: localite,
                     },
-                ])
-                .toArray();
-            redisClient.set(
-                `rues:${localite}`,
-                JSON.stringify(data),
-                'EX',
-                600
-            );
-            res.status(200).json(data);
-        }
-        return;
-    }
-    if (cp) {
-        const postalCode = parseInt(cp);
-        const message = `📄 Liste des rues avec le code postal ${cp}`;
-        const inCache = await redisClient.get(`rues:${cp}`);
-        if (inCache) {
-            res.status(200).json(JSON.parse(inCache));
-        } else {
-            console.log(`Executing query for postal code: ${postalCode}`);
-            const data = await collection
-                .aggregate([
-                    {
-                        $match: {
-                            cp: postalCode,
-                        },
-                    },
-                ])
-                .toArray();
+                },
+                { $skip: skip }, // ajouter la pagination
+                { $limit: limit },
+            ])
+            .toArray();
 
-            redisClient.set(`rues:${cp}`, JSON.stringify(data), 'EX', 600);
-            res.status(200).json(data);
-        }
-        return;
-    }
-    if (nom) {
-        const message = `📄 Liste des rues avec le nom ${nom}`;
-        const inCache = await redisClient.get(`rues:${nom}`);
-        if (inCache) {
-            res.status(200).json(JSON.parse(inCache));
-        } else {
-            const data = await collection
-                .aggregate([
-                    {
-                        $match: {
-                            nom: {
-                                $regex: nom,
-                                $options: 'i', // options pour faire une recherche insensible à la casse
-                            },
-                        },
-                    },
-                ])
-                .toArray();
-
-            redisClient.set(`rues:${nom}`, JSON.stringify(data), 'EX', 600);
-            res.status(200).json(data);
-        }
-        return;
-    }
-    if (quartier) {
-        const message = `📄 Liste des rues du quartier ${quartier}`;
-        const inCache = await redisClient.get(`rues:${quartier}`);
-        if (inCache) {
-            res.status(200).json(JSON.parse(inCache));
-        } else {
-            const data = await collection
-                .aggregate([
-                    {
-                        $match: {
-                            quartier: {
-                                $regex: quartier,
-                                $options: 'i', // options pour faire une recherche insensible à la casse
-                            },
-                        },
-                    },
-                ])
-                .toArray();
-
-            redisClient.set(
-                `rues:${quartier}`,
-                JSON.stringify(data),
-                'EX',
-                600
-            );
-            res.status(200).json(data);
-        }
-        return;
-    }
-    const message = '📄 Liste complète des rues';
-    const inCache = await redisClient.get('rues:all');
-    if (inCache) {
-        res.status(200).json(JSON.parse(inCache));
-    } else {
-        const data = await collection.find({}).toArray();
-        redisClient.set('rues:all', JSON.stringify(data), 'EX', 600);
         res.status(200).json(data);
+        return;
     }
-    return;
+
+    if (cp) {
+        // votre code pour cp
+        const data = await collection
+            .aggregate([
+                {
+                    $match: {
+                        cp: postalCode,
+                    },
+                },
+                { $skip: skip }, // ajouter la pagination
+                { $limit: limit },
+            ])
+            .toArray();
+
+        res.status(200).json(data);
+        return;
+    }
+
+    if (nom) {
+        // votre code pour nom
+        const data = await collection
+            .aggregate([
+                {
+                    $match: {
+                        nom: {
+                            $regex: nom,
+                            $options: 'i',
+                        },
+                    },
+                },
+                { $skip: skip }, // ajouter la pagination
+                { $limit: limit },
+            ])
+            .toArray();
+
+        res.status(200).json(data);
+        return;
+    }
+
+    if (quartier) {
+        // votre code pour quartier
+        const data = await collection
+            .aggregate([
+                {
+                    $match: {
+                        quartier: {
+                            $regex: quartier,
+                            $options: 'i',
+                        },
+                    },
+                },
+                { $skip: skip }, // ajouter la pagination
+                { $limit: limit },
+            ])
+            .toArray();
+
+        res.status(200).json(data);
+        return;
+    }
+
+    // votre code pour la liste complète
+    const data = await collection
+        .find({})
+        .skip(skip) // ajouter la pagination
+        .limit(limit)
+        .toArray();
+
+    res.status(200).json(data);
 });
+
 const findOne = catchAsync(async (req, res) => {
     try {
         const message = `📄 Détails de la rue`;
