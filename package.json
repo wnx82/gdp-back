@@ -1,6 +1,6 @@
 {
     "name": "gdp-back",
-    "version": "0.0.0",
+    "version": "1.45.1",
     "private": true,
     "scripts": {
         "seed": "nodemon seed.js",
