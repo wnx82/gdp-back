@@ -16,18 +16,10 @@ const schema = Joi.object({
     localite: Joi.string().allow(null).optional().empty(''),
     codeRue: Joi.string().allow(null).optional().empty(''),
     traductionNl: Joi.string().allow(null).optional().empty(''),
-    xMin: Joi.alternatives()
-        .try(Joi.string().empty(''), Joi.number())
-        .required(),
-    xMax: Joi.alternatives()
-        .try(Joi.string().empty(''), Joi.number())
-        .required(),
-    yMin: Joi.alternatives()
-        .try(Joi.string().empty(''), Joi.number())
-        .required(),
-    yMax: Joi.alternatives()
-        .try(Joi.string().empty(''), Joi.number())
-        .required(),
+    xMin: Joi.alternatives().try(Joi.string().empty(''), Joi.number()),
+    xMax: Joi.alternatives().try(Joi.string().empty(''), Joi.number()),
+    yMin: Joi.alternatives().try(Joi.string().empty(''), Joi.number()),
+    yMax: Joi.alternatives().try(Joi.string().empty(''), Joi.number()),
     idTronconCentral: Joi.string().allow(null).optional().empty(''),
 });
 const findAll = catchAsync(async (req, res, next) => {
