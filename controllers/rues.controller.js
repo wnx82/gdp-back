@@ -295,6 +295,19 @@ const deleteOne = catchAsync(async (req, res) => {
         res.status(400).json({ message: 'Malformed parameter "force"' });
     }
 });
+const deleteMany = catchAsync(async (req, res) => {
+    const result = await collection.deleteMany({
+        deletedAt: { $exists: true },
+    });
+    if (result.deletedCount > 0) {
+        redisClient.del('rues:all');
+        res.status(200).json({
+            message: `${result.deletedCount} rues ont été supprimées.`,
+        });
+    } else {
+        res.status(404).json({ message: 'Aucune rue trouvée à supprimer.' });
+    }
+});
 
 module.exports = {
     findAll,
@@ -302,4 +315,5 @@ module.exports = {
     create,
     updateOne,
     deleteOne,
+    deleteMany,
 };

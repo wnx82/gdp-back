@@ -8,6 +8,19 @@ const collection = database.collection('missions');
 const Joi = require('joi');
 const ObjectId = require('mongodb').ObjectId;
 
+const schema = Joi.object({
+    title: Joi.string().required(),
+    description: Joi.string().allow(null).optional().empty(''),
+    category: Joi.string().allow(null).optional().empty(''),
+    horaire: Joi.string().allow(null).optional().empty(''),
+    priority: Joi.number().allow(null).optional().empty(''),
+    contact: Joi.string().allow(null).optional().empty(''),
+    visibility: Joi.boolean().optional(),
+    annexes: Joi.array()
+        .items(Joi.string().allow(null).optional().empty(''))
+        .optional(),
+});
+
 const findAll = catchAsync(async (req, res) => {
     const message = '📄 Liste des missions';
     const inCache = await redisClient.get('missions:all');
@@ -51,18 +64,7 @@ const findOne = catchAsync(async (req, res) => {
         console.error(e);
     }
 });
-const schema = Joi.object({
-    title: Joi.string().required(),
-    description: Joi.string().allow(null).optional().empty(''),
-    category: Joi.string().allow(null).optional().empty(''),
-    horaire: Joi.string().allow(null).optional().empty(''),
-    priority: Joi.number().allow(null).optional().empty(''),
-    contact: Joi.string().allow(null).optional().empty(''),
-    visibility: Joi.boolean().optional(),
-    annexes: Joi.array()
-        .items(Joi.string().allow(null).optional().empty(''))
-        .optional(),
-});
+
 const create = catchAsync(async (req, res) => {
     const message = `✏️ Création d'une mission`;
 
@@ -74,6 +76,7 @@ const create = catchAsync(async (req, res) => {
     }
     try {
         const { ...rest } = value;
+
         const createdAt = new Date();
         const updatedAt = new Date();
         const data = await collection
