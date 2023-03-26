@@ -59,6 +59,9 @@ const findAll = catchAsync(async (req, res) => {
                             denomination: {
                                 $first: '$adresseData.denomination',
                             },
+                            nomComplet: {
+                                $first: '$adresseData.nomComplet',
+                            },
                             quartier: {
                                 $first: '$adresseData.quartier',
                             },
@@ -158,6 +161,9 @@ const findActiveHabitations = catchAsync(async (req, res) => {
                             denomination: {
                                 $first: '$adresseData.denomination',
                             },
+                            nomComplet: {
+                                $first: '$adresseData.nomComplet',
+                            },
                             quartier: {
                                 $first: '$adresseData.quartier',
                             },
@@ -226,6 +232,9 @@ const findOne = catchAsync(async (req, res) => {
                                 },
                                 denomination: {
                                     $first: '$adresseData.denomination',
+                                },
+                                nomComplet: {
+                                    $first: '$adresseData.nomComplet',
                                 },
                                 quartier: {
                                     $first: '$adresseData.quartier',

@@ -66,6 +66,7 @@ const findAll = catchAsync(async (req, res) => {
                     'adresse.numero': 1,
                     'adresseData.nom': 1,
                     'adresseData.denomination': 1,
+                    'adresseData.nomComplet': 1,
                     'adresseData.quartier': 1,
                     'adresseData.cp': 1,
                     'adresseData.localite': 1,
@@ -115,6 +116,9 @@ const findAll = catchAsync(async (req, res) => {
                             },
                             denomination: {
                                 $first: '$adresseData.denomination',
+                            },
+                            nomComplet: {
+                                $first: '$adresseData.nomComplet',
                             },
                             quartier: {
                                 $first: '$adresseData.quartier',
@@ -188,6 +192,7 @@ const findOne = catchAsync(async (req, res) => {
                         'adresse.numero': 1,
                         'adresseData.nom': 1,
                         'adresseData.denomination': 1,
+                        'adresseData.nomComplet': 1,
                         'adresseData.quartier': 1,
                         'adresseData.cp': 1,
                         'adresseData.localite': 1,
@@ -237,6 +242,9 @@ const findOne = catchAsync(async (req, res) => {
                                 },
                                 denomination: {
                                     $first: '$adresseData.denomination',
+                                },
+                                nomComplet: {
+                                    $first: '$adresseData.nomComplet',
                                 },
                                 quartier: {
                                     $first: '$adresseData.quartier',

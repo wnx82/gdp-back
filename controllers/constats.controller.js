@@ -97,6 +97,9 @@ const pipeline = [
                     denomination: {
                         $first: '$adresseData.denomination',
                     },
+                    nomComplet: {
+                        $first: '$adresseData.nomComplet',
+                    },
                     quartier: {
                         $first: '$adresseData.quartier',
                     },
