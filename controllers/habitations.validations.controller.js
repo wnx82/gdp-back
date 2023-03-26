@@ -29,70 +29,68 @@ const findAll = catchAsync(async (req, res) => {
         return res.status(200).json(JSON.parse(inCache));
     } else {
         const pipeline = [
-            [
-                {
-                    $lookup: {
-                        from: 'agents',
-                        localField: 'agent',
-                        foreignField: '_id',
-                        as: 'populatedAgent',
+            {
+                $lookup: {
+                    from: 'agents',
+                    localField: 'agent',
+                    foreignField: '_id',
+                    as: 'populatedAgent',
+                },
+            },
+            {
+                $project: {
+                    agents: '$populatedAgent',
+                    habitation: 1,
+                    message: 1,
+                    date: 1,
+                    createdAt: 1,
+                    updateAt: 1,
+                    deletedAt: 1,
+                },
+            },
+            {
+                $lookup: {
+                    from: 'habitations',
+                    localField: 'habitation',
+                    foreignField: '_id',
+                    as: 'populatedHabitation',
+                },
+            },
+            {
+                $project: {
+                    agents: 1,
+                    habitation: '$populatedHabitation',
+                    message: 1,
+                    date: 1,
+                    createdAt: 1,
+                    updateAt: 1,
+                    deletedAt: 1,
+                },
+            },
+            {
+                $lookup: {
+                    from: 'rues',
+                    localField: 'habitation.adresse.rue',
+                    foreignField: '_id',
+                    as: 'DataRue',
+                },
+            },
+            {
+                $addFields: {
+                    'habitation.adresse.rue': {
+                        $first: '$DataRue.nomComplet',
+                    },
+                    'habitation.adresse.quartier': {
+                        $first: '$DataRue.quartier',
+                    },
+                    'habitation.adresse.cp': {
+                        $first: '$DataRue.cp',
+                    },
+                    'habitation.adresse.localite': {
+                        $first: '$DataRue.localite',
                     },
                 },
-                {
-                    $project: {
-                        agents: '$populatedAgent',
-                        habitation: 1,
-                        message: 1,
-                        date: 1,
-                        createdAt: 1,
-                        updateAt: 1,
-                        deletedAt: 1,
-                    },
-                },
-                {
-                    $lookup: {
-                        from: 'habitations',
-                        localField: 'habitation',
-                        foreignField: '_id',
-                        as: 'populatedHabitation',
-                    },
-                },
-                {
-                    $project: {
-                        agents: 1,
-                        habitation: '$populatedHabitation',
-                        message: 1,
-                        date: 1,
-                        createdAt: 1,
-                        updateAt: 1,
-                        deletedAt: 1,
-                    },
-                },
-                {
-                    $lookup: {
-                        from: 'rues',
-                        localField: 'habitation.adresse.rue',
-                        foreignField: '_id',
-                        as: 'DataRue',
-                    },
-                },
-                {
-                    $addFields: {
-                        'habitation.adresse.rue': {
-                            $first: '$DataRue.nomComplet',
-                        },
-                        'habitation.adresse.quartier': {
-                            $first: '$DataRue.quartier',
-                        },
-                        'habitation.adresse.cp': {
-                            $first: '$DataRue.cp',
-                        },
-                        'habitation.adresse.localite': {
-                            $first: '$DataRue.localite',
-                        },
-                    },
-                },
-            ],
+            },
         ];
         const data = await collection.aggregate(pipeline).toArray();
         redisClient.set('validations:all', JSON.stringify(data), 'EX', 600);
