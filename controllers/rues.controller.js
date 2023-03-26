@@ -11,6 +11,7 @@ const ObjectId = require('mongodb').ObjectId;
 const schema = Joi.object({
     nom: Joi.string().allow(null).optional().empty(''),
     denomination: Joi.string().allow(null).optional().empty(''),
+    nomComplet: Joi.string().allow(null).optional().empty(''),
     quartier: Joi.string().allow(null).optional().empty(''),
     cp: Joi.number().allow(null).optional().empty(''),
     localite: Joi.string().allow(null).optional().empty(''),

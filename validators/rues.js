@@ -13,6 +13,10 @@ module.exports = {
                     bsonType: 'string',
                     description: ' must be a string and is not required',
                 },
+                nomComplet: {
+                    bsonType: 'string',
+                    description: ' must be a string and is not required',
+                },
                 quartier: {
                     bsonType: 'string',
                     description: ' must be a string and is not required',
