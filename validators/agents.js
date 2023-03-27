@@ -21,8 +21,8 @@ module.exports = {
                     description: 'must be a integer and is required',
                 },
                 matricule: {
-                    bsonType: 'string',
-                    description: 'must be a string and is required',
+                    bsonType: 'int',
+                    description: 'must be a integer and is required',
                 },
                 firstname: {
                     bsonType: 'string',

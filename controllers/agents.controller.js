@@ -14,7 +14,7 @@ const schema = Joi.object({
     email: Joi.string().email().required().max(200),
     password: Joi.string().required(),
     userAccess: Joi.number().integer().min(0).max(10).required(),
-    matricule: Joi.string().required(),
+    matricule: Joi.number().integer().min(0).max(999).required(),
     firstname: Joi.string().max(25).allow(null).optional().empty(''),
     lastname: Joi.string().allow(null).optional().empty(''),
     birthday: Joi.date().allow(null).optional().empty(''),

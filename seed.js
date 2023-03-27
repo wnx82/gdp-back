@@ -156,7 +156,7 @@ for (const c of collections) {
         password: await bcrypt.hash('123456789', 10),
         userAccess: faker.datatype.number({ min: 1, max: 10 }),
         userAccess: 10,
-        matricule: 'A101',
+        matricule: 101,
         firstname: 'admin',
         lastname: 'admin',
         adresse: {
@@ -176,7 +176,7 @@ for (const c of collections) {
                 email: faker.internet.email(),
                 password: bcrypt.hashSync(faker.internet.password(), 10),
                 userAccess: faker.datatype.number({ min: 1, max: 10 }),
-                matricule: 'A1' + faker.random.numeric(2),
+                matricule: faker.datatype.number({ min: 101, max: 199 }),
                 firstname: faker.name.firstName(),
                 lastname: faker.name.lastName(),
                 birthday: faker.date.past(),
