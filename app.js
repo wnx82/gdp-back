@@ -46,44 +46,51 @@ var validationsRouter = require('./routes/validations');
 var vehiculesRouter = require('./routes/vehicules');
 var imageController = require('./controllers/image.controller');
 
-const swaggerUi = require('swagger-ui-express');
-const swaggerJSDoc = require('swagger-jsdoc');
+// const swaggerUi = require('swagger-ui-express');
+// const swaggerJSDoc = require('swagger-jsdoc');
 
-const options = {
-    definition: {
-        openapi: '3.0.0',
-        info: {
-            title: 'My API',
-            version: '1.0.0',
-            description: 'My API description',
-        },
-        servers: [
-            {
-                url: 'http://localhost:3003',
-            },
-        ],
-    },
-    apis: ['./routes/*.js'],
-};
+// const options = {
+//     definition: {
+//         openapi: '3.0.0',
+//         info: {
+//             title: 'My API',
+//             version: '1.0.0',
+//             description: 'My API description',
+//         },
+//         servers: [
+//             {
+//                 url: 'http://localhost:3003',
+//             },
+//         ],
+//     },
+//     apis: ['./routes/*.js'],
+// };
 
-const swaggerSpec = swaggerJSDoc(options);
+// const swaggerSpec = swaggerJSDoc(options);
 
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+// app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 app.post('/flushall', flushCache);
 app.post('login', async (req, res) => {
     res.json({ ok: 'ok' });
 });
-
+app.use((req, res, next) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'PUT, GET, HEAD, POST, DELETE, OPTIONS, PATCH');
+  res.setHeader('Access-Control-Allow-Headers', 'content-type');
+  next();
+});
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 var corsOptions = {
-    origin: '*',
+    origin: 'http://localhost:4200',
     methods: ['GET', 'PUT', 'POST', 'PATCH', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
+    // allowedHeaders: ['Content-Type', 'Authorization'],
+    // optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
 };
 
 app.use(cors(corsOptions));
+
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));

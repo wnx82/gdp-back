@@ -279,15 +279,20 @@ const create = catchAsync(async (req, res) => {
 
     const { body } = req;
 
-    if (typeof body.email === 'undefined') {
-        return res.status(400).json({ message: 'Email field is required' });
-    }
+  if (typeof body.email === 'undefined') {
+    return res.status(400).json({ message: 'Email field is required' });
+  }
     if (!body.email) {
         return res.status(400).json({ message: 'Email field is required' });
     }
     if (!body.password) {
         return res.status(400).json({ message: 'Password field is required' });
     }
+      // Set default picture if empty
+  if (!body.picture) {
+    body.picture = 'https://cdn-icons-png.flaticon.com/512/1946/1946392.png';
+  }
+
     const { value, error } = schema.validate(body);
     // Handle validation errors
     if (error) {
