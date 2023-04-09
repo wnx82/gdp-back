@@ -95,27 +95,21 @@ const updateOne = catchAsync(async (req, res) => {
     if (!id) {
         return res.status(400).json({ message: 'No id provided' });
     }
+
     const message = `📝 Mise à jour de la categorie ${id}`;
     const { body } = req;
-    const { value, error } = schema.validate(body);
-    if (error) {
-        console.log(error);
-        const errors = error.details.map(d => d.message);
-        return res.status(400).json({ message: 'Validation error', errors });
-    }
-    let updateValue = { ...value };
+    let updateValue = { ...body, updatedAt: new Date() };
 
     try {
-        const updatedAt = new Date();
         const { modifiedCount } = await collection.findOneAndUpdate(
             { _id: ObjectId(id) },
-            { $set: { ...updateValue, updatedAt } },
+            { $set: updateValue },
             { returnDocument: 'after' }
         );
         if (modifiedCount === 0) {
             return res.status(404).json({ message: 'Categorie not found' });
         }
-        res.status(200).json(value);
+        res.status(200).json(updateValue);
         redisClient.del('categories:all');
         redisClient.del(`categorie:${id}`);
     } catch (err) {
@@ -123,6 +117,7 @@ const updateOne = catchAsync(async (req, res) => {
         res.status(500).json({ message: 'Server error' });
     }
 });
+
 const deleteOne = catchAsync(async (req, res) => {
     const { id } = req.params;
     const { force } = req.query;
