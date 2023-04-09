@@ -9,6 +9,7 @@ const Joi = require('joi');
 const ObjectId = require('mongodb').ObjectId;
 
 const schema = Joi.object({
+    id : Joi.string().allow(null).optional().empty(''),
     adresse: {
         rue: Joi.string().regex(/^[0-9a-fA-F]{24}$/),
         numero: Joi.string().allow(null).optional().empty(''),

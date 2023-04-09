@@ -10,6 +10,7 @@ const Joi = require('joi');
 const ObjectId = require('mongodb').ObjectId;
 
 const schema = Joi.object({
+    id : Joi.string().allow(null).optional().empty(''),
     agents: Joi.array()
         .items(Joi.string().regex(/^[0-9a-fA-F]{24}$/))
         .min(1)

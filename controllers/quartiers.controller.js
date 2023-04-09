@@ -8,6 +8,15 @@ const collection = database.collection('quartiers');
 const Joi = require('joi');
 const ObjectId = require('mongodb').ObjectId;
 
+const schema = Joi.object({
+    id : Joi.string().allow(null).optional().empty(''),
+    title: Joi.string().required(),
+    missions: Joi.array()
+        .items(Joi.string().regex(/^[0-9a-fA-F]{24}$/))
+        .min(1)
+        .required(),
+});
+
 const findAll = catchAsync(async (req, res) => {
     const message = '📄 Liste des quartiers';
     const inCache = await redisClient.get('quartiers:all');
@@ -95,13 +104,7 @@ const findOne = catchAsync(async (req, res) => {
         console.error(e);
     }
 });
-const schema = Joi.object({
-    title: Joi.string().required(),
-    missions: Joi.array()
-        .items(Joi.string().regex(/^[0-9a-fA-F]{24}$/))
-        .min(1)
-        .required(),
-});
+
 
 const create = catchAsync(async (req, res) => {
     const message = `✏️ Création d'un quartier`;

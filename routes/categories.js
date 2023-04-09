@@ -23,6 +23,7 @@ const validateId = require('../helpers/validateId');
 router.get('/', controller.findAll);
 router.get('/:id', validateId, controller.findOne);
 router.post('/', controller.create);
+router.post('/purge', controller.deleteMany);
 router.put('/:id', validateId, controller.updateOne);
 router.delete('/:id', validateId, controller.deleteOne);
 

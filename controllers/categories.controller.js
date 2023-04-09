@@ -9,6 +9,7 @@ const Joi = require('joi');
 const ObjectId = require('mongodb').ObjectId;
 
 const schema = Joi.object({
+    id : Joi.string().allow(null).optional().empty(''),
     title: Joi.string().allow(null).optional().empty(''),
 });
 
@@ -81,7 +82,7 @@ const create = catchAsync(async (req, res) => {
             })
             .then(
                 console.log(
-                    `----------->Le categorie a bien été créé<-----------`
+                    `----------->La categorie a bien été créé<-----------`
                 )
             );
         res.status(201).json(data);
@@ -90,26 +91,61 @@ const create = catchAsync(async (req, res) => {
         console.log(err);
     }
 });
+// const updateOne = catchAsync(async (req, res) => {
+//     const { id } = req.params;
+//     if (!id) {
+//         return res.status(400).json({ message: 'No id provided' });
+//     }
+
+//     const message = `📝 Mise à jour de la categorie ${id}`;
+//     const { body } = req;
+//     let updateValue = { ...body, updatedAt: new Date() };
+
+//     try {
+//         const { modifiedCount } = await collection.findOneAndUpdate(
+//             { _id: ObjectId(id) },
+//             { $set: updateValue },
+//             { returnDocument: 'after' }
+//         );
+//         if (modifiedCount === 0) {
+//             return res.status(404).json({ message: 'Categorie not found' });
+//         }
+//         res.status(200).json(updateValue);
+//         redisClient.del('categories:all');
+//         redisClient.del(`categorie:${id}`);
+//     } catch (err) {
+//         console.log(err);
+//         res.status(500).json({ message: 'Server error' });
+//     }
+// });
+
+// Avec vérification
 const updateOne = catchAsync(async (req, res) => {
     const { id } = req.params;
     if (!id) {
         return res.status(400).json({ message: 'No id provided' });
     }
-
     const message = `📝 Mise à jour de la categorie ${id}`;
     const { body } = req;
-    let updateValue = { ...body, updatedAt: new Date() };
+    const { value, error } = schema.validate(body);
+    if (error) {
+        console.log(error);
+        const errors = error.details.map(d => d.message);
+        return res.status(400).json({ message: 'Validation error', errors });
+    }
+    let updateValue = { ...value };
 
     try {
+        const updatedAt = new Date();
         const { modifiedCount } = await collection.findOneAndUpdate(
             { _id: ObjectId(id) },
-            { $set: updateValue },
+            { $set: { ...updateValue, updatedAt } },
             { returnDocument: 'after' }
         );
         if (modifiedCount === 0) {
             return res.status(404).json({ message: 'Categorie not found' });
         }
-        res.status(200).json(updateValue);
+        res.status(200).json(value);
         redisClient.del('categories:all');
         redisClient.del(`categorie:${id}`);
     } catch (err) {
@@ -160,10 +196,26 @@ const deleteOne = catchAsync(async (req, res) => {
     }
 });
 
+const deleteMany = catchAsync(async (req, res) => {
+    const result = await collection.deleteMany({
+        deletedAt: { $exists: true },
+    });
+    if (result.deletedCount > 0) {
+        redisClient.del('categories:all');
+        res.status(200).json({
+            message: `${result.deletedCount} categories ont été supprimées.`,
+        });
+    } else {
+        res.status(404).json({ message: 'Aucune categorie trouvée à supprimer.' });
+    }
+});
+
+
 module.exports = {
     findAll,
     findOne,
     create,
     updateOne,
     deleteOne,
+    deleteMany
 };

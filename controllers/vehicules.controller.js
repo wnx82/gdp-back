@@ -9,6 +9,7 @@ const Joi = require('joi');
 const ObjectId = require('mongodb').ObjectId;
 
 const schema = Joi.object({
+    id : Joi.string().allow(null).optional().empty(''),
     marque: Joi.string().allow(null).optional().empty(''),
     modele: Joi.string().allow(null).optional().empty(''),
     immatriculation: Joi.string().allow(null).optional().empty(''),

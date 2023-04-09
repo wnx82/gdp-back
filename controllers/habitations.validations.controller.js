@@ -10,6 +10,7 @@ const ObjectId = require('mongodb').ObjectId;
 const sendHabitation = require('../helpers/sendHabitation');
 
 const schema = Joi.object({
+    id : Joi.string().allow(null).optional().empty(''),
     agent: Joi.array()
         .items(Joi.string().regex(/^[0-9a-fA-F]{24}$/))
         .min(1)

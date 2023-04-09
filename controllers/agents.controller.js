@@ -11,6 +11,7 @@ const Joi = require('joi');
 const ObjectId = require('mongodb').ObjectId;
 
 const schema = Joi.object({
+    id : Joi.string().allow(null).optional().empty(''),
     email: Joi.string().email().required().max(200),
     password: Joi.string().required(),
     userAccess: Joi.number().integer().min(0).max(10).required(),

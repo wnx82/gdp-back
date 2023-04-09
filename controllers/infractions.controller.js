@@ -8,6 +8,13 @@ const collection = database.collection('infractions');
 const Joi = require('joi');
 const ObjectId = require('mongodb').ObjectId;
 
+const schema = Joi.object({
+    id : Joi.string().allow(null).optional().empty(''),
+    category: Joi.string().required(),
+    priority: Joi.number().allow(null).optional().empty(''),
+    list: Joi.array(),
+});
+
 const findAll = catchAsync(async (req, res) => {
     const message = '📄 Liste des infractions';
     const inCache = await redisClient.get('infractions:all');
@@ -56,11 +63,7 @@ const findOne = catchAsync(async (req, res) => {
         console.error(e);
     }
 });
-const schema = Joi.object({
-    category: Joi.string().required(),
-    priority: Joi.number().allow(null).optional().empty(''),
-    list: Joi.array(),
-});
+
 const create = catchAsync(async (req, res) => {
     const message = `✏️ Création d'une infraction`;
 

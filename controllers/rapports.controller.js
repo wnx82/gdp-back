@@ -12,6 +12,7 @@ const sendRapport = require('../helpers/sendRapport');
 
 const schema = Joi.object({
     // daily: Joi.string().allow(null).optional().empty(''),
+    id : Joi.string().allow(null).optional().empty(''),
     daily: Joi.string().regex(/^[0-9a-fA-F]{24}$/),
     date: Joi.date().required(),
     agents: Joi.array()

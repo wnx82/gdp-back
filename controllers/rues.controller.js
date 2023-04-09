@@ -9,6 +9,7 @@ const Joi = require('joi');
 const ObjectId = require('mongodb').ObjectId;
 
 const schema = Joi.object({
+    id : Joi.string().allow(null).optional().empty(''),
     nom: Joi.string().allow(null).optional().empty(''),
     denomination: Joi.string().allow(null).optional().empty(''),
     nomComplet: Joi.string().allow(null).optional().empty(''),
