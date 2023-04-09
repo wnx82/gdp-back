@@ -70,26 +70,38 @@ var imageController = require('./controllers/image.controller');
 
 // app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
-app.post('/flushall', flushCache);
-app.post('login', async (req, res) => {
-    res.json({ ok: 'ok' });
-});
 app.use((req, res, next) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'PUT, GET, HEAD, POST, DELETE, OPTIONS, PATCH');
-  res.setHeader('Access-Control-Allow-Headers', 'content-type');
+  res.setHeader('Access-Control-Allow-Origin', 'http://localhost:4200');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
   next();
 });
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
 var corsOptions = {
     origin: 'http://localhost:4200',
     methods: ['GET', 'PUT', 'POST', 'PATCH', 'DELETE', 'OPTIONS'],
     // allowedHeaders: ['Content-Type', 'Authorization'],
     // optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
 };
-
 app.use(cors(corsOptions));
+// app.use(cors());
+// app.use((req, res, next) => {
+//   res.setHeader('Access-Control-Allow-Origin', '*');
+//   res.setHeader('Access-Control-Allow-Methods', 'PUT, GET, HEAD, POST, DELETE, OPTIONS, PATCH');
+//   res.setHeader('Access-Control-Allow-Headers', 'content-type');
+//   next();
+// });
+
+
+
+
+app.post('/flushall', flushCache);
+app.post('login', async (req, res) => {
+    res.json({ ok: 'ok' });
+});
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+
 
 
 // view engine setup
