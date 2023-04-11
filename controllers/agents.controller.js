@@ -21,6 +21,7 @@ const schema = Joi.object({
     lastname: Joi.string().allow(null).optional().empty(''),
     birthday: Joi.date().allow(null).optional().empty(''),
     tel: Joi.string().max(30).allow(null).optional().empty(''),
+    iceContact: Joi.string().required(),
     adresse: {
         rue: Joi.string()
             .regex(/^[0-9a-fA-F]{24}$/)
@@ -60,6 +61,7 @@ const findAll = catchAsync(async (req, res) => {
                     lastname: 1,
                     birthday: 1,
                     tel: 1,
+                    iceContact: 1,
                     picture: 1,
                     createdAt: 1,
                     updatedAt: 1,
@@ -94,6 +96,9 @@ const findAll = catchAsync(async (req, res) => {
                     },
                     tel: {
                         $first: '$tel',
+                    },
+                    iceContact: {
+                        $first: '$iceContact',
                     },
                     picture: {
                         $first: '$picture',
@@ -191,6 +196,7 @@ const findOne = catchAsync(async (req, res) => {
                         lastname: 1,
                         birthday: 1,
                         tel: 1,
+                        iceContact: 1,
                         picture: 1,
                         createdAt: 1,
                         updatedAt: 1,
@@ -225,6 +231,9 @@ const findOne = catchAsync(async (req, res) => {
                         },
                         tel: {
                             $first: '$tel',
+                        },
+                        iceContact: {
+                            $first: '$iceContact',
                         },
                         picture: {
                             $first: '$picture',

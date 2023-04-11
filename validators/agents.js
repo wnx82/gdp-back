@@ -40,7 +40,10 @@ module.exports = {
                     bsonType: 'string',
                     description: 'must be a string',
                 },
-
+                iceContact: {
+                    bsonType: 'string',
+                    description: 'iceContact must be a string',
+                },
                 adresse: {
                     bsonType: 'object',
                     properties: {
