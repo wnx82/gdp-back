@@ -354,7 +354,7 @@ const deleteOne = catchAsync(async (req, res) => {
 });
 
 const deleteMany = catchAsync(async (req, res) => {
-    const result = await collection(collectionName).deleteMany({
+    const result = await collection.deleteMany({
         deletedAt: { $exists: true },
     });
     const deletedCount = result.deletedCount;
