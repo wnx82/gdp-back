@@ -7,9 +7,10 @@ const database = dbClient.db(process.env.MONGO_DB_DATABASE);
 const collection = database.collection('rues');
 const Joi = require('joi');
 const ObjectId = require('mongodb').ObjectId;
+const collectionName = 'rues';
 
 const schema = Joi.object({
-    id : Joi.string().allow(null).optional().empty(''),
+    id: Joi.string().allow(null).optional().empty(''),
     nom: Joi.string().allow(null).optional().empty(''),
     denomination: Joi.string().allow(null).optional().empty(''),
     nomComplet: Joi.string().allow(null).optional().empty(''),
@@ -45,7 +46,7 @@ const findAll = catchAsync(async (req, res, next) => {
     if (localite) {
         localite = localite.charAt(0).toUpperCase() + localite.slice(1);
         const message = `📄 Liste des rues de la localité de ${localite}`;
-        const inCache = await redisClient.get(`rues:${localite}`);
+        const inCache = await redisClient.get(`${collectionName}:${localite}`);
         if (inCache) {
             res.status(200).json(JSON.parse(inCache));
         } else {
@@ -59,7 +60,7 @@ const findAll = catchAsync(async (req, res, next) => {
                 ])
                 .toArray();
             redisClient.set(
-                `rues:${localite}`,
+                `${collectionName}:${localite}`,
                 JSON.stringify(data),
                 'EX',
                 600
@@ -71,7 +72,7 @@ const findAll = catchAsync(async (req, res, next) => {
     if (cp) {
         const postalCode = parseInt(cp);
         const message = `📄 Liste des rues avec le code postal ${cp}`;
-        const inCache = await redisClient.get(`rues:${cp}`);
+        const inCache = await redisClient.get(`${collectionName}:${cp}`);
         if (inCache) {
             res.status(200).json(JSON.parse(inCache));
         } else {
@@ -86,14 +87,19 @@ const findAll = catchAsync(async (req, res, next) => {
                 ])
                 .toArray();
 
-            redisClient.set(`rues:${cp}`, JSON.stringify(data), 'EX', 600);
+            redisClient.set(
+                `${collectionName}:${cp}`,
+                JSON.stringify(data),
+                'EX',
+                600
+            );
             res.status(200).json(data);
         }
         return;
     }
     if (nom) {
         const message = `📄 Liste des rues avec le nom ${nom}`;
-        const inCache = await redisClient.get(`rues:${nom}`);
+        const inCache = await redisClient.get(`${collectionName}:${nom}`);
         if (inCache) {
             res.status(200).json(JSON.parse(inCache));
         } else {
@@ -110,14 +116,19 @@ const findAll = catchAsync(async (req, res, next) => {
                 ])
                 .toArray();
 
-            redisClient.set(`rues:${nom}`, JSON.stringify(data), 'EX', 600);
+            redisClient.set(
+                `${collectionName}:${nom}`,
+                JSON.stringify(data),
+                'EX',
+                600
+            );
             res.status(200).json(data);
         }
         return;
     }
     if (quartier) {
         const message = `📄 Liste des rues du quartier ${quartier}`;
-        const inCache = await redisClient.get(`rues:${quartier}`);
+        const inCache = await redisClient.get(`${collectionName}:${quartier}`);
         if (inCache) {
             res.status(200).json(JSON.parse(inCache));
         } else {
@@ -135,7 +146,7 @@ const findAll = catchAsync(async (req, res, next) => {
                 .toArray();
 
             redisClient.set(
-                `rues:${quartier}`,
+                `${collectionName}:${quartier}`,
                 JSON.stringify(data),
                 'EX',
                 600
@@ -145,12 +156,17 @@ const findAll = catchAsync(async (req, res, next) => {
         return;
     }
     const message = '📄 Liste complète des rues';
-    const inCache = await redisClient.get('rues:all');
+    const inCache = await redisClient.get(`${collectionName}:all`);
     if (inCache) {
         res.status(200).json(JSON.parse(inCache));
     } else {
         const data = await collection.find({}).toArray();
-        redisClient.set('rues:all', JSON.stringify(data), 'EX', 600);
+        redisClient.set(
+            `${collectionName}:all`,
+            JSON.stringify(data),
+            'EX',
+            600
+        );
         res.status(200).json(data);
     }
     return;
@@ -167,13 +183,18 @@ const findOne = catchAsync(async (req, res) => {
             });
             return;
         }
-        const inCache = await redisClient.get(`rue:${id}`);
+        const inCache = await redisClient.get(`${collectionName}:${id}`);
 
         if (inCache) {
             return res.status(200).json(JSON.parse(inCache));
         } else {
             data = await collection.findOne({ _id: new ObjectId(id) });
-            redisClient.set(`rue:${id}`, JSON.stringify(data), 'EX', 600);
+            redisClient.set(
+                `${collectionName}:${id}`,
+                JSON.stringify(data),
+                'EX',
+                600
+            );
         }
 
         if (!data) {
@@ -212,7 +233,7 @@ const create = catchAsync(async (req, res) => {
             .then();
         res.status(201).json(data);
         console.log(`--> 📝 Rue ${data.insertedId} créée`);
-        redisClient.del('rues:all');
+        redisClient.del(`${collectionName}:all`);
     } catch (err) {
         console.log(err);
     }
@@ -249,8 +270,8 @@ const updateOne = catchAsync(async (req, res) => {
             return res.status(404).json({ message: 'Street not modified' });
         }
         res.status(200).json(value);
-        redisClient.del('rues:all');
-        redisClient.del(`rue:${id}`);
+        redisClient.del(`${collectionName}:all`);
+        redisClient.del(`${collectionName}:${id}`);
     } catch (err) {
         console.log(err);
         res.status(500).json({ message: 'Server error' });
@@ -278,8 +299,8 @@ const deleteOne = catchAsync(async (req, res) => {
             }
         );
         res.status(200).json(data);
-        redisClient.del('rues:all');
-        redisClient.del(`rue:${id}`);
+        redisClient.del(`${collectionName}:all`);
+        redisClient.del(`${collectionName}:${id}`);
     } else if (parseInt(force, 10) === 1) {
         //suppression physique
         const message = `🗑️ Suppression d'une rue de manière physique`;
@@ -288,8 +309,8 @@ const deleteOne = catchAsync(async (req, res) => {
         if (result.deletedCount === 1) {
             console.log('Successfully deleted');
             res.status(200).json(success(message));
-            redisClient.del('rues:all');
-            redisClient.del(`rue:${id}`);
+            redisClient.del(`${collectionName}:all`);
+            redisClient.del(`${collectionName}:${id}`);
         } else {
             res.status(404).json({ message: 'Failed to delete' });
         }
@@ -298,17 +319,19 @@ const deleteOne = catchAsync(async (req, res) => {
     }
 });
 const deleteMany = catchAsync(async (req, res) => {
-    const result = await collection.deleteMany({
+    const result = await collection(collectionName).deleteMany({
         deletedAt: { $exists: true },
     });
-    if (result.deletedCount > 0) {
-        redisClient.del('rues:all');
-        res.status(200).json({
-            message: `${result.deletedCount} rues ont été supprimées.`,
-        });
-    } else {
-        res.status(404).json({ message: 'Aucune rue trouvée à supprimer.' });
+    const deletedCount = result.deletedCount;
+    if (!deletedCount) {
+        return res
+            .status(404)
+            .json({ message: 'Aucune donnée trouvée à supprimer.' });
     }
+    redisClient.del(`${collectionName}:all`);
+    res.status(200).json({
+        message: `${deletedCount} donnée(s) supprimée(s).`,
+    });
 });
 
 module.exports = {

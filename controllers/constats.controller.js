@@ -8,9 +8,10 @@ const collection = database.collection('constats');
 const moment = require('moment');
 const Joi = require('joi');
 const ObjectId = require('mongodb').ObjectId;
+const collectionName = 'constats';
 
 const schema = Joi.object({
-    id : Joi.string().allow(null).optional().empty(''),
+    id: Joi.string().allow(null).optional().empty(''),
     agents: Joi.array()
         .items(Joi.string().regex(/^[0-9a-fA-F]{24}$/))
         .min(1)
@@ -248,7 +249,7 @@ const findAll = catchAsync(async (req, res) => {
 
     if (!immatriculation && !rue && !localite) {
         const message = '📄 Liste complète des constats';
-        const inCache = await redisClient.get('constats:all');
+        const inCache = await redisClient.get(`${collectionName}:all`);
         if (inCache) {
             res.status(200).json(JSON.parse(inCache));
             return;
@@ -256,7 +257,7 @@ const findAll = catchAsync(async (req, res) => {
         const data = await collection.aggregate(pipeline).toArray();
         await redisClient
             .multi()
-            .set('constats:all', JSON.stringify(data), 'EX', 600)
+            .set(`${collectionName}:all`, JSON.stringify(data), 'EX', 600)
             .exec();
         res.status(200).json(data);
     }
@@ -274,7 +275,7 @@ const findOne = catchAsync(async (req, res) => {
             });
             return;
         }
-        const inCache = await redisClient.get(`constat:${id}`);
+        const inCache = await redisClient.get(`${collectionName}:${id}`);
 
         if (inCache) {
             return res.status(200).json(JSON.parse(inCache));
@@ -361,7 +362,12 @@ const findOne = catchAsync(async (req, res) => {
                 },
             ];
             data = await collection.aggregate(pipeline).toArray();
-            redisClient.set(`constat:${id}`, JSON.stringify(data), 'EX', 600);
+            redisClient.set(
+                `${collectionName}:${id}`,
+                JSON.stringify(data),
+                'EX',
+                600
+            );
         }
 
         if (!data) {
@@ -414,9 +420,7 @@ const create = catchAsync(async (req, res) => {
                 )
             );
         res.status(201).json(data);
-        //on efface le redis
-        console.log('on efface le redis');
-        redisClient.del('constats:all');
+        redisClient.del(`${collectionName}:all`);
     } catch (err) {
         console.log(err);
     }
@@ -464,8 +468,8 @@ const updateOne = catchAsync(async (req, res) => {
             return res.status(404).json({ message: 'Constat not found' });
         }
         res.status(200).json(value);
-        redisClient.del('constats:all');
-        redisClient.del(`constat:${id}`);
+        redisClient.del(`${collectionName}:all`);
+        redisClient.del(`${collectionName}:${id}`);
     } catch (err) {
         console.log(err);
         res.status(500).json({ message: 'Server error' });
@@ -493,8 +497,8 @@ const deleteOne = catchAsync(async (req, res) => {
             }
         );
         res.status(200).json(data);
-        redisClient.del('constats:all');
-        redisClient.del(`constat:${id}`);
+        redisClient.del(`${collectionName}:all`);
+        redisClient.del(`${collectionName}:${id}`);
     } else if (parseInt(force, 10) === 1) {
         //suppression physique
         const message = `🗑️ Suppression d'un constat de manière physique`;
@@ -503,14 +507,30 @@ const deleteOne = catchAsync(async (req, res) => {
         if (result.deletedCount === 1) {
             console.log('Successfully deleted');
             res.status(200).json(success(message));
-            redisClient.del('constats:all');
-            redisClient.del(`constat:${id}`);
+            redisClient.del(`${collectionName}:all`);
+            redisClient.del(`${collectionName}:${id}`);
         } else {
             res.status(404).json({ message: 'Failed to delete' });
         }
     } else {
         res.status(400).json({ message: 'Malformed parameter "force"' });
     }
+});
+
+const deleteMany = catchAsync(async (req, res) => {
+    const result = await collection(collectionName).deleteMany({
+        deletedAt: { $exists: true },
+    });
+    const deletedCount = result.deletedCount;
+    if (!deletedCount) {
+        return res
+            .status(404)
+            .json({ message: 'Aucune donnée trouvée à supprimer.' });
+    }
+    redisClient.del(`${collectionName}:all`);
+    res.status(200).json({
+        message: `${deletedCount} donnée(s) supprimée(s).`,
+    });
 });
 
 const findAgents = async (req, res) => {
@@ -624,6 +644,7 @@ module.exports = {
     create,
     updateOne,
     deleteOne,
+    deleteMany,
     findAgents,
     addAgent,
     removeAgent,

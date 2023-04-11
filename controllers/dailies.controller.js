@@ -8,9 +8,10 @@ const collection = database.collection('dailies');
 const moment = require('moment');
 const Joi = require('joi');
 const ObjectId = require('mongodb').ObjectId;
+const collectionName = 'dailies';
 
 const schema = Joi.object({
-    id : Joi.string().allow(null).optional().empty(''),
+    id: Joi.string().allow(null).optional().empty(''),
     date: Joi.date().required(),
     agents: Joi.array().items(Joi.string().regex(/^[0-9a-fA-F]{24}$/)),
     // .min(1)
@@ -31,12 +32,17 @@ const schema = Joi.object({
 
 const findAll = catchAsync(async (req, res) => {
     const message = '📄 Liste des dailies';
-    const inCache = await redisClient.get('dailies:all');
+    const inCache = await redisClient.get(`${collectionName}:all`);
     if (inCache) {
         return res.status(200).json(JSON.parse(inCache));
     } else {
         const data = await collection.find({}).toArray();
-        redisClient.set('dailies:all', JSON.stringify(data), 'EX', 600);
+        redisClient.set(
+            `${collectionName}:all`,
+            JSON.stringify(data),
+            'EX',
+            600
+        );
         res.status(200).json(data);
     }
 });
@@ -53,13 +59,18 @@ const findOne = catchAsync(async (req, res) => {
             });
             return;
         }
-        const inCache = await redisClient.get(`daily:${id}`);
+        const inCache = await redisClient.get(`${collectionName}:${id}`);
 
         if (inCache) {
             return res.status(200).json(JSON.parse(inCache));
         } else {
             data = await collection.findOne({ _id: new ObjectId(id) });
-            redisClient.set(`daily:${id}`, JSON.stringify(data), 'EX', 600);
+            redisClient.set(
+                `${collectionName}:${id}`,
+                JSON.stringify(data),
+                'EX',
+                600
+            );
         }
 
         if (!data) {
@@ -150,9 +161,7 @@ const create = catchAsync(async (req, res) => {
                 console.log(`----------->Le daily a bien été créé<-----------`)
             );
         res.status(201).json(data);
-        //on efface le redis
-        console.log('on efface le redis');
-        redisClient.del('dailies:all');
+        redisClient.del(`${collectionName}:all`);
     } catch (err) {
         console.log(err);
     }
@@ -205,8 +214,8 @@ const updateOne = catchAsync(async (req, res) => {
             return res.status(404).json({ message: 'Constat not found' });
         }
         res.status(200).json(value);
-        redisClient.del('dailies:all');
-        redisClient.del(`daily:${id}`);
+        redisClient.del(`${collectionName}:all`);
+        redisClient.del(`${collectionName}:${id}`);
     } catch (err) {
         console.log(err);
         res.status(500).json({ message: 'Server error' });
@@ -234,8 +243,8 @@ const deleteOne = catchAsync(async (req, res) => {
             }
         );
         res.status(200).json(data);
-        redisClient.del('dailies:all');
-        redisClient.del(`daily:${id}`);
+        redisClient.del(`${collectionName}:all`);
+        redisClient.del(`${collectionName}:${id}`);
     } else if (parseInt(force, 10) === 1) {
         //suppression physique
         const message = `🗑️ Suppression d'un daily de manière physique`;
@@ -244,14 +253,30 @@ const deleteOne = catchAsync(async (req, res) => {
         if (result.deletedCount === 1) {
             console.log('Successfully deleted');
             res.status(200).json(success(message));
-            redisClient.del('dailies:all');
-            redisClient.del(`daily:${id}`);
+            redisClient.del(`${collectionName}:all`);
+            redisClient.del(`${collectionName}:${id}`);
         } else {
             res.status(404).json({ message: 'Failed to delete' });
         }
     } else {
         res.status(400).json({ message: 'Malformed parameter "force"' });
     }
+});
+
+const deleteMany = catchAsync(async (req, res) => {
+    const result = await collection(collectionName).deleteMany({
+        deletedAt: { $exists: true },
+    });
+    const deletedCount = result.deletedCount;
+    if (!deletedCount) {
+        return res
+            .status(404)
+            .json({ message: 'Aucune donnée trouvée à supprimer.' });
+    }
+    redisClient.del(`${collectionName}:all`);
+    res.status(200).json({
+        message: `${deletedCount} donnée(s) supprimée(s).`,
+    });
 });
 
 const findAgents = async (req, res) => {
@@ -353,7 +378,7 @@ const addAgent = async (req, res) => {
 
     if (data && data.value) {
         res.status(201).json({ message: '👍 Agent added' });
-        redisClient.del(`daily:${id}`);
+        redisClient.del(`${collectionName}:${id}`);
     } else {
         res.status(500).json({ message: '🚫 Failed to add agent' });
     }
@@ -382,7 +407,7 @@ const removeAgent = async (req, res) => {
 
         if (result.matchedCount === 1) {
             res.status(200).json({ message: '🗑️ Agent removed' });
-            redisClient.del(`daily:${id}`);
+            redisClient.del(`${collectionName}:${id}`);
         } else {
             res.status(500).json({ message: '😖 Failed to remove agent' });
         }
@@ -463,7 +488,7 @@ const addMission = async (req, res) => {
 
     if (data && data.value) {
         res.status(201).json({ message: '👍 Mission added' });
-        redisClient.del(`daily:${id}`);
+        redisClient.del(`${collectionName}:${id}`);
     } else {
         res.status(500).json({ message: '🚫 Failed to add mission' });
     }
@@ -494,7 +519,7 @@ const removeMission = async (req, res) => {
 
         if (result.matchedCount === 1) {
             res.status(200).json({ message: '🗑️ Mission removed' });
-            redisClient.del(`daily:${id}`);
+            redisClient.del(`${collectionName}:${id}`);
         } else {
             res.status(500).json({ message: '😖 Failed to remove mission' });
         }
@@ -574,7 +599,7 @@ const addQuartier = async (req, res) => {
 
     if (data && data.value) {
         res.status(201).json({ message: '👍 Quartier added' });
-        redisClient.del(`daily:${id}`);
+        redisClient.del(`${collectionName}:${id}`);
     } else {
         res.status(500).json({ message: '🚫 Failed to add quartier' });
     }
@@ -605,7 +630,7 @@ const removeQuartier = async (req, res) => {
 
         if (result.matchedCount === 1) {
             res.status(200).json({ message: '🗑️ Quartier removed' });
-            redisClient.del(`daily:${id}`);
+            redisClient.del(`${collectionName}:${id}`);
         } else {
             res.status(500).json({ message: '😖 Failed to remove quartier' });
         }
@@ -696,7 +721,7 @@ const sendDaily = catchAsync(async (req, res) => {
         )
     );
 
-    redisClient.del(`daily:${id}`);
+    redisClient.del(`${collectionName}:${id}`);
 });
 
 module.exports = {
@@ -705,6 +730,7 @@ module.exports = {
     create,
     updateOne,
     deleteOne,
+    deleteMany,
     findAgents,
     addAgent,
     removeAgent,

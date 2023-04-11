@@ -7,9 +7,10 @@ const database = dbClient.db(process.env.MONGO_DB_DATABASE);
 const collection = database.collection('infractions');
 const Joi = require('joi');
 const ObjectId = require('mongodb').ObjectId;
+const collectionName = 'infractions';
 
 const schema = Joi.object({
-    id : Joi.string().allow(null).optional().empty(''),
+    id: Joi.string().allow(null).optional().empty(''),
     category: Joi.string().required(),
     priority: Joi.number().allow(null).optional().empty(''),
     list: Joi.array(),
@@ -17,7 +18,7 @@ const schema = Joi.object({
 
 const findAll = catchAsync(async (req, res) => {
     const message = '📄 Liste des infractions';
-    const inCache = await redisClient.get('infractions:all');
+    const inCache = await redisClient.get(`${collectionName}:all`);
     if (inCache) {
         return res.status(200).json(JSON.parse(inCache));
     } else {
@@ -39,13 +40,13 @@ const findOne = catchAsync(async (req, res) => {
             });
             return;
         }
-        const inCache = await redisClient.get(`infraction:${id}`);
+        const inCache = await redisClient.get(`${collectionName}:${id}`);
         if (inCache) {
             return res.status(200).json(JSON.parse(inCache));
         } else {
             data = await collection.findOne({ _id: new ObjectId(id) });
             redisClient.set(
-                `infraction:${id}`,
+                `${collectionName}:${id}`,
                 JSON.stringify(data),
                 'EX',
                 600
@@ -90,7 +91,7 @@ const create = catchAsync(async (req, res) => {
             );
         // res.status(201).json(data);
         res.status(201).json(data);
-        redisClient.del('infractions:all');
+        redisClient.del(`${collectionName}:all`);
     } catch (err) {
         console.log(err);
     }
@@ -118,8 +119,8 @@ const updateOne = catchAsync(async (req, res) => {
             return res.status(404).json({ message: 'Infraction not found' });
         }
         res.status(200).json(value);
-        redisClient.del('infractions:all');
-        redisClient.del(`infraction:${id}`);
+        redisClient.del(`${collectionName}:all`);
+        redisClient.del(`${collectionName}:${id}`);
     } catch (err) {
         console.log(err);
         res.status(500).json({ message: 'Server error' });
@@ -152,8 +153,8 @@ const deleteOne = catchAsync(async (req, res) => {
             }
         );
         res.status(200).json(data);
-        redisClient.del('infractions:all');
-        redisClient.del(`infraction:${id}`);
+        redisClient.del(`${collectionName}:all`);
+        redisClient.del(`${collectionName}:${id}`);
         // res.status(200).json({
         //     message: "L'infraction a bien été supprimé de manière logique.",
         //     result,
@@ -166,14 +167,29 @@ const deleteOne = catchAsync(async (req, res) => {
         if (result.deletedCount === 1) {
             console.log('Successfully deleted');
             res.status(200).json(success(message));
-            redisClient.del('infractions:all');
-            redisClient.del(`infraction:${id}`);
+            redisClient.del(`${collectionName}:all`);
+            redisClient.del(`${collectionName}:${id}`);
         } else {
             res.status(404).json({ message: 'Failed to delete' });
         }
     } else {
         res.status(400).json({ message: 'Malformed parameter "force"' });
     }
+});
+const deleteMany = catchAsync(async (req, res) => {
+    const result = await collection(collectionName).deleteMany({
+        deletedAt: { $exists: true },
+    });
+    const deletedCount = result.deletedCount;
+    if (!deletedCount) {
+        return res
+            .status(404)
+            .json({ message: 'Aucune donnée trouvée à supprimer.' });
+    }
+    redisClient.del(`${collectionName}:all`);
+    res.status(200).json({
+        message: `${deletedCount} donnée(s) supprimée(s).`,
+    });
 });
 
 module.exports = {
@@ -182,4 +198,5 @@ module.exports = {
     create,
     updateOne,
     deleteOne,
+    deleteMany,
 };
