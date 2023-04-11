@@ -70,14 +70,20 @@ var imageController = require('./controllers/image.controller');
 
 // app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
-app.use((req, res, next) => {
-  res.setHeader('Access-Control-Allow-Origin', 'http://localhost:4200');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-  next();
-});
+// app.use((req, res, next) => {
+//     res.setHeader('Access-Control-Allow-Origin', '*');
+//     res.setHeader(
+//         'Access-Control-Allow-Methods',
+//         'GET, POST, PUT, PATCH, DELETE, OPTIONS'
+//     );
+//     res.setHeader(
+//         'Access-Control-Allow-Headers',
+//         'Content-Type, Authorization'
+//     );
+//     next();
+// });
 var corsOptions = {
-    origin: 'http://localhost:4200',
+    origin: '*',
     methods: ['GET', 'PUT', 'POST', 'PATCH', 'DELETE', 'OPTIONS'],
     // allowedHeaders: ['Content-Type', 'Authorization'],
     // optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
@@ -91,9 +97,6 @@ app.use(cors(corsOptions));
 //   next();
 // });
 
-
-
-
 app.post('/flushall', flushCache);
 app.post('login', async (req, res) => {
     res.json({ ok: 'ok' });
@@ -101,8 +104,6 @@ app.post('login', async (req, res) => {
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-
-
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
