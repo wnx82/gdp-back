@@ -426,6 +426,19 @@ const deleteMany = catchAsync(async (req, res) => {
         message: `${deletedCount} donnée(s) supprimée(s).`,
     });
 });
+const restoreMany = catchAsync(async (req, res) => {
+    const result = await collection.updateMany(
+        { deletedAt: { $exists: true } },
+        { $unset: { deletedAt: "" } }
+    );
+    const restoredCount = result.nModified;
+    if (restoredCount === 0) {
+        return res.status(404).json({ message: "Aucune donnée trouvée à restaurer." });
+    }
+    redisClient.del(`${collectionName}:all`);
+    res.status(200).json({ message: `${restoredCount} données restaurées.` });
+});
+
 
 module.exports = {
     findAll,
@@ -435,4 +448,5 @@ module.exports = {
     updateOne,
     deleteOne,
     deleteMany,
+    restoreMany
 };
