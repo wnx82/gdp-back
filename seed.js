@@ -10956,7 +10956,7 @@ redisClient.flushall((err, reply) => {
         },
 
         {
-            title: 'Parc',
+            title: 'Parc communal + Shalom',
             description:
                 'Parc communal + Shalom : Assurer un regard afin de détecter tout agissement suspect',
             category: 'Patrouilles préventives',
@@ -10969,7 +10969,7 @@ redisClient.flushall((err, reply) => {
             updatedAt: new Date(),
         },
         {
-            title: 'Marché hebdomadaire',
+            title: 'Marché hebdomadaire Mardi',
             description:
                 'Mardi : Assurer un regard afin de détecter tout agissement suspect',
             category: 'Patrouilles préventives',
@@ -10982,7 +10982,7 @@ redisClient.flushall((err, reply) => {
             updatedAt: new Date(),
         },
         {
-            title: 'Marché hebdomadaire',
+            title: 'Marché hebdomadaire Jeudi',
             description:
                 'Jeudi : Assurer un regard afin de détecter tout agissement suspect',
             category: 'Patrouilles préventives',
@@ -11008,7 +11008,7 @@ redisClient.flushall((err, reply) => {
             updatedAt: new Date(),
         },
         {
-            title: 'Parc',
+            title: 'Fermeture du Parc communal',
             description: 'Fermeture du parc communal',
             category: 'Patrouilles préventives',
             horaire: '',
@@ -11020,7 +11020,7 @@ redisClient.flushall((err, reply) => {
             updatedAt: new Date(),
         },
         {
-            title: 'Parc',
+            title: 'Parc Bois Labis + Bois du Curé',
             description:
                 'Bois Labis + Bois du Curé : Assurer un regard afin de détecter tout agissement suspect',
             category: 'Patrouilles préventives',
@@ -11033,7 +11033,7 @@ redisClient.flushall((err, reply) => {
             updatedAt: new Date(),
         },
         {
-            title: 'Parc',
+            title: 'Parc du Chalet',
             description:
                 'Parc du Chalet : Assurer un regard afin de détecter tout agissement suspect',
             category: 'Patrouilles préventives',
@@ -11046,7 +11046,7 @@ redisClient.flushall((err, reply) => {
             updatedAt: new Date(),
         },
         {
-            title: 'Plaines',
+            title: 'Plaines Panorama',
             description:
                 'Panorama : Assurer un regard afin de détecter tout agissement suspect',
             category: 'Patrouilles préventives',
@@ -11059,7 +11059,7 @@ redisClient.flushall((err, reply) => {
             updatedAt: new Date(),
         },
         {
-            title: 'Plaines',
+            title: "Plaines Haverie + Champ d'Aviation",
             description:
                 "Haverie + Champ d`'Aviation: Assurer un regard afin de détecter tout agissement suspect",
             category: 'Patrouilles préventives',
@@ -11072,7 +11072,7 @@ redisClient.flushall((err, reply) => {
             updatedAt: new Date(),
         },
         {
-            title: 'Plaines',
+            title: 'Plaines J. Rousseau + Eglise',
             description:
                 'J. Rousseau + Eglise : Assurer un regard afin de détecter tout agissement suspect',
             category: 'Patrouilles préventives',
@@ -11085,7 +11085,7 @@ redisClient.flushall((err, reply) => {
             updatedAt: new Date(),
         },
         {
-            title: 'Plaines',
+            title: 'Plaines Max Lessines',
             description:
                 'Max Lessines : Assurer un regard afin de détecter tout agissement suspect',
             category: 'Patrouilles préventives',
@@ -11098,7 +11098,7 @@ redisClient.flushall((err, reply) => {
             updatedAt: new Date(),
         },
         {
-            title: 'Plaines',
+            title: 'Plaines Nell',
             description:
                 'Nell : Assurer un regard afin de détecter tout agissement suspect',
             category: 'Patrouilles préventives',

@@ -62,6 +62,7 @@ const findAll = catchAsync(async (req, res) => {
                     birthday: 1,
                     tel: 1,
                     iceContact: 1,
+                    userAccess: 1,
                     picture: 1,
                     createdAt: 1,
                     updatedAt: 1,
@@ -99,6 +100,9 @@ const findAll = catchAsync(async (req, res) => {
                     },
                     iceContact: {
                         $first: '$iceContact',
+                    },
+                    userAccess: {
+                        $first: '$userAccess',
                     },
                     picture: {
                         $first: '$picture',
@@ -197,6 +201,7 @@ const findOne = catchAsync(async (req, res) => {
                         birthday: 1,
                         tel: 1,
                         iceContact: 1,
+                        userAccess: 1,
                         picture: 1,
                         createdAt: 1,
                         updatedAt: 1,
@@ -234,6 +239,9 @@ const findOne = catchAsync(async (req, res) => {
                         },
                         iceContact: {
                             $first: '$iceContact',
+                        },
+                        userAccess: {
+                            $first: '$userAccess',
                         },
                         picture: {
                             $first: '$picture',

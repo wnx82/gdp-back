@@ -13,7 +13,7 @@ module.exports = {
                     bsonType: 'string',
                     description: ' must be a string and is not required',
                 },
-                description: {
+                category: {
                     bsonType: 'string',
                     description: ' must be a string and is not required',
                 },

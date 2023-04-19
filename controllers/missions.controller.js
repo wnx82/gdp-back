@@ -11,7 +11,8 @@ const collectionName = 'missions';
 
 const schema = Joi.object({
     id: Joi.string().allow(null).optional().empty(''),
-    title: Joi.string().required(),
+    title: Joi.string().allow(null).optional().empty(''),
+    // title: Joi.string().required(),
     description: Joi.string().allow(null).optional().empty(''),
     category: Joi.string().allow(null).optional().empty(''),
     horaire: Joi.string().allow(null).optional().empty(''),
