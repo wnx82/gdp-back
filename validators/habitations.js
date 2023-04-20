@@ -2,7 +2,7 @@ module.exports = {
     validator: {
         $jsonSchema: {
             bsonType: 'object',
-            required: ['adresse', 'date'],
+            required: ['adresse'],
             properties: {
                 _id: {},
                 adresse: {
@@ -25,7 +25,7 @@ module.exports = {
                         tel: { bsonType: 'string' },
                     },
                 },
-                date: {
+                dates: {
                     bsonType: 'object',
                     required: ['debut', 'fin'],
                     description: ' must be a object and is required',

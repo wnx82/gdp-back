@@ -10646,7 +10646,7 @@ redisClient.flushall((err, reply) => {
             nom: faker.name.lastName() + ' ' + faker.name.firstName(),
             tel: faker.phone.number('+32 47# ### ###'),
         },
-        date: {
+        dates: {
             debut: faker.date.past(),
             fin: faker.date.future(),
         },

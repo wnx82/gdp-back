@@ -19,7 +19,7 @@ const schema = Joi.object({
         nom: Joi.string().allow(null).optional().empty(''),
         tel: Joi.string().allow(null).optional().empty(''),
     },
-    date: {
+    dates: {
         debut: Joi.date().required(),
         fin: Joi.date().greater(Joi.ref('debut')).required(),
     },
@@ -49,8 +49,8 @@ const findAll = catchAsync(async (req, res) => {
                     demandeur: {
                         $first: '$demandeur',
                     },
-                    date: {
-                        $first: '$date',
+                    dates: {
+                        $first: '$dates',
                     },
                     adresse: {
                         $push: {
@@ -90,6 +90,9 @@ const findAll = catchAsync(async (req, res) => {
                     updatedAt: {
                         $first: '$updatedAt',
                     },
+                    deletedAt: {
+                        $first: '$deletedAt',
+                    },
                 },
             },
         ];
@@ -115,12 +118,12 @@ const findActiveHabitations = catchAsync(async (req, res) => {
                 $match: {
                     $and: [
                         {
-                            'date.debut': {
+                            'dates.debut': {
                                 $lte: new Date(),
                             },
                         },
                         {
-                            'date.fin': {
+                            'dates.fin': {
                                 $gte: new Date(),
                             },
                         },
@@ -141,8 +144,8 @@ const findActiveHabitations = catchAsync(async (req, res) => {
                     demandeur: {
                         $first: '$demandeur',
                     },
-                    date: {
-                        $first: '$date',
+                    dates: {
+                        $first: '$dates',
                     },
                     mesures: {
                         $first: '$mesures',
@@ -158,6 +161,9 @@ const findActiveHabitations = catchAsync(async (req, res) => {
                     },
                     updatedAt: {
                         $first: '$updatedAt',
+                    },
+                    deletedAt: {
+                        $first: '$deletedAt',
                     },
                     adresse: {
                         $push: {
@@ -233,8 +239,8 @@ const findOne = catchAsync(async (req, res) => {
                         demandeur: {
                             $first: '$demandeur',
                         },
-                        date: {
-                            $first: '$date',
+                        dates: {
+                            $first: '$dates',
                         },
                         adresse: {
                             $push: {
