@@ -320,6 +320,9 @@ const findOne = catchAsync(async (req, res) => {
                         adresse: {
                             $push: {
                                 numero: '$adresse.numero',
+                                _id: {
+                                    $first: '$adresseData._id',
+                                },
                                 nom: {
                                     $first: '$adresseData.nom',
                                 },

@@ -78,6 +78,9 @@ const findAll = catchAsync(async (req, res) => {
             },
             {
                 $addFields: {
+                    'habitation.adresse._id': {
+                        $first: '$DataRue._id',
+                    },
                     'habitation.adresse.rue': {
                         $first: '$DataRue.nomComplet',
                     },

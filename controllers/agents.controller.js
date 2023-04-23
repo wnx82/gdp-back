@@ -69,6 +69,7 @@ const findAll = catchAsync(async (req, res) => {
                     deletedAt: 1,
                     formations: 1,
                     'adresse.numero': 1,
+                    'adresseData._id': 1,
                     'adresseData.nom': 1,
                     'adresseData.denomination': 1,
                     'adresseData.nomComplet': 1,
@@ -122,6 +123,9 @@ const findAll = catchAsync(async (req, res) => {
                     adresse: {
                         $push: {
                             numero: '$adresse.numero',
+                            _id: {
+                                $first: '$adresseData._id',
+                            },
                             nom: {
                                 $first: '$adresseData.nom',
                             },
@@ -208,6 +212,7 @@ const findOne = catchAsync(async (req, res) => {
                         deletedAt: 1,
                         formations: 1,
                         'adresse.numero': 1,
+                        'adresseData._id': 1,
                         'adresseData.nom': 1,
                         'adresseData.denomination': 1,
                         'adresseData.nomComplet': 1,
@@ -261,6 +266,9 @@ const findOne = catchAsync(async (req, res) => {
                         adresse: {
                             $push: {
                                 numero: '$adresse.numero',
+                                _id: {
+                                    $first: '$adresseData._id',
+                                },
                                 nom: {
                                     $first: '$adresseData.nom',
                                 },

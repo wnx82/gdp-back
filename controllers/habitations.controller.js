@@ -55,6 +55,9 @@ const findAll = catchAsync(async (req, res) => {
                     adresse: {
                         $push: {
                             numero: '$adresse.numero',
+                            _id: {
+                                $first: '$adresseData._id',
+                            },
                             nom: {
                                 $first: '$adresseData.nom',
                             },
@@ -168,6 +171,9 @@ const findActiveHabitations = catchAsync(async (req, res) => {
                     adresse: {
                         $push: {
                             numero: '$adresse.numero',
+                            _id: {
+                                $first: '$adresseData._id',
+                            },
                             nom: {
                                 $first: '$adresseData.nom',
                             },
@@ -246,6 +252,9 @@ const findOne = catchAsync(async (req, res) => {
                             $push: {
                                 numero: '$adresse.numero',
                                 nom: {
+                                    $first: '$adresseData._id',
+                                },
+                                _id: {
                                     $first: '$adresseData.nom',
                                 },
                                 denomination: {
