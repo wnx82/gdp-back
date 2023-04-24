@@ -15,15 +15,18 @@ const accessLogStream = fs.createWriteStream(
     { flags: 'a' }
 );
 
-const flushCache = async (req, res, next) => {
-    try {
-        await redisClient.flushall();
-        res.status(200).send('Cache Redis vidé avec succès');
-    } catch (err) {
-        console.error(err);
-        next(err);
-    }
-};
+// const flushCache = async (req, res, next) => {
+//     try {
+//         await redisClient.flushall();
+//         res.status(200).send('Cache Redis vidé avec succès');
+//         console.log("Cache has been successfully flushed.");
+
+//     } catch (err) {
+//         console.error(err);
+//         next(err);
+//     }
+// };
+
 
 require('./passport');
 var app = express();
@@ -97,7 +100,7 @@ app.use(cors(corsOptions));
 //   next();
 // });
 
-app.post('/flushall', flushCache);
+// app.post('/flushall', flushCache);
 app.post('login', async (req, res) => {
     res.json({ ok: 'ok' });
 });

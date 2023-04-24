@@ -1,32 +1,24 @@
-// var express = require('express');
-// var router = express.Router();
-// const fs = require('fs');
-// const path = require('path');
-// const README_PATH = path.join(__dirname, 'README.md');
-// const app = express();
 
-// console.log(README_PATH);
-// /* GET home page. */
-// router.get('/', function (req, res, next) {
-//     fs.readFile(README_PATH, 'utf8', function (err, data) {
-//         if (err) {
-//             return res.status(500).send(err);
-//         }
-
-//         res.render('template', {
-//             title: 'GDP Back-End',
-//             content: data,
-//         });
-//     });
-// });
-
-// module.exports = router;
 var express = require('express');
 var router = express.Router();
-
+const { redisClient } = require('../utils/');
 /* GET home page. */
 router.get('/', function (req, res, next) {
     res.render('index', { title: 'GDP Backend' });
+});
+
+/* Flush Redis cache */
+router.post('/flushall', async function (req, res, next) {
+    try {
+        await redisClient.flushall();
+
+        res.status(200).json('Cache Redis vidé avec succès');
+        console.log("Cache has been successfully flushed.");
+
+    } catch (err) {
+        console.error(err);
+        next(err);
+    }
 });
 
 module.exports = router;
