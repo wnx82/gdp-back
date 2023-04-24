@@ -28,7 +28,7 @@ module.exports = {
                 dates: {
                     bsonType: 'object',
                     required: ['debut', 'fin'],
-                    description: ' must be a object and is required',
+                    description: ' must be a object and is not required',
                     properties: {
                         debut: { bsonType: 'date' },
                         fin: { bsonType: 'date' },

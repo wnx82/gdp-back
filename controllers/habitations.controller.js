@@ -20,8 +20,8 @@ const schema = Joi.object({
         tel: Joi.string().allow(null).optional().empty(''),
     },
     dates: {
-        debut: Joi.date().required(),
-        fin: Joi.date().greater(Joi.ref('debut')).required(),
+        debut: Joi.date().allow(null).optional(),
+        fin: Joi.date().allow(null).optional(),
     },
     mesures: Joi.array(),
     vehicule: Joi.string().allow(null).optional().empty(''),
@@ -316,41 +316,51 @@ const findOne = catchAsync(async (req, res) => {
 });
 
 const create = catchAsync(async (req, res) => {
+    console.log("==> Starting create() function...");
+
     const message = `✏️ Création d'une habitation`;
 
     const { body } = req;
+    console.log("==> Request body:", body);
+
     if (!body.adresse) {
+        console.log("==> Error: Missing 'adresse' field in request body.");
         return res.status(400).json({ message: 'adresse field is required' });
     }
 
     const { value, error } = schema.validate(body);
+    console.log("==> Validation result: value=", value, "error=", error);
 
     if (error) {
+        console.log("==> Error: Validation failed. Details:", error);
         return res.status(400).json({ message: error });
     }
+
     try {
         const { ...rest } = value;
+        console.log("==> Inserting data into collection. Data:", { ...rest });
+
         value.adresse.rue = new ObjectId(value.adresse.rue);
         const createdAt = new Date();
         const updatedAt = new Date();
-        const data = await collection
-            .insertOne({
-                ...rest,
-                createdAt,
-                updatedAt,
-            })
-            .then(
-                console.log(
-                    `----------->L\'habitation a bien été créé<-----------`
-                )
-            );
+
+        const data = await collection.insertOne({
+            ...rest,
+            createdAt,
+            updatedAt,
+        });
+        console.log("==> Data inserted into collection. Result:", data);
+
+        console.log("==> Sending response to client. Response:", data);
         res.status(201).json(data);
-        console.log('on efface le redis');
+
+        console.log("==> Deleting Redis cache...");
         redisClient.del(`${collectionName}:all`);
     } catch (err) {
-        console.log(err);
+        console.log("==> Error occurred during data insertion:", err);
     }
 });
+
 const updateOne = catchAsync(async (req, res) => {
     const { id } = req.params;
     if (!id) {
