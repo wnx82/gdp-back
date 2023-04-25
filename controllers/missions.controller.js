@@ -79,15 +79,18 @@ const findOne = catchAsync(async (req, res) => {
 });
 
 const create = catchAsync(async (req, res) => {
+    console.log("Starting create function"); // Ajout d'une instruction console.log pour savoir si la fonction est appelée
     const message = `✏️ Création d'une mission`;
 
     const { body } = req;
     const { value, error } = schema.validate(body);
     // Handle validation errors
     if (error) {
+        console.log("Validation error:", error.details[0].message); // Ajout d'une instruction console.log pour afficher le message d'erreur de validation
         return res.status(400).json({ message: error.details[0].message });
     }
     try {
+        console.log("Inserting data into database"); // Ajout d'une instruction console.log pour savoir si l'insertion dans la base de données est appelée
         const { ...rest } = value;
 
         const createdAt = new Date();
@@ -103,11 +106,11 @@ const create = catchAsync(async (req, res) => {
                     `----------->La mission a bien été créé<-----------`
                 )
             );
-        // res.status(201).json(data);
+        console.log("Sending response"); // Ajout d'une instruction console.log pour savoir si la réponse est envoyée
         res.status(201).json(data);
         redisClient.del(`${collectionName}:all`);
     } catch (err) {
-        console.log(err);
+        console.log("Error:", err); // Ajout d'une instruction console.log pour afficher les erreurs
     }
 });
 

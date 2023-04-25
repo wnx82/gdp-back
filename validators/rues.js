@@ -6,55 +6,55 @@ module.exports = {
             properties: {
                 _id: {},
                 nom: {
-                    bsonType: 'string',
+                    bsonType: ['string', 'null'],
                     description: ' must be a string and is required',
                 },
                 denomination: {
-                    bsonType: 'string',
+                    bsonType: ['string', 'null'],
                     description: ' must be a string and is not required',
                 },
                 nomComplet: {
-                    bsonType: 'string',
+                    bsonType: ['string', 'null'],
                     description: ' must be a string and is not required',
                 },
                 quartier: {
-                    bsonType: 'string',
+                    bsonType: ['string', 'null'],
                     description: ' must be a string and is not required',
                 },
                 cp: {
-                    bsonType: 'number',
+                    bsonType: ['number', 'null'],
                     description: ' must be a number and is not required',
                 },
                 localite: {
-                    bsonType: 'string',
+                    bsonType: ['string', 'null'],
                     description: ' must be a string and is not required',
                 },
                 codeRue: {
-                    bsonType: 'string',
+                    bsonType: ['string', 'null'],
                     description: ' must be a string and is not required',
                 },
                 traductionNl: {
-                    bsonType: 'string',
+                    bsonType: ['string', 'null'],
                     description: ' must be a string and is not required',
                 },
                 xMin: {
-                    bsonType: 'string',
+                    bsonType: ['string', 'null'],
                     description: ' must be a string and is not required',
                 },
                 xMax: {
-                    bsonType: 'string',
+                    bsonType: ['string', 'null'],
                     description: ' must be a string and is not required',
                 },
                 yMin: {
-                    bsonType: 'string',
+                    bsonType: ['string', 'null'],
                     description: ' must be a string and is not required',
                 },
                 yMax: {
-                    bsonType: 'string',
+                    bsonType: ['string', 'null'],
                     description: ' must be a string and is not required',
                 },
                 idTronconCentral: {
-                    bsonType: 'string',
+                    bsonType: ['string', 'null'],
                     description: ' must be a string and is not required',
                 },
             },

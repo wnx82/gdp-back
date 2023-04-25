@@ -10,23 +10,24 @@ const ObjectId = require('mongodb').ObjectId;
 const collectionName = 'habitations';
 
 const schema = Joi.object({
-    id: Joi.string().allow(null).optional().empty(''),
-    adresse: {
-        rue: Joi.string().regex(/^[0-9a-fA-F]{24}$/),
-        numero: Joi.string().allow(null).optional().empty(''),
-    },
-    demandeur: {
-        nom: Joi.string().allow(null).optional().empty(''),
-        tel: Joi.string().allow(null).optional().empty(''),
-    },
-    dates: {
-        debut: Joi.date().allow(null).optional(),
-        fin: Joi.date().allow(null).optional(),
-    },
+    id: Joi.string().allow(null).empty(''),
+    adresse: Joi.object({
+        rue: Joi.string().regex(/^[0-9a-fA-F]{24}$/).allow(null).empty(''),
+        numero: Joi.string().allow(null).empty(''),
+    }),
+    demandeur: Joi.object({
+        nom: Joi.string().allow(null).empty(''),
+        tel: Joi.string().allow(null).empty(''),
+    }),
+    dates: Joi.object({
+        debut: Joi.date().allow(null).empty(''),
+        fin: Joi.date().allow(null).empty(''),
+    }),
     mesures: Joi.array(),
-    vehicule: Joi.string().allow(null).optional().empty(''),
-    googlemap: Joi.string().allow(null).optional().empty(''),
+    vehicule: Joi.string().allow(null).empty(''),
+    googlemap: Joi.string().allow(null).empty(''),
 });
+
 
 const findAll = catchAsync(async (req, res) => {
     const message = '📄 Liste des habitations';
@@ -34,7 +35,13 @@ const findAll = catchAsync(async (req, res) => {
     if (inCache) {
         return res.status(200).json(JSON.parse(inCache));
     } else {
+
         const pipeline = [
+            {
+                $match: {
+                    'adresse.rue': { $exists: true }
+                }
+            },
             {
                 $lookup: {
                     from: 'rues',
@@ -53,7 +60,7 @@ const findAll = catchAsync(async (req, res) => {
                         $first: '$dates',
                     },
                     adresse: {
-                        $push: {
+                        $first: {
                             numero: '$adresse.numero',
                             _id: {
                                 $first: '$adresseData._id',
@@ -169,7 +176,7 @@ const findActiveHabitations = catchAsync(async (req, res) => {
                         $first: '$deletedAt',
                     },
                     adresse: {
-                        $push: {
+                        $first: {
                             numero: '$adresse.numero',
                             _id: {
                                 $first: '$adresseData._id',
@@ -249,7 +256,7 @@ const findOne = catchAsync(async (req, res) => {
                             $first: '$dates',
                         },
                         adresse: {
-                            $push: {
+                            $first: {
                                 numero: '$adresse.numero',
                                 nom: {
                                     $first: '$adresseData._id',
@@ -362,29 +369,37 @@ const create = catchAsync(async (req, res) => {
 });
 
 const updateOne = catchAsync(async (req, res) => {
+    console.log('coucou')
     const { id } = req.params;
     if (!id) {
+        console.log('No id provided');
         return res.status(400).json({ message: 'No id provided' });
     }
     const message = `📝 Mise à jour de l'habitation ${id}`;
     const { body } = req;
+    console.log('body: ', body);
 
     const { value, error } = schema.validate(body);
     if (error) {
+        console.log(error);
         return res.status(400).json({ message: error.details[0].message });
     }
+
 
     try {
         const updatedAt = new Date();
         value.adresse.rue = new ObjectId(value.adresse.rue);
+        console.log(`Updating habitation ${id} with data:`, value);
         const { modifiedCount } = await collection.updateOne(
             { _id: ObjectId(id) },
             { $set: { ...value, updatedAt } },
             { returnDocument: 'after' }
         );
         if (modifiedCount === 0) {
+            console.log(`Habitation ${id} not found`);
             return res.status(404).json({ message: 'Habitation not found' });
         }
+        console.log(`Habitation ${id} updated successfully`);
         res.status(200).json(value);
         redisClient.del(`${collectionName}:all`);
         redisClient.del(`${collectionName}:${id}`);

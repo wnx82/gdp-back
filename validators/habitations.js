@@ -2,49 +2,45 @@ module.exports = {
     validator: {
         $jsonSchema: {
             bsonType: 'object',
-            required: ['adresse'],
             properties: {
                 _id: {},
                 adresse: {
-                    bsonType: 'object',
-                    required: ['rue'],
+                    bsonType: ['object', 'null'],
                     properties: {
                         rue: {
-                            bsonType: 'objectId',
-                            description: 'must be an objectId and is required',
+                            bsonType: ['objectId', 'null'],
+                            description: 'must be an objectId',
                         },
-                        numero: { bsonType: 'string' },
+                        numero: { bsonType: ['string', 'null'] },
                     },
                 },
                 demandeur: {
-                    bsonType: 'object',
-                    required: ['nom'],
-                    description: ' must be a object and is not required',
+                    bsonType: ['object', 'null'],
+                    description: ' must be a object',
                     properties: {
-                        nom: { bsonType: 'string' },
-                        tel: { bsonType: 'string' },
+                        nom: { bsonType: ['string', 'null'] },
+                        tel: { bsonType: ['string', 'null'] },
                     },
                 },
                 dates: {
-                    bsonType: 'object',
-                    required: ['debut', 'fin'],
-                    description: ' must be a object and is not required',
+                    bsonType: ['object', 'null'],
+                    description: ' must be a object',
                     properties: {
-                        debut: { bsonType: 'date' },
-                        fin: { bsonType: 'date' },
+                        debut: { bsonType: ['date', 'null'] },
+                        fin: { bsonType: ['date', 'null'] },
                     },
                 },
                 mesures: {
-                    bsonType: 'array',
-                    description: ' must be a array and is not required',
+                    bsonType: ['array', 'null'],
+                    description: ' must be a array',
                 },
                 vehicule: {
-                    bsonType: 'string',
-                    description: ' must be a string and is not required',
+                    bsonType: ['string', 'null'],
+                    description: ' must be a string',
                 },
                 googlemap: {
-                    bsonType: 'string',
-                    description: ' must be a string and is not required',
+                    bsonType: ['string', 'null'],
+                    description: ' must be a string',
                 },
             },
         },

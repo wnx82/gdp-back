@@ -25,42 +25,42 @@ module.exports = {
                     description: 'must be a integer and is required',
                 },
                 firstname: {
-                    bsonType: 'string',
+                    bsonType: ['string', 'null'],
                     description: 'firstname must be a string',
                 },
                 lastname: {
-                    bsonType: 'string',
+                    bsonType: ['string', 'null'],
                     description: 'lastname must be a string',
                 },
                 birthday: {
-                    bsonType: 'date',
+                    bsonType: ['date', 'null'],
                     description: 'must be a date',
                 },
                 tel: {
-                    bsonType: 'string',
+                    bsonType: ['string', 'null'],
                     description: 'must be a string',
                 },
                 iceContact: {
-                    bsonType: 'string',
+                    bsonType: ['string', 'null'],
                     description: 'iceContact must be a string',
                 },
                 adresse: {
                     bsonType: 'object',
                     properties: {
                         rue: {
-                            bsonType: 'objectId',
+                            bsonType: ['objectId', 'null'],
                             description:
                                 'must be an objectId and is not required',
                         },
-                        numero: { bsonType: 'string' },
+                        numero: { bsonType: ['string', 'null'] },
                     },
                 },
                 picture: {
-                    bsonType: 'string',
+                    bsonType: ['string', 'null'],
                     description: 'must be a string and is not required',
                 },
                 formations: {
-                    bsonType: 'array',
+                    bsonType: ['array', 'null'],
                     description: 'must be an array and is not required',
                 },
             },

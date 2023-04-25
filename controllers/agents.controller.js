@@ -380,7 +380,9 @@ const create = catchAsync(async (req, res) => {
 
 const updateOne = catchAsync(async (req, res) => {
     const { id } = req.params;
+    console.log('id:', id);
     if (!id) {
+        console.log('No id provided');
         return res.status(400).json({ message: 'No id provided' });
     }
 
@@ -388,31 +390,37 @@ const updateOne = catchAsync(async (req, res) => {
     try {
         const agent = await collection.findOne({ _id: ObjectId(id) });
         if (!agent) {
+            console.log('Agent not found');
             return res.status(404).json({ message: 'Agent not found' });
         }
     } catch (err) {
-        console.log(err);
         return res.status(500).json({ message: 'Server error' });
     }
 
     const message = `📝 Mise à jour de l'agent ${id}`;
     const { body } = req;
     if (!body.email) {
+        console.log('Email field is required');
         return res.status(400).json({ message: 'Email field is required' });
     }
     const { value, error } = schema.validate(body);
+    console.log('value:', value);
     if (error) {
+        // console.log('Error:', error);
         return res.status(400).json({ message: error.details[0].message });
     }
     try {
         value.adresse.rue = new ObjectId(value.adresse.rue);
         const updatedAt = new Date();
+        console.log('Updated at:', updatedAt);
         const { modifiedCount } = await collection.updateOne(
             { _id: ObjectId(id) },
             { $set: { ...value, updatedAt } },
             { returnDocument: 'after' }
         );
+        console.log('Modified count:', modifiedCount);
         if (modifiedCount === 0) {
+            console.log('Agent not found');
             return res.status(404).json({ message: 'Agent not found' });
         }
         res.status(200).json(value);
@@ -423,6 +431,7 @@ const updateOne = catchAsync(async (req, res) => {
         res.status(500).json({ message: 'Server error' });
     }
 });
+
 
 const deleteOne = catchAsync(async (req, res) => {
     const { id } = req.params;
