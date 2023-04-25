@@ -6,15 +6,15 @@ module.exports = {
             properties: {
                 _id: {},
                 category: {
-                    bsonType: 'string',
+                    bsonType: ['string', 'null'],
                     description: ' must be a string and is required',
                 },
                 priority: {
-                    bsonType: 'number',
+                    bsonType: ['number', 'null'],
                     description: ' must be a number and is not required',
                 },
                 list: {
-                    bsonType: 'array',
+                    bsonType: ['array', 'null'],
                     description: ' must be a array and is not required',
                 },
             },

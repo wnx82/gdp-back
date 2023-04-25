@@ -11,11 +11,11 @@ module.exports = {
                     description: ' must be a date and is required',
                 },
                 horaire: {
-                    bsonType: 'string',
+                    bsonType: ['string', 'null'],
                     description: ' must be a string and is not required',
                 },
                 agents: {
-                    bsonType: 'array',
+                    bsonType: ['array', 'null'],
                     minItems: 0,
                     description: ' must be a array and is required',
                     items: {
@@ -23,15 +23,15 @@ module.exports = {
                     },
                 },
                 vehicule: {
-                    bsonType: 'string',
+                    bsonType: ['string', 'null'],
                     description: ' must be a string and is not required',
                 },
                 note: {
-                    bsonType: 'string',
+                    bsonType: ['string', 'null'],
                     description: ' must be a string and is not required',
                 },
                 quartiers: {
-                    bsonType: 'array',
+                    bsonType: ['array', 'null'],
                     minItems: 0,
                     description: ' must be a array and is required',
                     items: {
@@ -39,7 +39,7 @@ module.exports = {
                     },
                 },
                 missions: {
-                    bsonType: 'array',
+                    bsonType: ['array', 'null'],
                     minItems: 0,
                     description: ' must be a array and is required',
                     items: {
@@ -47,11 +47,11 @@ module.exports = {
                     },
                 },
                 annexes: {
-                    bsonType: 'array',
+                    bsonType: ['array', 'null'],
                     description: ' must be a arrray and is not required',
                 },
                 sent: {
-                    bsonType: 'date',
+                    bsonType: ['date', 'null'],
                     description: ' must be a date and is required',
                 },
             },

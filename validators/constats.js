@@ -18,11 +18,11 @@ module.exports = {
                     // required: ['rue', 'cp', 'localite'],
                     description: ' must be a object and is not required',
                     properties: {
-                        marque: { bsonType: 'string' },
-                        modele: { bsonType: 'string' },
-                        couleur: { bsonType: 'string' },
-                        type: { bsonType: 'string' },
-                        immatriculation: { bsonType: 'string' },
+                        marque: { bsonType: ['string', 'null'] },
+                        modele: { bsonType: ['string', 'null'] },
+                        couleur: { bsonType: ['string', 'null'] },
+                        type: { bsonType: ['string', 'null'] },
+                        immatriculation: { bsonType: ['string', 'null'] },
                     },
                 },
                 personne: {
@@ -30,17 +30,17 @@ module.exports = {
                     // required: ['rue', 'cp', 'localite'],
                     description: ' must be a object and is not required',
                     properties: {
-                        firstname: { bsonType: 'string' },
-                        lastname: { bsonType: 'string' },
-                        birthday: { bsonType: 'date' },
-                        nationalNumber: { bsonType: 'number' },
-                        tel: { bsonType: 'string' },
+                        firstname: { bsonType: ['string', 'null'] },
+                        lastname: { bsonType: ['string', 'null'] },
+                        birthday: { bsonType: ['date', 'null'] },
+                        nationalNumber: { bsonType: ['number', 'null'] },
+                        tel: { bsonType: ['string', 'null'] },
                         adresse: {
                             bsonType: 'object',
                             properties: {
-                                rue: { bsonType: 'string' },
-                                cp: { bsonType: 'string' },
-                                localite: { bsonType: 'string' },
+                                rue: { bsonType: ['string', 'null'] },
+                                cp: { bsonType: ['string', 'null'] },
+                                localite: { bsonType: ['string', 'null'] },
                             },
                         },
                     },
@@ -56,7 +56,7 @@ module.exports = {
                             bsonType: 'objectId',
                             description: 'must be an objectId and is required',
                         },
-                        numero: { bsonType: 'string' },
+                        numero: { bsonType: ['string', 'null'] },
                     },
                 },
                 geolocation: {
@@ -64,10 +64,10 @@ module.exports = {
                     description: ' must be a object and is not required',
                     properties: {
                         latitude: {
-                            bsonType: 'string',
+                            bsonType: ['string', 'null'],
                         },
                         longitude: {
-                            bsonType: 'string',
+                            bsonType: ['string', 'null'],
                         },
                         horodatage: {
                             bsonType: 'date',
@@ -75,19 +75,19 @@ module.exports = {
                     },
                 },
                 infractions: {
-                    bsonType: 'array',
+                    bsonType: ['array', 'null'],
                     description: ' must be a arrray and is required',
                 },
                 pv: {
-                    bsonType: 'bool',
+                    bsonType: ['bool', 'null'],
                     description: ' must be a boolean and is required',
                 },
                 notes: {
-                    bsonType: 'string',
+                    bsonType: ['string', 'null'],
                     description: ' must be a string and is not required',
                 },
                 annexes: {
-                    bsonType: 'array',
+                    bsonType: ['array', 'null'],
                     description: ' must be a arrray and is not required',
                 },
             },

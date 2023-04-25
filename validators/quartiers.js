@@ -10,7 +10,7 @@ module.exports = {
                     description: ' must be a string and is required',
                 },
                 missions: {
-                    bsonType: 'array',
+                    bsonType: ['array', 'null'],
                     items: {
                         // bsonType: ['objectId'],
                     },

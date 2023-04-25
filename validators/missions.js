@@ -6,35 +6,35 @@ module.exports = {
             properties: {
                 _id: {},
                 title: {
-                    bsonType: 'string',
+                    bsonType: ['string', 'null'],
                     description: ' must be a string and is required',
                 },
                 description: {
-                    bsonType: 'string',
+                    bsonType: ['string', 'null'],
                     description: ' must be a string and is not required',
                 },
                 category: {
-                    bsonType: 'string',
+                    bsonType: ['string', 'null'],
                     description: ' must be a string and is not required',
                 },
                 horaire: {
-                    bsonType: 'string',
+                    bsonType: ['string', 'null'],
                     description: ' must be a string and is not required',
                 },
                 priority: {
-                    bsonType: 'number',
+                    bsonType: ['number', 'null'],
                     description: ' must be a number and is not required',
                 },
                 contact: {
-                    bsonType: 'string',
+                    bsonType: ['string', 'null'],
                     description: ' must be a string and is not required',
                 },
                 visibility: {
-                    bsonType: 'bool',
+                    bsonType: ['bool', 'null'],
                     description: ' must be a booleen and is not required',
                 },
                 annexes: {
-                    bsonType: 'array',
+                    bsonType: ['array', 'null'],
                     description: ' must be a array and is not required',
                 },
             },

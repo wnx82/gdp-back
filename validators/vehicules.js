@@ -10,11 +10,11 @@ module.exports = {
                     description: ' must be a string and is required',
                 },
                 modele: {
-                    bsonType: 'string',
+                    bsonType: ['string', 'null'],
                     description: ' must be a string and is not required',
                 },
                 immatriculation: {
-                    bsonType: 'string',
+                    bsonType: ['string', 'null'],
                     description: ' must be a string and is not required',
                 },
             },

@@ -11,35 +11,35 @@ module.exports = {
                 },
 
                 date: {
-                    bsonType: 'date',
+                    bsonType: ['date', 'null'],
                     description: ' must be a date and is required',
                 },
                 horaire: {
-                    bsonType: 'string',
+                    bsonType: ['string', 'null'],
                     description: ' must be a string and is not required',
                 },
                 agents: {
-                    bsonType: 'array',
+                    bsonType: ['array', 'null'],
                     minItems: 0,
-                    description: ' must be a array and is required',
+                    description: ' must be a array and is not required',
                     items: {
                         bsonType: 'objectId',
                     },
                 },
                 vehicule: {
-                    bsonType: 'string',
+                    bsonType: ['string', 'null'],
                     description: ' must be a string and is not required',
                 },
                 notes: {
-                    bsonType: 'array',
+                    bsonType: ['array', 'null'],
                     description: ' must be a array and is not required',
                 },
                 annexes: {
-                    bsonType: 'array',
+                    bsonType: ['array', 'null'],
                     description: ' must be a arrray and is not required',
                 },
                 quartiers: {
-                    bsonType: 'array',
+                    bsonType: ['array', 'null'],
                     minItems: 0,
                     description: ' must be a array and is required',
                     items: {
@@ -47,7 +47,7 @@ module.exports = {
                     },
                 },
                 missions: {
-                    bsonType: 'array',
+                    bsonType: ['array', 'null'],
                     minItems: 0,
                     description: ' must be a array and is required',
                     items: {
@@ -55,7 +55,7 @@ module.exports = {
                     },
                 },
                 quartierMissionsValidate: {
-                    bsonType: 'array',
+                    bsonType: ['array', 'null'],
                     minItems: 0,
                     description: ' must be a array and is required',
                     items: {
