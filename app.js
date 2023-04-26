@@ -118,6 +118,10 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+
+const IMAGE_DIR = path.join(__dirname, 'public/uploads');
+console.log(IMAGE_DIR);
+
 // app.use('/uploads', express.static(path.join(__dirname, 'public/uploads')));
 // app.use('/images', express.static(path.join(__dirname, 'public/images')));
 
@@ -150,7 +154,11 @@ app.post('/save-image', imageController.saveImage);
 app.use(function (req, res, next) {
     next(createError(404));
 });
-
+app.get('/public/uploads/:imageName', (req, res) => {
+    const imageName = req.params.imageName;
+    const imagePath = path.join(IMAGE_DIR, imageName);
+    res.sendFile(imagePath);
+});
 // error handler
 app.use(function (err, req, res, next) {
     // set locals, only providing error in development

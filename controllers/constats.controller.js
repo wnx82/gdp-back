@@ -13,49 +13,56 @@ const collectionName = 'constats';
 const schema = Joi.object({
     id: Joi.string().allow(null).optional().empty(''),
     agents: Joi.array()
-        .items(Joi.string().regex(/^[0-9a-fA-F]{24}$/))
+        .items(
+            Joi.string().regex(/^[0-9a-fA-F]{24}$/),
+            Joi.object({
+                value: Joi.string().regex(/^[0-9a-fA-F]{24}$/)
+            }),
+            Joi.number().integer().min(0)
+        )
         .min(1)
         .required(),
     date: Joi.date().required(),
     vehicule: Joi.object().allow(null).keys({
-        marque: Joi.string(),
-        modele: Joi.string(),
-        couleur: Joi.string(),
-        type: Joi.string(),
-        immatriculation: Joi.string(),
+        marque: Joi.string().allow(null),
+        modele: Joi.string().allow(null),
+        couleur: Joi.string().allow(null),
+        type: Joi.string().allow(null),
+        immatriculation: Joi.string().allow(null),
     }),
     personne: Joi.object()
         .allow(null)
         .keys({
-            firstname: Joi.string(),
-            lastname: Joi.string(),
-            birthday: Joi.date(),
-            birthday: Joi.date(),
-            nationalNumber: Joi.number(),
-            tel: Joi.string(),
+            firstname: Joi.string().allow(null),
+            lastname: Joi.string().allow(null),
+            birthday: Joi.date().allow(null),
+            birthday: Joi.date().allow(null),
+            nationalNumber: Joi.number().allow(null),
+            tel: Joi.string().allow(null),
             adresse: Joi.object().allow(null).keys({
-                rue: Joi.string(),
-                cp: Joi.string(),
-                localite: Joi.string(),
+                rue: Joi.string().allow(null),
+                cp: Joi.string().allow(null),
+                localite: Joi.string().allow(null),
             }),
         }),
     adresse: {
-        rue: Joi.string().regex(/^[0-9a-fA-F]{24}$/),
+        rue: Joi.string().regex(/^[0-9a-fA-F]{24}$/).allow(null),
         numero: Joi.string().allow(null).optional().empty(''),
     },
     geolocation: Joi.object().allow(null).keys({
-        latitude: Joi.string(),
-        longitude: Joi.string(),
-        horodatage: Joi.date(),
+        latitude: Joi.string().allow(null),
+        longitude: Joi.string().allow(null),
+        horodatage: Joi.date().allow(null),
     }),
     infractions: Joi.array()
         .items(Joi.string().allow(null).optional().empty(''))
-        .optional(),
-    pv: Joi.boolean().required(),
+        .optional().allow(null),
+    pv: Joi.boolean().allow(null),
     notes: Joi.string().allow(null).optional().empty(''),
     annexes: Joi.array()
         .items(Joi.string().allow(null).optional().empty(''))
-        .optional(),
+        .optional().allow(null),
+
 });
 
 const pipeline = [
@@ -133,6 +140,9 @@ const pipeline = [
             },
             updatedAt: {
                 $first: '$updatedAt',
+            },
+            deletedAt: {
+                $first: '$deletedAt',
             },
         },
     },
@@ -397,9 +407,9 @@ const create = catchAsync(async (req, res) => {
     const { value, error } = schema.validate(body);
 
     if (error) {
-        return res.status(400).json({
-            message: error.details.map(err => err.message).join(', '),
-        });
+        const errors = error.details.map(d => d.message);
+        console.log('Validation error:', errors); // ajout d'un console.log()
+        return res.status(400).json({ message: 'Validation error', errors });
     }
 
     try {
@@ -430,25 +440,33 @@ const create = catchAsync(async (req, res) => {
 });
 const updateOne = catchAsync(async (req, res) => {
     const { id } = req.params;
+    console.log('id:', id); // ajout d'un console.log()
+
     if (!id) {
+        console.log('No id provided');
         return res.status(400).json({ message: 'No id provided' });
     }
     try {
         const constat = await collection.findOne({ _id: ObjectId(id) });
+
         if (!constat) {
+            console.log('Constat not found');
             return res.status(404).json({ message: 'Constat not found' });
         }
     } catch (err) {
-        console.log(err);
+        console.log('Server error:', err);
         return res.status(500).json({ message: 'Server error' });
     }
 
     const message = `📝 Mise à jour du constat ${id}`;
     const { body } = req;
+
     const { value, error } = schema.validate(body);
+
+
     if (error) {
-        console.log(error);
         const errors = error.details.map(d => d.message);
+        console.log('Validation error:', errors); // ajout d'un console.log()
         return res.status(400).json({ message: 'Validation error', errors });
     }
     let updateValue = { ...value };
@@ -462,22 +480,29 @@ const updateOne = catchAsync(async (req, res) => {
     try {
         value.adresse.rue = new ObjectId(value.adresse.rue);
         const updatedAt = new Date();
+        console.log('updateValue:', updateValue); // ajout d'un console.log()
+        console.log('updatedAt:', updatedAt); // ajout d'un console.log()
+
         const { modifiedCount } = await collection.findOneAndUpdate(
             { _id: ObjectId(id) },
             { $set: { ...updateValue, updatedAt } },
             { returnDocument: 'after' }
         );
+        console.log('modifiedCount:', modifiedCount); // ajout d'un console.log()
+
         if (modifiedCount === 0) {
+            console.log('Constat not found');
             return res.status(404).json({ message: 'Constat not found' });
         }
         res.status(200).json(value);
         redisClient.del(`${collectionName}:all`);
         redisClient.del(`${collectionName}:${id}`);
     } catch (err) {
-        console.log(err);
+        console.log('Server error:', err);
         res.status(500).json({ message: 'Server error' });
     }
 });
+
 const deleteOne = catchAsync(async (req, res) => {
     const { id } = req.params;
     const { force } = req.query;

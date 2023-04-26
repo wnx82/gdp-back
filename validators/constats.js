@@ -2,21 +2,20 @@ module.exports = {
     validator: {
         $jsonSchema: {
             bsonType: 'object',
-            required: ['agents', 'date', 'pv'],
+            required: ['agents', 'date'],
             properties: {
                 _id: {},
                 agents: {
-                    bsonType: 'array',
+                    bsonType: ['array', 'null'],
                     minItems: 1,
-                    description: ' must be a array and is required',
+                    description: ' must be an array and is required',
                     items: {
                         bsonType: 'objectId',
                     },
                 },
                 vehicule: {
-                    bsonType: 'object',
-                    // required: ['rue', 'cp', 'localite'],
-                    description: ' must be a object and is not required',
+                    bsonType: ['object', 'null'],
+                    description: ' must be an object and is not required',
                     properties: {
                         marque: { bsonType: ['string', 'null'] },
                         modele: { bsonType: ['string', 'null'] },
@@ -26,9 +25,8 @@ module.exports = {
                     },
                 },
                 personne: {
-                    bsonType: 'object',
-                    // required: ['rue', 'cp', 'localite'],
-                    description: ' must be a object and is not required',
+                    bsonType: ['object', 'null'],
+                    description: ' must be an object and is not required',
                     properties: {
                         firstname: { bsonType: ['string', 'null'] },
                         lastname: { bsonType: ['string', 'null'] },
@@ -36,7 +34,7 @@ module.exports = {
                         nationalNumber: { bsonType: ['number', 'null'] },
                         tel: { bsonType: ['string', 'null'] },
                         adresse: {
-                            bsonType: 'object',
+                            bsonType: ['object', 'null'],
                             properties: {
                                 rue: { bsonType: ['string', 'null'] },
                                 cp: { bsonType: ['string', 'null'] },
@@ -50,17 +48,17 @@ module.exports = {
                     description: ' must be a date and is required',
                 },
                 adresse: {
-                    bsonType: 'object',
+                    bsonType: ['object', 'null'],
                     properties: {
                         rue: {
-                            bsonType: 'objectId',
+                            bsonType: ['objectId', 'null'],
                             description: 'must be an objectId and is required',
                         },
                         numero: { bsonType: ['string', 'null'] },
                     },
                 },
                 geolocation: {
-                    bsonType: 'object',
+                    bsonType: ['object', 'null'],
                     description: ' must be a object and is not required',
                     properties: {
                         latitude: {
@@ -70,13 +68,13 @@ module.exports = {
                             bsonType: ['string', 'null'],
                         },
                         horodatage: {
-                            bsonType: 'date',
+                            bsonType: ['date', 'null'],
                         },
                     },
                 },
                 infractions: {
                     bsonType: ['array', 'null'],
-                    description: ' must be a arrray and is required',
+                    description: ' must be an arrray and is required',
                 },
                 pv: {
                     bsonType: ['bool', 'null'],
@@ -88,7 +86,7 @@ module.exports = {
                 },
                 annexes: {
                     bsonType: ['array', 'null'],
-                    description: ' must be a arrray and is not required',
+                    description: ' must be an arrray and is not required',
                 },
             },
         },
