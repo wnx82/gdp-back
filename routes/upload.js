@@ -6,29 +6,37 @@ const path = require('path');
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, '../public/uploads/');
+        cb(null, 'public/uploads/');
     },
+
     filename: function (req, file, cb) {
         cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname));
     }
 });
 
-const upload = multer({ storage: storage });
+const upload = multer({ storage: storage }).single('file');;
 
-router.post('/', upload.single('file'), function (req, res, next) {
-    // Récupérer les informations sur le fichier uploadé
-    const fileName = req.file.filename;
-    const fileType = req.file.mimetype;
-
-    // Envoyer une réponse au client avec les informations sur le fichier uploadé
-    res.json({
-        success: true,
-        message: 'File uploaded successfully!',
-        file: {
-            name: fileName,
-            type: fileType
+router.post('/', function (req, res, next) {
+    upload(req, res, function (err) {
+        if (err) {
+            // Gérer l'erreur ici
+            console.log(err);
+            return res.status(400).send(err);
         }
-    });
-});
+        // Récupérer les informations sur le fichier uploadé
+        const fileName = req.file.filename;
+        const fileType = req.file.mimetype;
+        console.log(fileName);
 
+        // Envoyer une réponse au client avec les informations sur le fichier uploadé
+        res.json({
+            success: true,
+            message: 'File uploaded successfully!',
+            file: {
+                name: fileName,
+                type: fileType
+            }
+        });
+    });
+})
 module.exports = router;
