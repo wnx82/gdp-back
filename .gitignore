@@ -1,6 +1,9 @@
 #data
 data/
 
+#fichier Config.json
+config.json
+
 #uploads
 public/uploads
 # Logs

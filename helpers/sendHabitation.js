@@ -1,11 +1,17 @@
 const moment = require('moment');
 const sendMail = require('./sendMail');
 const fs = require('fs');
+const CONFIG_FILE_PATH = 'config.json';
+
 
 const sendHabitation = async function (agentData, habitationData, note) {
+
+    const configData = fs.readFileSync(CONFIG_FILE_PATH);
+    const config = JSON.parse(configData);
+
     const dataSubject = '✅ Nouvelle entrée pour ' + habitationData.adresse.rue;
     const dataMessage = '';
-    const dataMailTo = process.env.MAIL_TO_HABITATIONS;
+    const dataMailTo = config.mail.to_habitations;
     const dataHTML = `
 <html>
 
@@ -95,12 +101,10 @@ const sendHabitation = async function (agentData, habitationData, note) {
         <div class="content">
             <p class="message">
                 Ce <strong>${moment(new Date()).format(
-                    'YYYY/MM/DD à HH:mm'
-                )}</strong>, l'agent GDP <strong>${
-        agentData.matricule
-    }</strong>, s'est rendu à l'habitation : <strong>${
-        habitationData.adresse.rue
-    }</strong> et a communiqué le commentaire suivant :
+        'YYYY/MM/DD à HH:mm'
+    )}</strong>, l'agent GDP <strong>${agentData.matricule
+        }</strong>, s'est rendu à l'habitation : <strong>${habitationData.adresse.rue
+        }</strong> et a communiqué le commentaire suivant :
                 <strong>${note}</strong>
             </p>
             <div class="details">

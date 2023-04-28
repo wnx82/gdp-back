@@ -37,7 +37,7 @@ const schema = Joi.object({
             lastname: Joi.string().allow(null),
             birthday: Joi.date().allow(null),
             birthday: Joi.date().allow(null),
-            nationalNumber: Joi.number().allow(null),
+            nationalNumber: Joi.string().allow(null),
             tel: Joi.string().allow(null),
             adresse: Joi.object().allow(null).keys({
                 rue: Joi.string().allow(null),

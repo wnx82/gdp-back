@@ -31,7 +31,7 @@ module.exports = {
                         firstname: { bsonType: ['string', 'null'] },
                         lastname: { bsonType: ['string', 'null'] },
                         birthday: { bsonType: ['date', 'null'] },
-                        nationalNumber: { bsonType: ['number', 'null'] },
+                        nationalNumber: { bsonType: ['string', 'null'] },
                         tel: { bsonType: ['string', 'null'] },
                         adresse: {
                             bsonType: ['object', 'null'],
@@ -44,7 +44,7 @@ module.exports = {
                     },
                 },
                 date: {
-                    bsonType: 'date',
+                    bsonType: ['date', 'null'],
                     description: ' must be a date and is required',
                 },
                 adresse: {

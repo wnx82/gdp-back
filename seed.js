@@ -10705,7 +10705,7 @@ redisClient.flushall((err, reply) => {
             firstname: faker.name.firstName(),
             lastname: faker.name.lastName(),
             birthday: faker.date.past(),
-            nationalNumber: faker.datatype.number(99999999999),
+            nationalNumber: faker.finance.iban(true, 'BE'),
             tel: faker.phone.number('+32 47#######'), // '+48 91 463 61 70',
             adresse: {
                 rue: faker.address.streetAddress(),
