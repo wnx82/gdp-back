@@ -4,7 +4,7 @@ const fs = require('fs');
 const CONFIG_FILE_PATH = 'config.json';
 
 
-const sendHabitation = async function (agentData, habitationData, note) {
+const sendHabitation = async function (agentsData, habitationData, note) {
 
     const configData = fs.readFileSync(CONFIG_FILE_PATH);
     const config = JSON.parse(configData);
@@ -102,7 +102,7 @@ const sendHabitation = async function (agentData, habitationData, note) {
             <p class="message">
                 Ce <strong>${moment(new Date()).format(
         'YYYY/MM/DD à HH:mm'
-    )}</strong>, l'agent GDP <strong>${agentData[0].matricule}</strong>, s'est rendu à l'habitation : <strong>${habitationData.adresse.rue
+    )}</strong>, l'agent GDP <strong>${agentsData[0].matricule}</strong>, s'est rendu à l'habitation : <strong>${habitationData.adresse.rue
         }</strong> et a communiqué le commentaire suivant :
                 <strong>${note}</strong>
             </p>
@@ -110,7 +110,7 @@ const sendHabitation = async function (agentData, habitationData, note) {
                 <table>
                     <tr>
                         <th>👮 Agent(s)</th>
-                        <td>${agentData[0].matricule},${agentData[1].matricule}</td>
+                        <td>${agentsData[0].matricule},${agentsData[1].matricule}</td>
                     </tr>
                     <tr>
                         <th>📌 Habitation</th>

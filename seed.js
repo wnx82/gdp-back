@@ -10689,7 +10689,7 @@ redisClient.flushall((err, reply) => {
     bar1.update(i++);
 
     const validationsDto = [...Array(15)].map(() => ({
-        agent: [createdAgents[Math.floor(Math.random() * 15)].insertedId],
+        agents: [createdAgents[Math.floor(Math.random() * 15)].insertedId, createdAgents[Math.floor(Math.random() * 15)].insertedId],
         habitation: [
             createdHabitations[Math.floor(Math.random() * 15)].insertedId,
         ],

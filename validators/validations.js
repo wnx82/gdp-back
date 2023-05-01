@@ -2,10 +2,10 @@ module.exports = {
     validator: {
         $jsonSchema: {
             bsonType: 'object',
-            required: ['agent', 'habitation', 'date'],
+            required: ['agents', 'habitation', 'date'],
             properties: {
                 _id: {},
-                agent: {
+                agents: {
                     // agent et habitation sont maintenant des tableaux d'objectId
                     bsonType: ['array', 'null'],
                     items: {

@@ -12,7 +12,7 @@ const { NotBeforeError } = require('jsonwebtoken');
 
 const schema = Joi.object({
     id: Joi.string().allow(null).optional().empty(''),
-    agent: Joi.array()
+    agents: Joi.array()
         .items(Joi.string().regex(/^[0-9a-fA-F]{24}$/))
         .min(1)
         .required(),
@@ -113,10 +113,10 @@ const create = catchAsync(async (req, res) => {
         return res.status(400).json({ message: error });
     }
     try {
-        const agentsID = value.agent.map(p => {
+        const agentsID = value.agents.map(p => {
             return new ObjectId(p);
         });
-        value.agent = agentsID;
+        value.agents = agentsID;
 
         const habitationsID = value.habitation.map(p => {
             return new ObjectId(p);
@@ -167,25 +167,18 @@ const create = catchAsync(async (req, res) => {
         const insertedId = data.insertedId;
 
         // Récupération des données par aggregate et envoi de la validation par mail
-        const { agentData, habitationData, note } = await collection
+        const { agentsData, habitationData, note } = await collection
             .aggregate([
                 {
                     '$match': {
-                        '_id': new ObjectId('645032aeab29aabfbf61868d')
+                        '_id': new ObjectId(insertedId)
                     }
                 }, {
                     '$lookup': {
                         'from': 'agents',
-                        'localField': 'agent',
+                        'localField': 'agents',
                         'foreignField': '_id',
-                        'as': 'agentData'
-                    }
-                }, {
-                    '$project': {
-                        'agentData.matricule': 1,
-                        'habitation': 1,
-                        'note': 1,
-                        'date': 1
+                        'as': 'agentsData'
                     }
                 }, {
                     '$lookup': {
@@ -200,19 +193,22 @@ const create = catchAsync(async (req, res) => {
                     }
                 }, {
                     '$project': {
-                        'agentData.matricule': 1,
+                        'agentsData.matricule': 1,
                         'habitationData.adresse.rue': 1,
                         'habitation': 1,
                         'note': 1,
-                        'date': 1
+                        'date': 1,
+                        'createdAt': 1,
+                        'updatedAt': 1,
+                        'deletedAt': 1
                     }
                 }
             ])
             .next();
-        console.log('agentData', agentData);
+        console.log('agentsData', agentsData);
         console.log('habitationData', habitationData);
         console.log('note', note);
-        sendHabitation(agentData, habitationData, note);
+        sendHabitation(agentsData, habitationData, note);
     } catch (err) {
         console.log(err);
     }
@@ -232,10 +228,10 @@ const updateOne = catchAsync(async (req, res) => {
     }
     let updateValue = { ...value };
 
-    if (!value.agent) {
-        delete updateValue.agent;
+    if (!value.agents) {
+        delete updateValue.agents;
     } else {
-        updateValue.agent = value.agent.map(value => new ObjectId(value));
+        updateValue.agents = value.agents.map(value => new ObjectId(value));
     }
     if (!value.habitation) {
         delete updateValue.habitation;
