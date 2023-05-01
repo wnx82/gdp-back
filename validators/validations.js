@@ -15,12 +15,8 @@ module.exports = {
                         'Agent must be an array of objectIds and is required',
                 },
                 habitation: {
-                    bsonType: ['array', 'null'],
-                    items: {
-                        bsonType: ['objectId', 'null'],
-                    },
-                    description:
-                        'Habitation must be an array of objectIds and is required',
+                    bsonType: ['objectId', 'null'],
+                    description: ' must be a objectId and is required',
                 },
                 note: {
                     bsonType: ['string', 'null'],

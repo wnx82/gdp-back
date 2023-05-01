@@ -16,10 +16,7 @@ const schema = Joi.object({
         .items(Joi.string().regex(/^[0-9a-fA-F]{24}$/))
         .min(1)
         .required(),
-    habitation: Joi.array()
-        .items(Joi.string().regex(/^[0-9a-fA-F]{24}$/))
-        .min(1)
-        .required(),
+    habitation: Joi.string().regex(/^[0-9a-fA-F]{24}$/).allow(null).optional().empty(''),
     date: Joi.date().required(),
     note: Joi.string().allow(null).optional().empty(''),
 });

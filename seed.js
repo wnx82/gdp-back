@@ -10690,9 +10690,9 @@ redisClient.flushall((err, reply) => {
 
     const validationsDto = [...Array(15)].map(() => ({
         agents: [createdAgents[Math.floor(Math.random() * 15)].insertedId, createdAgents[Math.floor(Math.random() * 15)].insertedId],
-        habitation: [
+        habitation:
             createdHabitations[Math.floor(Math.random() * 15)].insertedId,
-        ],
+
         note: faker.lorem.words(),
         date: faker.date.recent(),
         createdAt: new Date(),
