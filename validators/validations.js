@@ -2,34 +2,32 @@ module.exports = {
     validator: {
         $jsonSchema: {
             bsonType: 'object',
-            required: ['agent', 'habitation', 'date'],
+            required: ['agents', 'habitation', 'date'],
             properties: {
-                _id: {
-                    bsonType: 'objectId',
-                },
-                agent: {
+                _id: {},
+                agents: {
                     // agent et habitation sont maintenant des tableaux d'objectId
-                    bsonType: 'array',
+                    bsonType: ['array', 'null'],
                     items: {
-                        bsonType: ['objectId'],
+                        bsonType: ['objectId', 'null'],
                     },
                     description:
                         'Agent must be an array of objectIds and is required',
                 },
                 habitation: {
-                    bsonType: 'array',
+                    bsonType: ['array', 'null'],
                     items: {
-                        bsonType: ['objectId'],
+                        bsonType: ['objectId', 'null'],
                     },
                     description:
                         'Habitation must be an array of objectIds and is required',
                 },
                 note: {
-                    bsonType: 'string',
+                    bsonType: ['string', 'null'],
                     description: 'Note must be a string and is not required',
                 },
                 date: {
-                    bsonType: 'date',
+                    bsonType: ['date', 'null'],
                     description: 'Date must be a date and is required',
                 },
             },

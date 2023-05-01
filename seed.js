@@ -68,17 +68,27 @@ redisClient.flushall((err, reply) => {
     bar1.update(i++);
     const horairesDto = [
         {
-            horaire: '07h30-15h',
+            horaire: '07:30-15:00',
             createdAt: new Date(),
             updatedAt: new Date(),
         },
         {
-            horaire: '08h30-16h',
+            horaire: '08:30-16:00',
             createdAt: new Date(),
             updatedAt: new Date(),
         },
         {
-            horaire: '10h30-18h',
+            horaire: '10:30-18:00',
+            createdAt: new Date(),
+            updatedAt: new Date(),
+        },
+        {
+            horaire: '16:00-22:00',
+            createdAt: new Date(),
+            updatedAt: new Date(),
+        },
+        {
+            horaire: '09:00-16:30',
             createdAt: new Date(),
             updatedAt: new Date(),
         },
@@ -90,26 +100,34 @@ redisClient.flushall((err, reply) => {
 
     const vehiculesDto = [
         {
-            marque: 'Skoda',
+            marque: 'Aucun',
             modele: '',
+            immatriculation: '',
+            createdAt: new Date(),
+            updatedAt: new Date(),
+        },
+        {
+            marque: 'Skoda',
+            modele: 'Octavia',
             immatriculation: '1XRJ929',
             createdAt: new Date(),
             updatedAt: new Date(),
         },
         {
             marque: 'Dacia',
-            modele: '',
+            modele: 'Duster',
             immatriculation: '1GFV206',
             createdAt: new Date(),
             updatedAt: new Date(),
         },
         {
             marque: 'Peugeot',
-            modele: '',
+            modele: '307',
             immatriculation: '1AMS560',
             createdAt: new Date(),
             updatedAt: new Date(),
         },
+
     ];
     await Promise.all(
         vehiculesDto.map(u => db.collection('vehicules').insertOne(u))
@@ -10671,7 +10689,7 @@ redisClient.flushall((err, reply) => {
     bar1.update(i++);
 
     const validationsDto = [...Array(15)].map(() => ({
-        agent: [createdAgents[Math.floor(Math.random() * 15)].insertedId],
+        agents: [createdAgents[Math.floor(Math.random() * 15)].insertedId],
         habitation: [
             createdHabitations[Math.floor(Math.random() * 15)].insertedId,
         ],
@@ -11119,11 +11137,11 @@ redisClient.flushall((err, reply) => {
         {
             title: 'Nouveau-Monde',
             missions: [
-                createdMissions[Math.floor(Math.random() * 5)].insertedId,
-                createdMissions[Math.floor(Math.random() * 5)].insertedId,
-                createdMissions[Math.floor(Math.random() * 5)].insertedId,
-                createdMissions[Math.floor(Math.random() * 5)].insertedId,
-                createdMissions[Math.floor(Math.random() * 5)].insertedId,
+                createdMissions[Math.floor(Math.random() * 20)].insertedId,
+                createdMissions[Math.floor(Math.random() * 20)].insertedId,
+                createdMissions[Math.floor(Math.random() * 20)].insertedId,
+                createdMissions[Math.floor(Math.random() * 20)].insertedId,
+                createdMissions[Math.floor(Math.random() * 20)].insertedId,
             ],
             createdAt: new Date(),
             updatedAt: new Date(),
@@ -11131,11 +11149,11 @@ redisClient.flushall((err, reply) => {
         {
             title: 'Centre',
             missions: [
-                createdMissions[Math.floor(Math.random() * 5)].insertedId,
-                createdMissions[Math.floor(Math.random() * 5)].insertedId,
-                createdMissions[Math.floor(Math.random() * 5)].insertedId,
-                createdMissions[Math.floor(Math.random() * 5)].insertedId,
-                createdMissions[Math.floor(Math.random() * 5)].insertedId,
+                createdMissions[Math.floor(Math.random() * 20)].insertedId,
+                createdMissions[Math.floor(Math.random() * 20)].insertedId,
+                createdMissions[Math.floor(Math.random() * 20)].insertedId,
+                createdMissions[Math.floor(Math.random() * 20)].insertedId,
+                createdMissions[Math.floor(Math.random() * 20)].insertedId,
             ],
             createdAt: new Date(),
             updatedAt: new Date(),
@@ -11143,11 +11161,11 @@ redisClient.flushall((err, reply) => {
         {
             title: 'Risquons-Tout',
             missions: [
-                createdMissions[Math.floor(Math.random() * 5)].insertedId,
-                createdMissions[Math.floor(Math.random() * 5)].insertedId,
-                createdMissions[Math.floor(Math.random() * 5)].insertedId,
-                createdMissions[Math.floor(Math.random() * 5)].insertedId,
-                createdMissions[Math.floor(Math.random() * 5)].insertedId,
+                createdMissions[Math.floor(Math.random() * 20)].insertedId,
+                createdMissions[Math.floor(Math.random() * 20)].insertedId,
+                createdMissions[Math.floor(Math.random() * 20)].insertedId,
+                createdMissions[Math.floor(Math.random() * 20)].insertedId,
+                createdMissions[Math.floor(Math.random() * 20)].insertedId,
             ],
             createdAt: new Date(),
             updatedAt: new Date(),
@@ -11155,11 +11173,11 @@ redisClient.flushall((err, reply) => {
         {
             title: 'Mont-à-Leux',
             missions: [
-                createdMissions[Math.floor(Math.random() * 5)].insertedId,
-                createdMissions[Math.floor(Math.random() * 5)].insertedId,
-                createdMissions[Math.floor(Math.random() * 5)].insertedId,
-                createdMissions[Math.floor(Math.random() * 5)].insertedId,
-                createdMissions[Math.floor(Math.random() * 5)].insertedId,
+                createdMissions[Math.floor(Math.random() * 20)].insertedId,
+                createdMissions[Math.floor(Math.random() * 20)].insertedId,
+                createdMissions[Math.floor(Math.random() * 20)].insertedId,
+                createdMissions[Math.floor(Math.random() * 20)].insertedId,
+                createdMissions[Math.floor(Math.random() * 20)].insertedId,
             ],
             createdAt: new Date(),
             updatedAt: new Date(),
@@ -11167,11 +11185,11 @@ redisClient.flushall((err, reply) => {
         {
             title: 'Tuquet-Parc',
             missions: [
-                createdMissions[Math.floor(Math.random() * 5)].insertedId,
-                createdMissions[Math.floor(Math.random() * 5)].insertedId,
-                createdMissions[Math.floor(Math.random() * 5)].insertedId,
-                createdMissions[Math.floor(Math.random() * 5)].insertedId,
-                createdMissions[Math.floor(Math.random() * 5)].insertedId,
+                createdMissions[Math.floor(Math.random() * 20)].insertedId,
+                createdMissions[Math.floor(Math.random() * 20)].insertedId,
+                createdMissions[Math.floor(Math.random() * 20)].insertedId,
+                createdMissions[Math.floor(Math.random() * 20)].insertedId,
+                createdMissions[Math.floor(Math.random() * 20)].insertedId,
             ],
             createdAt: new Date(),
             updatedAt: new Date(),
@@ -11179,11 +11197,11 @@ redisClient.flushall((err, reply) => {
         {
             title: 'Coquinie-CHM',
             missions: [
-                createdMissions[Math.floor(Math.random() * 5)].insertedId,
-                createdMissions[Math.floor(Math.random() * 5)].insertedId,
-                createdMissions[Math.floor(Math.random() * 5)].insertedId,
-                createdMissions[Math.floor(Math.random() * 5)].insertedId,
-                createdMissions[Math.floor(Math.random() * 5)].insertedId,
+                createdMissions[Math.floor(Math.random() * 20)].insertedId,
+                createdMissions[Math.floor(Math.random() * 20)].insertedId,
+                createdMissions[Math.floor(Math.random() * 20)].insertedId,
+                createdMissions[Math.floor(Math.random() * 20)].insertedId,
+                createdMissions[Math.floor(Math.random() * 20)].insertedId,
             ],
             createdAt: new Date(),
             updatedAt: new Date(),
@@ -11191,11 +11209,11 @@ redisClient.flushall((err, reply) => {
         {
             title: 'Herseaux',
             missions: [
-                createdMissions[Math.floor(Math.random() * 5)].insertedId,
-                createdMissions[Math.floor(Math.random() * 5)].insertedId,
-                createdMissions[Math.floor(Math.random() * 5)].insertedId,
-                createdMissions[Math.floor(Math.random() * 5)].insertedId,
-                createdMissions[Math.floor(Math.random() * 5)].insertedId,
+                createdMissions[Math.floor(Math.random() * 20)].insertedId,
+                createdMissions[Math.floor(Math.random() * 20)].insertedId,
+                createdMissions[Math.floor(Math.random() * 20)].insertedId,
+                createdMissions[Math.floor(Math.random() * 20)].insertedId,
+                createdMissions[Math.floor(Math.random() * 20)].insertedId,
             ],
             createdAt: new Date(),
             updatedAt: new Date(),
@@ -11203,11 +11221,11 @@ redisClient.flushall((err, reply) => {
         {
             title: 'Dottignies',
             missions: [
-                createdMissions[Math.floor(Math.random() * 5)].insertedId,
-                createdMissions[Math.floor(Math.random() * 5)].insertedId,
-                createdMissions[Math.floor(Math.random() * 5)].insertedId,
-                createdMissions[Math.floor(Math.random() * 5)].insertedId,
-                createdMissions[Math.floor(Math.random() * 5)].insertedId,
+                createdMissions[Math.floor(Math.random() * 20)].insertedId,
+                createdMissions[Math.floor(Math.random() * 20)].insertedId,
+                createdMissions[Math.floor(Math.random() * 20)].insertedId,
+                createdMissions[Math.floor(Math.random() * 20)].insertedId,
+                createdMissions[Math.floor(Math.random() * 20)].insertedId,
             ],
             createdAt: new Date(),
             updatedAt: new Date(),
@@ -11215,11 +11233,11 @@ redisClient.flushall((err, reply) => {
         {
             title: 'Luingne',
             missions: [
-                createdMissions[Math.floor(Math.random() * 5)].insertedId,
-                createdMissions[Math.floor(Math.random() * 5)].insertedId,
-                createdMissions[Math.floor(Math.random() * 5)].insertedId,
-                createdMissions[Math.floor(Math.random() * 5)].insertedId,
-                createdMissions[Math.floor(Math.random() * 5)].insertedId,
+                createdMissions[Math.floor(Math.random() * 20)].insertedId,
+                createdMissions[Math.floor(Math.random() * 20)].insertedId,
+                createdMissions[Math.floor(Math.random() * 20)].insertedId,
+                createdMissions[Math.floor(Math.random() * 20)].insertedId,
+                createdMissions[Math.floor(Math.random() * 20)].insertedId,
             ],
             createdAt: new Date(),
             updatedAt: new Date(),
@@ -11227,11 +11245,11 @@ redisClient.flushall((err, reply) => {
         {
             title: 'Gare',
             missions: [
-                createdMissions[Math.floor(Math.random() * 5)].insertedId,
-                createdMissions[Math.floor(Math.random() * 5)].insertedId,
-                createdMissions[Math.floor(Math.random() * 5)].insertedId,
-                createdMissions[Math.floor(Math.random() * 5)].insertedId,
-                createdMissions[Math.floor(Math.random() * 5)].insertedId,
+                createdMissions[Math.floor(Math.random() * 20)].insertedId,
+                createdMissions[Math.floor(Math.random() * 20)].insertedId,
+                createdMissions[Math.floor(Math.random() * 20)].insertedId,
+                createdMissions[Math.floor(Math.random() * 20)].insertedId,
+                createdMissions[Math.floor(Math.random() * 20)].insertedId,
             ],
             createdAt: new Date(),
             updatedAt: new Date(),
@@ -11250,8 +11268,8 @@ redisClient.flushall((err, reply) => {
             createdAgents[Math.floor(Math.random() * 15)].insertedId,
             createdAgents[Math.floor(Math.random() * 15)].insertedId,
         ],
-        horaire: horairesDto[0].horaire,
-        vehicule: vehiculesDto[0].marque,
+        horaire: horairesDto[Math.floor(Math.random() * 4)].horaire,
+        vehicule: vehiculesDto[Math.floor(Math.random() * 3)].marque,
         quartiers: [
             createdMissionsQuartiers[Math.floor(Math.random() * 2)].insertedId,
         ],
@@ -11276,13 +11294,13 @@ redisClient.flushall((err, reply) => {
     const rapportsDto = [...Array(15)].map(() => ({
         daily: createdsDailyDto[Math.floor(Math.random() * 15)].insertedId,
         date: faker.date.recent(),
-        horaire: horairesDto[0].horaire,
+        horaire: horairesDto[Math.floor(Math.random() * 4)].horaire,
 
         agents: [
             createdAgents[Math.floor(Math.random() * 15)].insertedId,
             createdAgents[Math.floor(Math.random() * 15)].insertedId,
         ],
-        vehicule: vehiculesDto[0].marque,
+        vehicule: vehiculesDto[Math.floor(Math.random() * 4)].marque,
         quartiers: [
             createdMissionsQuartiers[Math.floor(Math.random() * 10)].insertedId,
         ],

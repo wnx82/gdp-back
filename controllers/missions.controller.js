@@ -18,7 +18,7 @@ const schema = Joi.object({
     horaire: Joi.string().allow(null).optional().empty(''),
     priority: Joi.number().allow(null).optional().empty(''),
     contact: Joi.string().allow(null).optional().empty(''),
-    visibility: Joi.boolean().optional(),
+    visibility: Joi.boolean().allow(null).optional().empty(''),
     annexes: Joi.array()
         .items(Joi.string().allow(null).optional().empty(''))
         .optional(),

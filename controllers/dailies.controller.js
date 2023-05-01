@@ -723,6 +723,8 @@ const sendDaily = catchAsync(async (req, res) => {
     if (!daily) {
         return res.status(404).json({ message: 'Daily not found' });
     }
+    console.log('Destruction des redis');
+    redisClient.del(`${collectionName}:all`);
 
     const message = `📝 Envoi du daily ${id}`;
     res.status(200).json(
@@ -734,6 +736,8 @@ const sendDaily = catchAsync(async (req, res) => {
         )
     );
 
+
+    redisClient.del(`${collectionName}:all`);
     redisClient.del(`${collectionName}:${id}`);
 });
 

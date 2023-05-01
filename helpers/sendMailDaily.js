@@ -128,36 +128,36 @@ const sendMailDaily = async function (id, data) {
 <p><strong>👤 Agents:</strong></p>
 <ul>
   ${data.agentsData
-      .map(agentData => {
-          return `<li>${agentData.matricule} - ${agentData.firstname} ${agentData.lastname}</li>`;
-      })
-      .join('')}
+            .map(agentData => {
+                return `<li>${agentData.matricule} - ${agentData.firstname} ${agentData.lastname}</li>`;
+            })
+            .join('')}
 </ul>
             <p><strong>📅 Horaire presté:</strong> ${data.horaire}</p>
             <p><strong>🚙 Véhicule:</strong> ${data.vehicule}</p>
             <p><strong>📌 Quartiers :</strong></p>
             <ul>
   ${data.quartiersData
-      .map(quartiersData => {
-          return `<li>${quartiersData.title}</li>`;
-      })
-      .join('')}
+            .map(quartiersData => {
+                return `<li>${quartiersData.title}</li>`;
+            })
+            .join('')}
             </ul>
             <p><strong>📌 Missions quartier(s) :</strong></p>
             <ul>
   ${data.quartiersMissionsData
-      .map(quartiersMissionsData => {
-          return `<li>${quartiersMissionsData.title}</li><ul><li>${quartiersMissionsData.description}</li></ul>`;
-      })
-      .join('')}
+            .map(quartiersMissionsData => {
+                return `<li>${quartiersMissionsData.title}</li><ul><li>${quartiersMissionsData.description}</li></ul>`;
+            })
+            .join('')}
             </ul>
             <p><strong>📋 Liste des missions supplémentaires:</strong></p>
             <ul>
   ${data.missionsData
-      .map(missionsData => {
-          return `<li>${missionsData.title}</li><ul><li>${missionsData.description}</li></ul>`;
-      })
-      .join('')}
+            .map(missionsData => {
+                return `<li>${missionsData.title}</li><ul><li>${missionsData.description}</li></ul>`;
+            })
+            .join('')}
             </ul>
             <p><strong>📝 Notes:</strong></p>
             <ul>
@@ -168,8 +168,8 @@ const sendMailDaily = async function (id, data) {
   ${data.annexes}
             </ul><br><br>
             <p><strong>Envoyé le :</strong>${moment(data.sent)
-                .utcOffset('+0100')
-                .format('YYYY/MM/DD à HH:mm')}</p>
+            .utcOffset('+0100')
+            .format('YYYY/MM/DD à HH:mm')}</p>
         </div>
     </div>
     <div class="footer">

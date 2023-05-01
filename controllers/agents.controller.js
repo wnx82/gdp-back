@@ -21,7 +21,7 @@ const schema = Joi.object({
     lastname: Joi.string().allow(null).optional().empty(''),
     birthday: Joi.date().allow(null).optional().empty(''),
     tel: Joi.string().max(30).allow(null).optional().empty(''),
-    iceContact: Joi.string().required(),
+    iceContact: Joi.string().allow(null).optional().empty(''),
     adresse: {
         rue: Joi.string()
             .regex(/^[0-9a-fA-F]{24}$/)
@@ -312,34 +312,35 @@ const findOne = catchAsync(async (req, res) => {
 });
 
 const create = catchAsync(async (req, res) => {
+    console.log('Create agent request received');
     const message = `✏️ Création d'un agent`;
-
     const { body } = req;
 
     if (typeof body.email === 'undefined') {
+        console.log('Email field is undefined');
         return res.status(400).json({ message: 'Email field is required' });
     }
     if (!body.email) {
+        console.log('Email field is empty');
         return res.status(400).json({ message: 'Email field is required' });
     }
     if (!body.password) {
+        console.log('Password field is empty');
         return res.status(400).json({ message: 'Password field is required' });
     }
     // Set default picture if empty
     if (!body.picture) {
-        body.picture =
-            'https://cdn-icons-png.flaticon.com/512/1946/1946392.png';
+        console.log('Picture field is empty. Setting default picture');
+        body.picture = 'https://cdn-icons-png.flaticon.com/512/1946/1946392.png';
     }
 
     const { value, error } = schema.validate(body);
     // Handle validation errors
     if (error) {
+        console.log(`Validation error: ${error.details[0].message}`);
         return res.status(400).json({ message: error.details[0].message });
     }
 
-    if (error) {
-        return res.status(400).json({ message: error });
-    }
     try {
         const { email, password, ...rest } = value;
         // Check for existing email
@@ -351,6 +352,7 @@ const create = catchAsync(async (req, res) => {
             value.adresse.rue = new ObjectId(value.adresse.rue);
         }
         if (existingUser) {
+            console.log('Email already exists');
             return res.status(409).json({ message: 'Email already exists' });
         }
 
@@ -359,24 +361,22 @@ const create = catchAsync(async (req, res) => {
         const hash = await bcrypt.hash(password, 10);
         const createdAt = new Date();
         const updatedAt = new Date();
-        const data = await collection
-            .insertOne({
-                ...rest,
-                password: hash,
-                email,
-                createdAt,
-                updatedAt,
-            })
-            .then(
-                console.log(`----------->L\'agent a bien été créé<-----------`)
-            );
+        const data = await collection.insertOne({
+            ...rest,
+            password: hash,
+            email,
+            createdAt,
+            updatedAt,
+        });
+        console.log('Agent created successfully');
         res.status(201).json(data);
         redisClient.del(`${collectionName}:all`);
-        // res.status(201).json(data);
     } catch (err) {
-        console.log(err);
+        console.log(`Error while creating agent: ${err}`);
+        return res.status(500).json({ message: 'Internal server error' });
     }
 });
+
 
 const updateOne = catchAsync(async (req, res) => {
     const { id } = req.params;
