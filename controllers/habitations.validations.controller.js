@@ -15,10 +15,7 @@ const schema = Joi.object({
         .items(Joi.string().regex(/^[0-9a-fA-F]{24}$/))
         .min(1)
         .required(),
-    habitation: Joi.array()
-        .items(Joi.string().regex(/^[0-9a-fA-F]{24}$/))
-        .min(1)
-        .required(),
+    habitation: Joi.string().regex(/^[0-9a-fA-F]{24}$/).allow(null).optional().empty(''),
     date: Joi.date().required(),
     note: Joi.string().allow(null).optional().empty(''),
 });
@@ -39,20 +36,47 @@ const findAll = catchAsync(async (req, res) => {
                     as: 'populatedHabitation',
                 },
             },
+            // {
+            //     $project: {
+            //         agents: 1,
+            //         habitation: '$populatedHabitation',
+            //         message: 1,
+            //         date: 1,
+            //         createdAt: 1,
+            //         updateAt: 1,
+            //         deletedAt: 1,
+            //     },
+            // },
             {
-                $project: {
-                    agents: 1,
-                    habitation: '$populatedHabitation',
-                    message: 1,
-                    date: 1,
-                    createdAt: 1,
-                    updateAt: 1,
-                    deletedAt: 1,
+                $group: {
+                    _id: '$_id',
+                    agents: {
+                        $first: '$agents',
+                    },
+                    habitation: {
+                        $first: '$populatedHabitation',
+                    },
+                    message: {
+                        $first: '$message',
+                    },
+                    date: {
+                        $first: '$date',
+                    },
+                    createdAt: {
+                        $first: '$createdAt',
+                    },
+                    updatedAt: {
+                        $first: '$updatedAt',
+                    },
+                    deletedAt: {
+                        $first: '$deletedAt',
+                    },
                 },
             },
 
         ];
         const data = await collection.aggregate(pipeline).toArray();
+        // const data = await collection.find({}).toArray();
         redisClient.set(
             `${collectionName}:all`,
             JSON.stringify(data),
@@ -112,38 +136,11 @@ const create = catchAsync(async (req, res) => {
         return res.status(400).json({ message: error });
     }
     try {
-        const agentsID = value.agent.map(p => {
+        const agentsID = value.agents.map(p => {
             return new ObjectId(p);
         });
-        value.agent = agentsID;
-
-        const habitationsID = value.habitation.map(p => {
-            return new ObjectId(p);
-        });
-        value.habitation = habitationsID;
-        const agents = await database
-            .collection('agents')
-            .find({
-                _id: { $in: agentsID },
-            })
-            .toArray();
-        const habitations = await database
-            .collection('habitations')
-            .find({
-                _id: { $in: habitationsID },
-            })
-            .toArray();
-
-        if (agents.length !== agentsID.length) {
-            return res
-                .status(400)
-                .json({ message: 'Invalid agent ID provided' });
-        }
-        if (habitations.length !== habitationsID.length) {
-            return res
-                .status(400)
-                .json({ message: 'Invalid habitation ID provided' });
-        }
+        value.agents = agentsID;
+        value.habitation = new ObjectId(value.habitation);
 
         const { ...rest } = value;
 
@@ -165,64 +162,67 @@ const create = catchAsync(async (req, res) => {
         // Récupérer l'insertedId
         const insertedId = data.insertedId;
 
+        console.log("insertedId:", insertedId);
+
         // Récupération des données par aggregate et envoi de la validation par mail
         const { agentData, habitationData, note } = await collection
-            .aggregate([
-                {
-                    $match: {
-                        _id: new ObjectId(insertedId),
-                    },
-                },
-                {
-                    $lookup: {
-                        from: 'agents',
-                        localField: 'agent',
-                        foreignField: '_id',
-                        as: 'agentData',
-                    },
-                },
-                {
-                    $unwind: {
-                        path: '$agentData',
-                    },
-                },
-                {
-                    $project: {
-                        'agentData.matricule': 1,
-                        habitation: 1,
-                        note: 1,
-                        date: 1,
-                    },
-                },
-                {
-                    $lookup: {
-                        from: 'habitations',
-                        localField: 'habitation',
-                        foreignField: '_id',
-                        as: 'habitationData',
-                    },
-                },
-                {
-                    $unwind: {
-                        path: '$habitationData',
-                    },
-                },
-                {
-                    $project: {
-                        'agentData.matricule': 1,
-                        'habitationData.adresse.rue': 1,
-                        habitation: 1,
-                        note: 1,
-                        date: 1,
-                    },
-                },
-            ])
+            .aggregate(
+                [
+                    {
+                        $match: {
+                            _id: new ObjectId(insertedId)
+                        }
+                    }, {
+                        $lookup: {
+                            from: 'agents',
+                            localField: 'agents',
+                            foreignField: '_id',
+                            as: 'agentData'
+                        }
+                    }, {
+                        $unwind: {
+                            path: '$agentData'
+                        }
+                    }, {
+                        $project: {
+                            'agentData.matricule': 1,
+                            'habitation': 1,
+                            'note': 1,
+                            'date': 1
+                        }
+                    }, {
+                        $lookup: {
+                            from: 'habitations',
+                            localField: 'habitation',
+                            foreignField: '_id',
+                            as: 'habitationData'
+                        }
+                    }, {
+                        $unwind: {
+                            path: '$habitationData'
+                        }
+                    }, {
+                        $project: {
+                            'agentData.matricule': 1,
+                            'habitationData.adresse.rue': 1,
+                            'habitationData.adresse.numero': 1,
+                            'habitation': 1,
+                            'note': 1,
+                            'date': 1
+                        }
+                    }
+                ])
             .next();
+
+        console.log("agentData:", agentData);
+        console.log("habitationData:", habitationData);
+        console.log("note:", note);
 
         sendHabitation(agentData, habitationData, note);
     } catch (err) {
         console.log(err);
     }
+
 });
 const updateOne = catchAsync(async (req, res) => {
     const { id } = req.params;
@@ -239,17 +239,13 @@ const updateOne = catchAsync(async (req, res) => {
     }
     let updateValue = { ...value };
 
-    if (!value.agent) {
-        delete updateValue.agent;
+    if (!value.agents) {
+        delete updateValue.agents;
     } else {
-        updateValue.agent = value.agent.map(value => new ObjectId(value));
+        updateValue.agent = value.agents.map(value => new ObjectId(value));
     }
-    if (!value.habitation) {
-        delete updateValue.habitation;
-    } else {
-        updateValue.habitation = value.habitation.map(
-            value => new ObjectId(value)
-        );
+    if (value.habitation) {
+        value.habitation = new ObjectId(value.habitation);
     }
     try {
         const updatedAt = new Date();
