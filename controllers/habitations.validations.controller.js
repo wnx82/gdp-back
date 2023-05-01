@@ -8,10 +8,11 @@ const Joi = require('joi');
 const ObjectId = require('mongodb').ObjectId;
 const collectionName = 'validations';
 const sendHabitation = require('../helpers/sendHabitation');
+const { NotBeforeError } = require('jsonwebtoken');
 
 const schema = Joi.object({
     id: Joi.string().allow(null).optional().empty(''),
-    agents: Joi.array()
+    agent: Joi.array()
         .items(Joi.string().regex(/^[0-9a-fA-F]{24}$/))
         .min(1)
         .required(),
@@ -169,56 +170,48 @@ const create = catchAsync(async (req, res) => {
         const { agentData, habitationData, note } = await collection
             .aggregate([
                 {
-                    $match: {
-                        _id: new ObjectId(insertedId),
-                    },
-                },
-                {
-                    $lookup: {
-                        from: 'agents',
-                        localField: 'agent',
-                        foreignField: '_id',
-                        as: 'agentData',
-                    },
-                },
-                {
-                    $unwind: {
-                        path: '$agentData',
-                    },
-                },
-                {
-                    $project: {
+                    '$match': {
+                        '_id': new ObjectId('645032aeab29aabfbf61868d')
+                    }
+                }, {
+                    '$lookup': {
+                        'from': 'agents',
+                        'localField': 'agent',
+                        'foreignField': '_id',
+                        'as': 'agentData'
+                    }
+                }, {
+                    '$project': {
                         'agentData.matricule': 1,
-                        habitation: 1,
-                        note: 1,
-                        date: 1,
-                    },
-                },
-                {
-                    $lookup: {
-                        from: 'habitations',
-                        localField: 'habitation',
-                        foreignField: '_id',
-                        as: 'habitationData',
-                    },
-                },
-                {
-                    $unwind: {
-                        path: '$habitationData',
-                    },
-                },
-                {
-                    $project: {
+                        'habitation': 1,
+                        'note': 1,
+                        'date': 1
+                    }
+                }, {
+                    '$lookup': {
+                        'from': 'habitations',
+                        'localField': 'habitation',
+                        'foreignField': '_id',
+                        'as': 'habitationData'
+                    }
+                }, {
+                    '$unwind': {
+                        'path': '$habitationData'
+                    }
+                }, {
+                    '$project': {
                         'agentData.matricule': 1,
                         'habitationData.adresse.rue': 1,
-                        habitation: 1,
-                        note: 1,
-                        date: 1,
-                    },
-                },
+                        'habitation': 1,
+                        'note': 1,
+                        'date': 1
+                    }
+                }
             ])
             .next();
-
+        console.log('agentData', agentData);
+        console.log('habitationData', habitationData);
+        console.log('note', note);
         sendHabitation(agentData, habitationData, note);
     } catch (err) {
         console.log(err);

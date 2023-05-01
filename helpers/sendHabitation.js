@@ -102,16 +102,15 @@ const sendHabitation = async function (agentData, habitationData, note) {
             <p class="message">
                 Ce <strong>${moment(new Date()).format(
         'YYYY/MM/DD à HH:mm'
-    )}</strong>, l'agent GDP <strong>${agentData.matricule
-        }</strong>, s'est rendu à l'habitation : <strong>${habitationData.adresse.rue
+    )}</strong>, l'agent GDP <strong>${agentData[0].matricule}</strong>, s'est rendu à l'habitation : <strong>${habitationData.adresse.rue
         }</strong> et a communiqué le commentaire suivant :
                 <strong>${note}</strong>
             </p>
             <div class="details">
                 <table>
                     <tr>
-                        <th>👮 Agent</th>
-                        <td>${agentData.matricule}</td>
+                        <th>👮 Agent(s)</th>
+                        <td>${agentData[0].matricule},${agentData[1].matricule}</td>
                     </tr>
                     <tr>
                         <th>📌 Habitation</th>
