@@ -8,7 +8,6 @@ const Joi = require('joi');
 const ObjectId = require('mongodb').ObjectId;
 const collectionName = 'validations';
 const sendHabitation = require('../helpers/sendHabitation');
-const { NotBeforeError } = require('jsonwebtoken');
 
 const schema = Joi.object({
     id: Joi.string().allow(null).optional().empty(''),
@@ -28,28 +27,53 @@ const findAll = catchAsync(async (req, res) => {
         return res.status(200).json(JSON.parse(inCache));
     } else {
         const pipeline = [
-
+            {
+                $lookup: {
+                    from: 'agents',
+                    localField: 'agents',
+                    foreignField: '_id',
+                    as: 'agentsData',
+                },
+            },
             {
                 $lookup: {
                     from: 'habitations',
                     localField: 'habitation',
                     foreignField: '_id',
-                    as: 'populatedHabitation',
+                    as: 'habitationData',
+                },
+            },
+            { $unwind: { path: '$habitationData' } },
+            {
+                $lookup: {
+                    from: 'rues',
+                    localField: 'habitationData.adresse.rue',
+                    foreignField: '_id',
+                    as: 'rueData',
+                },
+            },
+            {
+                $addFields: {
+                    agents: '$agentsData.matricule',
+                    habitation: {
+                        rue: { $arrayElemAt: ['$rueData.nomComplet', 0] },
+                        numero: '$habitationData.adresse.numero',
+                    },
                 },
             },
             {
                 $project: {
-                    agents: 1,
-                    habitation: '$populatedHabitation',
-                    message: 1,
                     date: 1,
+                    note: 1,
                     createdAt: 1,
-                    updateAt: 1,
+                    updatedAt: 1,
                     deletedAt: 1,
+                    agents: 1,
+                    habitation: 1,
                 },
             },
-
         ];
+        ;
         const data = await collection.aggregate(pipeline).toArray();
         redisClient.set(
             `${collectionName}:all`,
@@ -115,33 +139,35 @@ const create = catchAsync(async (req, res) => {
         });
         value.agents = agentsID;
 
-        const habitationsID = value.habitation.map(p => {
-            return new ObjectId(p);
-        });
-        value.habitation = habitationsID;
+        // const habitationsID = value.habitation.map(p => {
+        //     return new ObjectId(p);
+        // });
+        value.habitation = new ObjectId(value.habitation);
+
+
         const agents = await database
             .collection('agents')
             .find({
                 _id: { $in: agentsID },
             })
             .toArray();
-        const habitations = await database
-            .collection('habitations')
-            .find({
-                _id: { $in: habitationsID },
-            })
-            .toArray();
+        // const habitations = await database
+        //     .collection('habitations')
+        //     .find({
+        //         _id: { $in: habitationsID },
+        //     })
+        //     .toArray();
 
         if (agents.length !== agentsID.length) {
             return res
                 .status(400)
                 .json({ message: 'Invalid agent ID provided' });
         }
-        if (habitations.length !== habitationsID.length) {
-            return res
-                .status(400)
-                .json({ message: 'Invalid habitation ID provided' });
-        }
+        // if (habitations.length !== habitationsID.length) {
+        //     return res
+        //         .status(400)
+        //         .json({ message: 'Invalid habitation ID provided' });
+        // }
 
         const { ...rest } = value;
 
@@ -164,48 +190,60 @@ const create = catchAsync(async (req, res) => {
         const insertedId = data.insertedId;
 
         // Récupération des données par aggregate et envoi de la validation par mail
-        const { agentsData, habitationData, note } = await collection
+        const { agentsData, habitation, note } = await collection
             .aggregate([
+                { $match: { _id: ObjectId(insertedId) } },
                 {
-                    '$match': {
-                        '_id': new ObjectId(insertedId)
-                    }
-                }, {
-                    '$lookup': {
-                        'from': 'agents',
-                        'localField': 'agents',
-                        'foreignField': '_id',
-                        'as': 'agentsData'
-                    }
-                }, {
-                    '$lookup': {
-                        'from': 'habitations',
-                        'localField': 'habitation',
-                        'foreignField': '_id',
-                        'as': 'habitationData'
-                    }
-                }, {
-                    '$unwind': {
-                        'path': '$habitationData'
-                    }
-                }, {
-                    '$project': {
-                        'agentsData.matricule': 1,
-                        'habitationData.adresse.rue': 1,
-                        'habitation': 1,
-                        'note': 1,
-                        'date': 1,
-                        'createdAt': 1,
-                        'updatedAt': 1,
-                        'deletedAt': 1
-                    }
-                }
+                    $lookup: {
+                        from: 'agents',
+                        localField: 'agents',
+                        foreignField: '_id',
+                        as: 'agentsData',
+                    },
+                },
+                {
+                    $lookup: {
+                        from: 'habitations',
+                        localField: 'habitation',
+                        foreignField: '_id',
+                        as: 'habitationData',
+                    },
+                },
+                { $unwind: { path: '$habitationData' } },
+                {
+                    $lookup: {
+                        from: 'rues',
+                        localField: 'habitationData.adresse.rue',
+                        foreignField: '_id',
+                        as: 'rueData',
+                    },
+                },
+                {
+                    $addFields: {
+                        agentsData: '$agentsData.matricule',
+                        habitation: {
+                            rue: { $arrayElemAt: ['$rueData.nomComplet', 0] },
+                            numero: '$habitationData.adresse.numero',
+                        },
+                    },
+                },
+                {
+                    $project: {
+                        date: 1,
+                        note: 1,
+                        createdAt: 1,
+                        updatedAt: 1,
+                        deletedAt: 1,
+                        agentsData: 1,
+                        habitation: 1,
+                    },
+                },
             ])
             .next();
         console.log('agentsData', agentsData);
-        console.log('habitationData', habitationData);
+        console.log('habitationData', habitation);
         console.log('note', note);
-        sendHabitation(agentsData, habitationData, note);
+        sendHabitation(agentsData, habitation, note);
     } catch (err) {
         console.log(err);
     }

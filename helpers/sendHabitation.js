@@ -9,7 +9,7 @@ const sendHabitation = async function (agentsData, habitationData, note) {
     const configData = fs.readFileSync(CONFIG_FILE_PATH);
     const config = JSON.parse(configData);
 
-    const dataSubject = '✅ Nouvelle entrée pour ' + habitationData.adresse.rue;
+    const dataSubject = '✅ Nouvelle entrée pour ' + habitationData.rue + habitationData.numero;
     const dataMessage = '';
     const dataMailTo = config.mail.to_habitations;
     const dataHTML = `
@@ -96,25 +96,24 @@ const sendHabitation = async function (agentsData, habitationData, note) {
 <body>
     <div class="container">
         <div class="header">
-            <h1>📌 Nouvelle entrée pour ${habitationData.adresse.rue}</h1>
+            <h1>📌 Nouvelle entrée pour ${habitationData.rue} ${habitationData.numero}  </h1>
         </div>
         <div class="content">
             <p class="message">
                 Ce <strong>${moment(new Date()).format(
         'YYYY/MM/DD à HH:mm'
-    )}</strong>, l'agent GDP <strong>${agentsData[0].matricule}</strong>, s'est rendu à l'habitation : <strong>${habitationData.adresse.rue
-        }</strong> et a communiqué le commentaire suivant :
+    )}</strong>, l'agent GDP <strong>${agentsData[0]}</strong>, s'est rendu à l'habitation : <strong>${habitationData.rue} ${habitationData.numero}</strong> et a communiqué le commentaire suivant :
                 <strong>${note}</strong>
             </p>
             <div class="details">
                 <table>
                     <tr>
                         <th>👮 Agent(s)</th>
-                        <td>${agentsData[0].matricule},${agentsData[1].matricule}</td>
+                        <td>${agentsData[0]},${agentsData[1]}</td>
                     </tr>
                     <tr>
                         <th>📌 Habitation</th>
-                        <td>${habitationData.adresse.rue}</td>
+                        <td>${habitationData.rue} ${habitationData.numero}</td>
                     </tr>
                     <tr>
                         <th>📝 Note</th>
