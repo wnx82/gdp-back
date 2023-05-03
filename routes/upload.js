@@ -31,7 +31,7 @@ router.post('/', function (req, res, next) {
         // Récupérer les informations sur le fichier uploadé
         const fileName = req.file.filename;
         const fileType = req.file.mimetype;
-        console.log(fileName);
+        // console.log(fileName);
 
         // Envoyer une réponse au client avec les informations sur le fichier uploadé
         res.json({

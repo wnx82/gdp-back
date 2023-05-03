@@ -50,6 +50,7 @@ var validationsRouter = require('./routes/validations');
 var vehiculesRouter = require('./routes/vehicules');
 var uploadRouter = require('./routes/upload')
 var imageController = require('./controllers/image.controller');
+var logsRouter = require('./routes/logs')
 
 // const swaggerUi = require('swagger-ui-express');
 // const swaggerJSDoc = require('swagger-jsdoc');
@@ -144,6 +145,7 @@ app.use('/rapports', rapportsRouter);
 app.use('/habitations', habitationsRouter);
 app.use('/horaires', horairesRouter);
 app.use('/infractions', infractionsRouter);
+app.use('/logs', logsRouter);
 app.use('/quartiers', quartiersRouter);
 app.use('/rues', ruesRouter);
 app.use('/status', statusRouter);
