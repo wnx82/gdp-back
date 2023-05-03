@@ -15,7 +15,11 @@ const schema = Joi.object({
         .items(Joi.string().regex(/^[0-9a-fA-F]{24}$/))
         .min(1)
         .required(),
-    habitation: Joi.string().regex(/^[0-9a-fA-F]{24}$/).allow(null).optional().empty(''),
+    habitation: Joi.string()
+        .regex(/^[0-9a-fA-F]{24}$/)
+        .allow(null)
+        .optional()
+        .empty(''),
     date: Joi.date().required(),
     note: Joi.string().allow(null).optional().empty(''),
 });
@@ -43,26 +47,77 @@ const findAll = catchAsync(async (req, res) => {
                     as: 'habitationData',
                 },
             },
-            { $unwind: { path: '$habitationData' } },
+            {
+                $unwind: {
+                    path: '$habitationData',
+                },
+            },
+            {
+                $project: {
+                    'agentsData._id': 1,
+                    'agentsData.matricule': 1,
+                    'habitationData._id': 1,
+                    'habitationData.adresse.rue': 1,
+                    'habitationData.adresse.numero': 1,
+                    'habitationData.adresse.localite': 1,
+                    note: 1,
+                    date: 1,
+                    createdAt: 1,
+                    updatedAt: 1,
+                    deletedAt: 1,
+                },
+            },
             {
                 $lookup: {
                     from: 'rues',
                     localField: 'habitationData.adresse.rue',
                     foreignField: '_id',
-                    as: 'rueData',
+                    as: 'RueData',
                 },
             },
             {
-                $addFields: {
-                    agents: '$agentsData.matricule',
+                $group: {
+                    _id: '$_id',
+                    date: {
+                        $first: '$date',
+                    },
+                    note: {
+                        $first: '$note',
+                    },
+                    createdAt: {
+                        $first: '$createdAt',
+                    },
+                    updatedAt: {
+                        $first: '$updatedAt',
+                    },
+                    deletedAt: {
+                        $first: '$deletedAt',
+                    },
+                    agents: {
+                        $push: {
+                            _id: '$agentsData._id',
+                            matricule: '$agentsData.matricule',
+                        },
+                    },
                     habitation: {
-                        rue: { $arrayElemAt: ['$rueData.nomComplet', 0] },
-                        numero: '$habitationData.adresse.numero',
+                        $push: {
+                            _id: '$habitationData._id',
+                            adresse: {
+                                rue: {
+                                    $arrayElemAt: ['$RueData.nomComplet', 0],
+                                },
+                                localite: {
+                                    $arrayElemAt: ['$RueData.localite', 0],
+                                },
+                                numero: '$habitationData.adresse.numero',
+                            },
+                        },
                     },
                 },
             },
             {
                 $project: {
+                    _id: 1,
                     date: 1,
                     note: 1,
                     createdAt: 1,
@@ -73,7 +128,7 @@ const findAll = catchAsync(async (req, res) => {
                 },
             },
         ];
-        ;
+
         const data = await collection.aggregate(pipeline).toArray();
         redisClient.set(
             `${collectionName}:all`,
@@ -139,30 +194,28 @@ const create = catchAsync(async (req, res) => {
         });
         value.agents = agentsID;
 
-        // const habitationsID = value.habitation.map(p => {
-        //     return new ObjectId(p);
-        // });
-        value.habitation = new ObjectId(value.habitation);
-
-
         const agents = await database
             .collection('agents')
             .find({
                 _id: { $in: agentsID },
             })
             .toArray();
-        // const habitations = await database
-        //     .collection('habitations')
-        //     .find({
-        //         _id: { $in: habitationsID },
-        //     })
-        //     .toArray();
-
         if (agents.length !== agentsID.length) {
             return res
                 .status(400)
                 .json({ message: 'Invalid agent ID provided' });
         }
+        value.habitation = new ObjectId(value.habitation);
+        const habitationVerif = await database
+            .collection('habitations')
+            .findOne({ _id: value.habitation });
+
+        if (!habitationVerif) {
+            return res
+                .status(400)
+                .json({ message: 'Invalid habitation ID provided' });
+        }
+
         // if (habitations.length !== habitationsID.length) {
         //     return res
         //         .status(400)
@@ -190,9 +243,13 @@ const create = catchAsync(async (req, res) => {
         const insertedId = data.insertedId;
 
         // Récupération des données par aggregate et envoi de la validation par mail
-        const { agentsData, habitation, note } = await collection
+        const result = await collection
             .aggregate([
-                { $match: { _id: ObjectId(insertedId) } },
+                {
+                    $match: {
+                        _id: new ObjectId(insertedId),
+                    },
+                },
                 {
                     $lookup: {
                         from: 'agents',
@@ -209,41 +266,104 @@ const create = catchAsync(async (req, res) => {
                         as: 'habitationData',
                     },
                 },
-                { $unwind: { path: '$habitationData' } },
+                {
+                    $unwind: {
+                        path: '$habitationData',
+                    },
+                },
+                {
+                    $project: {
+                        'agentsData._id': 1,
+                        'agentsData.matricule': 1,
+                        'habitationData._id': 1,
+                        'habitationData.adresse.rue': 1,
+                        'habitationData.adresse.numero': 1,
+                        'habitationData.adresse.localite': 1,
+                        note: 1,
+                        date: 1,
+                        createdAt: 1,
+                        updatedAt: 1,
+                        deletedAt: 1,
+                    },
+                },
                 {
                     $lookup: {
                         from: 'rues',
                         localField: 'habitationData.adresse.rue',
                         foreignField: '_id',
-                        as: 'rueData',
+                        as: 'RueData',
                     },
                 },
                 {
-                    $addFields: {
-                        agentsData: '$agentsData.matricule',
+                    $group: {
+                        _id: '$_id',
+                        date: {
+                            $first: '$date',
+                        },
+                        note: {
+                            $first: '$note',
+                        },
+                        createdAt: {
+                            $first: '$createdAt',
+                        },
+                        updatedAt: {
+                            $first: '$updatedAt',
+                        },
+                        deletedAt: {
+                            $first: '$deletedAt',
+                        },
+                        agents: {
+                            $push: {
+                                _id: '$agentsData._id',
+                                matricule: '$agentsData.matricule',
+                            },
+                        },
                         habitation: {
-                            rue: { $arrayElemAt: ['$rueData.nomComplet', 0] },
-                            numero: '$habitationData.adresse.numero',
+                            $push: {
+                                _id: '$habitationData._id',
+                                adresse: {
+                                    rue: {
+                                        $arrayElemAt: [
+                                            '$RueData.nomComplet',
+                                            0,
+                                        ],
+                                    },
+                                    localite: {
+                                        $arrayElemAt: ['$RueData.localite', 0],
+                                    },
+                                    numero: '$habitationData.adresse.numero',
+                                },
+                            },
                         },
                     },
                 },
                 {
                     $project: {
+                        _id: 1,
                         date: 1,
                         note: 1,
                         createdAt: 1,
                         updatedAt: 1,
                         deletedAt: 1,
-                        agentsData: 1,
+                        agents: 1,
                         habitation: 1,
                     },
                 },
             ])
             .next();
-        console.log('agentsData', agentsData);
-        console.log('habitationData', habitation);
-        console.log('note', note);
-        sendHabitation(agentsData, habitation, note);
+
+        if (result) {
+            const { agents, habitation, note } = result;
+            console.log('agentsData', agents);
+            console.log('habitationData', habitation);
+            console.log('note', note);
+            sendHabitation(agents, habitation, note);
+        } else {
+            // handle case where no documents were found
+            console.log('agentsData', agentsData);
+            console.log('habitationData', habitation);
+            console.log('note', note);
+        }
     } catch (err) {
         console.log(err);
     }
@@ -354,16 +474,17 @@ const deleteMany = catchAsync(async (req, res) => {
 const restoreMany = catchAsync(async (req, res) => {
     const result = await collection.updateMany(
         { deletedAt: { $exists: true } },
-        { $unset: { deletedAt: "" } }
+        { $unset: { deletedAt: '' } }
     );
     const restoredCount = result.nModified;
     if (restoredCount === 0) {
-        return res.status(404).json({ message: "Aucune donnée trouvée à restaurer." });
+        return res
+            .status(404)
+            .json({ message: 'Aucune donnée trouvée à restaurer.' });
     }
     redisClient.del(`${collectionName}:all`);
     res.status(200).json({ message: `${restoredCount} données restaurées.` });
 });
-
 
 module.exports = {
     findAll,
@@ -372,5 +493,5 @@ module.exports = {
     updateOne,
     deleteOne,
     deleteMany,
-    restoreMany
+    restoreMany,
 };

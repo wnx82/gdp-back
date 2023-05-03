@@ -3,13 +3,12 @@ const sendMail = require('./sendMail');
 const fs = require('fs');
 const CONFIG_FILE_PATH = 'config.json';
 
-
 const sendHabitation = async function (agentsData, habitationData, note) {
-
     const configData = fs.readFileSync(CONFIG_FILE_PATH);
     const config = JSON.parse(configData);
 
-    const dataSubject = '✅ Nouvelle entrée pour ' + habitationData.rue + habitationData.numero;
+    const dataSubject = `✅ Nouvelle entrée pour ${habitationData[0]?.adresse.rue} ${habitationData[0]?.adresse.numero}`;
+
     const dataMessage = '';
     const dataMailTo = config.mail.to_habitations;
     const dataHTML = `
@@ -96,24 +95,45 @@ const sendHabitation = async function (agentsData, habitationData, note) {
 <body>
     <div class="container">
         <div class="header">
-            <h1>📌 Nouvelle entrée pour ${habitationData.rue} ${habitationData.numero}  </h1>
+            <h1>📌 Nouvelle entrée pour ${habitationData[0]?.adresse.rue} ${
+        habitationData[0]?.adresse.numero
+    }  </h1>
         </div>
         <div class="content">
             <p class="message">
                 Ce <strong>${moment(new Date()).format(
-        'YYYY/MM/DD à HH:mm'
-    )}</strong>, l'agent GDP <strong>${agentsData[0]}</strong>, s'est rendu à l'habitation : <strong>${habitationData.rue} ${habitationData.numero}</strong> et a communiqué le commentaire suivant :
+                    'YYYY/MM/DD à HH:mm'
+                )}</strong>, l'agent GDP <strong>A${agentsData[0].matricule} ${
+        agentsData[1]?.matricule !== undefined
+            ? `, accompagné de l'agent GDP A${agentsData[1]?.matricule}`
+            : ''
+    }
+</strong>, s'est rendu à l'habitation : <strong>${
+        habitationData[0]?.adresse.rue
+    } ${
+        habitationData[0]?.adresse.numero
+    }</strong> et a communiqué le commentaire suivant :
                 <strong>${note}</strong>
             </p>
             <div class="details">
                 <table>
                     <tr>
-                        <th>👮 Agent(s)</th>
-                        <td>${agentsData[0]},${agentsData[1]}</td>
+<th>👮 Agent(s)</th>
+    <td>
+      A${agentsData[0]?.matricule}
+${
+    agentsData[1]?.matricule !== undefined
+        ? `, A${agentsData[1]?.matricule}`
+        : ''
+}
+
+    </td>
                     </tr>
                     <tr>
                         <th>📌 Habitation</th>
-                        <td>${habitationData.rue} ${habitationData.numero}</td>
+                        <td>${habitationData[0]?.adresse.rue} ${
+        habitationData[0]?.adresse.numero
+    }</td>
                     </tr>
                     <tr>
                         <th>📝 Note</th>
