@@ -10,6 +10,6 @@ router.get('/', controller.get);
 // router.post('/purge', controller.deleteMany);
 // router.post('/restore', controller.restoreMany);
 // router.patch('/:id', validateId, controller.updateOne);
-// router.delete('/:id', validateId, controller.deleteOne);
+router.delete('/', controller.deleteFile);
 
 module.exports = router;

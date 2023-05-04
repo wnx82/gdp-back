@@ -94,13 +94,13 @@ const findAll = catchAsync(async (req, res) => {
                         $first: '$deletedAt',
                     },
                     agents: {
-                        $push: {
+                        $first: {
                             _id: '$agentsData._id',
                             matricule: '$agentsData.matricule',
                         },
                     },
                     habitation: {
-                        $push: {
+                        $first: {
                             _id: '$habitationData._id',
                             adresse: {
                                 rue: {
@@ -113,18 +113,6 @@ const findAll = catchAsync(async (req, res) => {
                             },
                         },
                     },
-                },
-            },
-            {
-                $project: {
-                    _id: 1,
-                    date: 1,
-                    note: 1,
-                    createdAt: 1,
-                    updatedAt: 1,
-                    deletedAt: 1,
-                    agents: 1,
-                    habitation: 1,
                 },
             },
         ];
@@ -313,40 +301,25 @@ const create = catchAsync(async (req, res) => {
                             $first: '$deletedAt',
                         },
                         agents: {
-                            $push: {
+                            $first: {
                                 _id: '$agentsData._id',
                                 matricule: '$agentsData.matricule',
                             },
                         },
                         habitation: {
-                            $push: {
+                            $first: {
                                 _id: '$habitationData._id',
                                 adresse: {
                                     rue: {
-                                        $arrayElemAt: [
-                                            '$RueData.nomComplet',
-                                            0,
-                                        ],
+                                        $first: '$RueData.nomComplet',
                                     },
                                     localite: {
-                                        $arrayElemAt: ['$RueData.localite', 0],
+                                        $first: '$RueData.localite',
                                     },
                                     numero: '$habitationData.adresse.numero',
                                 },
                             },
                         },
-                    },
-                },
-                {
-                    $project: {
-                        _id: 1,
-                        date: 1,
-                        note: 1,
-                        createdAt: 1,
-                        updatedAt: 1,
-                        deletedAt: 1,
-                        agents: 1,
-                        habitation: 1,
                     },
                 },
             ])
