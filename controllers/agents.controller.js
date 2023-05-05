@@ -331,7 +331,8 @@ const create = catchAsync(async (req, res) => {
     // Set default picture if empty
     if (!body.picture) {
         console.log('Picture field is empty. Setting default picture');
-        body.picture = 'https://cdn-icons-png.flaticon.com/512/1946/1946392.png';
+        body.picture =
+            'https://cdn-icons-png.flaticon.com/512/1946/1946392.png';
     }
 
     const { value, error } = schema.validate(body);
@@ -342,10 +343,13 @@ const create = catchAsync(async (req, res) => {
     }
 
     try {
-        const { email, password, ...rest } = value;
+        const { email, matricule, password, ...rest } = value;
         // Check for existing email
         const existingUser = await collection.findOne({
             email,
+        });
+        const existingMatricule = await collection.findOne({
+            matricule,
         });
 
         if (value.adresse) {
@@ -355,7 +359,12 @@ const create = catchAsync(async (req, res) => {
             console.log('Email already exists');
             return res.status(409).json({ message: 'Email already exists' });
         }
-
+        if (existingMatricule) {
+            console.log('Matricule already exists');
+            return res
+                .status(409)
+                .json({ message: 'Matricule already exists' });
+        }
         //on efface le pwd
         delete password;
         const hash = await bcrypt.hash(password, 10);
@@ -364,6 +373,7 @@ const create = catchAsync(async (req, res) => {
         const data = await collection.insertOne({
             ...rest,
             password: hash,
+            matricule,
             email,
             createdAt,
             updatedAt,
@@ -377,7 +387,6 @@ const create = catchAsync(async (req, res) => {
     }
 });
 
-
 const updateOne = catchAsync(async (req, res) => {
     const { id } = req.params;
     console.log('id:', id);
@@ -386,7 +395,7 @@ const updateOne = catchAsync(async (req, res) => {
         return res.status(400).json({ message: 'No id provided' });
     }
 
-    // add this block to check if the agent with the given ID exists
+    // Check if the agent with the given ID exists
     try {
         const agent = await collection.findOne({ _id: ObjectId(id) });
         if (!agent) {
@@ -399,6 +408,35 @@ const updateOne = catchAsync(async (req, res) => {
 
     const message = `📝 Mise à jour de l'agent ${id}`;
     const { body } = req;
+
+    // Check for existing email
+    if (body.email) {
+        const existingUser = await collection.findOne({
+            email: body.email,
+            _id: { $ne: ObjectId(id) },
+        });
+
+        if (existingUser) {
+            console.log('Email already exists');
+            return res.status(409).json({ message: 'Email already exists' });
+        }
+    }
+
+    // Check for existing matricule
+    if (body.matricule) {
+        const existingMatricule = await collection.findOne({
+            matricule: body.matricule,
+            _id: { $ne: ObjectId(id) },
+        });
+
+        if (existingMatricule) {
+            console.log('Matricule already exists');
+            return res
+                .status(409)
+                .json({ message: 'Matricule already exists' });
+        }
+    }
+
     if (!body.email) {
         console.log('Email field is required');
         return res.status(400).json({ message: 'Email field is required' });
@@ -431,7 +469,6 @@ const updateOne = catchAsync(async (req, res) => {
         res.status(500).json({ message: 'Server error' });
     }
 });
-
 
 const deleteOne = catchAsync(async (req, res) => {
     const { id } = req.params;
@@ -510,17 +547,17 @@ const deleteMany = catchAsync(async (req, res) => {
 const restoreMany = catchAsync(async (req, res) => {
     const result = await collection.updateMany(
         { deletedAt: { $exists: true } },
-        { $unset: { deletedAt: "" } }
+        { $unset: { deletedAt: '' } }
     );
     const restoredCount = result.nModified;
     if (restoredCount === 0) {
-        return res.status(404).json({ message: "Aucune donnée trouvée à restaurer." });
+        return res
+            .status(404)
+            .json({ message: 'Aucune donnée trouvée à restaurer.' });
     }
     redisClient.del(`${collectionName}:all`);
     res.status(200).json({ message: `${restoredCount} données restaurées.` });
 });
-
-
 
 module.exports = {
     findAll,
@@ -529,5 +566,5 @@ module.exports = {
     updateOne,
     deleteOne,
     deleteMany,
-    restoreMany
+    restoreMany,
 };

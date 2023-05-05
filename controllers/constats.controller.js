@@ -16,20 +16,22 @@ const schema = Joi.object({
         .items(
             Joi.string().regex(/^[0-9a-fA-F]{24}$/),
             Joi.object({
-                value: Joi.string().regex(/^[0-9a-fA-F]{24}$/)
+                value: Joi.string().regex(/^[0-9a-fA-F]{24}$/),
             }),
             Joi.number().integer().min(0)
         )
         .min(1)
         .required(),
     date: Joi.date().required(),
-    vehicule: Joi.object().allow(null).keys({
-        marque: Joi.string().allow(null),
-        modele: Joi.string().allow(null),
-        couleur: Joi.string().allow(null),
-        type: Joi.string().allow(null),
-        immatriculation: Joi.string().allow(null),
-    }),
+    vehicule: Joi.object()
+        .allow(null)
+        .keys({
+            marque: Joi.string().allow(null),
+            modele: Joi.string().allow(null),
+            couleur: Joi.string().allow(null),
+            type: Joi.string().allow(null),
+            immatriculation: Joi.string().allow(null),
+        }),
     personne: Joi.object()
         .allow(null)
         .keys({
@@ -39,30 +41,37 @@ const schema = Joi.object({
             birthday: Joi.date().allow(null),
             nationalNumber: Joi.string().allow(null),
             tel: Joi.string().allow(null),
-            adresse: Joi.object().allow(null).keys({
-                rue: Joi.string().allow(null),
-                cp: Joi.string().allow(null),
-                localite: Joi.string().allow(null),
-            }),
+            adresse: Joi.object()
+                .allow(null)
+                .keys({
+                    rue: Joi.string().allow(null),
+                    cp: Joi.string().allow(null),
+                    localite: Joi.string().allow(null),
+                }),
         }),
     adresse: {
-        rue: Joi.string().regex(/^[0-9a-fA-F]{24}$/).allow(null),
+        rue: Joi.string()
+            .regex(/^[0-9a-fA-F]{24}$/)
+            .allow(null),
         numero: Joi.string().allow(null).optional().empty(''),
     },
-    geolocation: Joi.object().allow(null).keys({
-        latitude: Joi.string().allow(null),
-        longitude: Joi.string().allow(null),
-        horodatage: Joi.date().allow(null),
-    }),
+    geolocation: Joi.object()
+        .allow(null)
+        .keys({
+            latitude: Joi.string().allow(null),
+            longitude: Joi.string().allow(null),
+            horodatage: Joi.date().allow(null),
+        }),
     infractions: Joi.array()
         .items(Joi.string().allow(null).optional().empty(''))
-        .optional().allow(null),
+        .optional()
+        .allow(null),
     pv: Joi.boolean().allow(null),
     notes: Joi.string().allow(null).optional().empty(''),
     annexes: Joi.array()
         .items(Joi.string().allow(null).optional().empty(''))
-        .optional().allow(null),
-
+        .optional()
+        .allow(null),
 });
 
 const pipeline = [
@@ -98,7 +107,7 @@ const pipeline = [
                 $first: '$personne',
             },
             adresse: {
-                $push: {
+                $first: {
                     numero: '$adresse.numero',
                     nom: {
                         $first: '$adresseData.nom',
@@ -153,101 +162,101 @@ const findAll = catchAsync(async (req, res) => {
 
     const immatriculationPromise = immatriculation
         ? (async () => {
-            const message = `📄 Liste des constats avec l'immatriculation ${immatriculation}`;
-            const inCache = await redisClient.get(
-                `constats:immat:${immatriculation}`
-            );
-            if (inCache) {
-                res.status(200).json(JSON.parse(inCache));
-                return;
-            }
-            const immatriculationPipeline = [...pipeline];
-            immatriculationPipeline.unshift({
-                $match: {
-                    'vehicule.immatriculation': {
-                        $regex: immatriculation,
-                        $options: 'i',
-                    },
-                },
-            });
-            const data = await collection
-                .aggregate(immatriculationPipeline)
-                .toArray();
-            await redisClient
-                .multi()
-                .set(
-                    `constats:immat:${immatriculation}`,
-                    JSON.stringify(data),
-                    'EX',
-                    600
-                )
-                .exec();
-            res.status(200).json(data);
-        })()
+              const message = `📄 Liste des constats avec l'immatriculation ${immatriculation}`;
+              const inCache = await redisClient.get(
+                  `constats:immat:${immatriculation}`
+              );
+              if (inCache) {
+                  res.status(200).json(JSON.parse(inCache));
+                  return;
+              }
+              const immatriculationPipeline = [...pipeline];
+              immatriculationPipeline.unshift({
+                  $match: {
+                      'vehicule.immatriculation': {
+                          $regex: immatriculation,
+                          $options: 'i',
+                      },
+                  },
+              });
+              const data = await collection
+                  .aggregate(immatriculationPipeline)
+                  .toArray();
+              await redisClient
+                  .multi()
+                  .set(
+                      `constats:immat:${immatriculation}`,
+                      JSON.stringify(data),
+                      'EX',
+                      600
+                  )
+                  .exec();
+              res.status(200).json(data);
+          })()
         : null;
 
     const ruePromise = rue
         ? (async () => {
-            const message = `📄 Liste des constats avec la rue ${rue}`;
-            const inCache = await redisClient.get(`constats:rue:${rue}`);
-            if (inCache) {
-                res.status(200).json(JSON.parse(inCache));
-                return;
-            }
-            const ruePipeline = [
-                ...pipeline,
-                {
-                    $match: {
-                        'adresse.nom': {
-                            $regex: rue,
-                            $options: 'i',
-                        },
-                    },
-                },
-            ];
-            const data = await collection.aggregate(ruePipeline).toArray();
+              const message = `📄 Liste des constats avec la rue ${rue}`;
+              const inCache = await redisClient.get(`constats:rue:${rue}`);
+              if (inCache) {
+                  res.status(200).json(JSON.parse(inCache));
+                  return;
+              }
+              const ruePipeline = [
+                  ...pipeline,
+                  {
+                      $match: {
+                          'adresse.nom': {
+                              $regex: rue,
+                              $options: 'i',
+                          },
+                      },
+                  },
+              ];
+              const data = await collection.aggregate(ruePipeline).toArray();
 
-            await redisClient
-                .multi()
-                .set(`constats:rue:${rue}`, JSON.stringify(data), 'EX', 600)
-                .exec();
-            res.status(200).json(data);
-        })()
+              await redisClient
+                  .multi()
+                  .set(`constats:rue:${rue}`, JSON.stringify(data), 'EX', 600)
+                  .exec();
+              res.status(200).json(data);
+          })()
         : null;
 
     const localitePromise = localite
         ? (async () => {
-            const message = `📄 Liste des constats avec la localité ${localite}`;
-            const inCache = await redisClient.get(`constats:loc:${localite}`);
-            if (inCache) {
-                res.status(200).json(JSON.parse(inCache));
-                return;
-            }
-            const localitePipeline = [
-                ...pipeline,
-                {
-                    $match: {
-                        'adresse.localite': {
-                            $regex: localite,
-                            $options: 'i',
-                        },
-                    },
-                },
-            ];
-            const data = await collection
-                .aggregate(localitePipeline)
-                .toArray();
-            await redisClient
-                .multi()
-                .set(
-                    `constats:loc:${localite}`,
-                    JSON.stringify(data),
-                    'EX',
-                    600
-                )
-                .exec();
-            res.status(200).json(data);
-        })()
+              const message = `📄 Liste des constats avec la localité ${localite}`;
+              const inCache = await redisClient.get(`constats:loc:${localite}`);
+              if (inCache) {
+                  res.status(200).json(JSON.parse(inCache));
+                  return;
+              }
+              const localitePipeline = [
+                  ...pipeline,
+                  {
+                      $match: {
+                          'adresse.localite': {
+                              $regex: localite,
+                              $options: 'i',
+                          },
+                      },
+                  },
+              ];
+              const data = await collection
+                  .aggregate(localitePipeline)
+                  .toArray();
+              await redisClient
+                  .multi()
+                  .set(
+                      `constats:loc:${localite}`,
+                      JSON.stringify(data),
+                      'EX',
+                      600
+                  )
+                  .exec();
+              res.status(200).json(data);
+          })()
         : null;
 
     const [immatriculationResult, rueResult, localiteResult] =
@@ -463,7 +472,6 @@ const updateOne = catchAsync(async (req, res) => {
 
     const { value, error } = schema.validate(body);
 
-
     if (error) {
         const errors = error.details.map(d => d.message);
         console.log('Validation error:', errors); // ajout d'un console.log()
@@ -563,16 +571,17 @@ const deleteMany = catchAsync(async (req, res) => {
 const restoreMany = catchAsync(async (req, res) => {
     const result = await collection.updateMany(
         { deletedAt: { $exists: true } },
-        { $unset: { deletedAt: "" } }
+        { $unset: { deletedAt: '' } }
     );
     const restoredCount = result.nModified;
     if (restoredCount === 0) {
-        return res.status(404).json({ message: "Aucune donnée trouvée à restaurer." });
+        return res
+            .status(404)
+            .json({ message: 'Aucune donnée trouvée à restaurer.' });
     }
     redisClient.del(`${collectionName}:all`);
     res.status(200).json({ message: `${restoredCount} données restaurées.` });
 });
-
 
 const findAgents = async (req, res) => {
     const { id } = req.params;

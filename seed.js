@@ -127,7 +127,6 @@ redisClient.flushall((err, reply) => {
             createdAt: new Date(),
             updatedAt: new Date(),
         },
-
     ];
     await Promise.all(
         vehiculesDto.map(u => db.collection('vehicules').insertOne(u))
@@ -2266,7 +2265,7 @@ redisClient.flushall((err, reply) => {
             nom: 'Chien',
             denomination: 'rue du',
             nomComplet: 'rue du Chien',
-            quartier: 'avenue Chevalier de la Barre',
+            quartier: 'Dottignies',
             cp: 7711,
             localite: 'Dottignies',
             codeRue: '*2071',
@@ -10597,8 +10596,8 @@ redisClient.flushall((err, reply) => {
     const admin = {
         email: 'admin@admin.com',
         password: await bcrypt.hash('123456789', 10),
-        userAccess: faker.datatype.number({ min: 1, max: 10 }),
-        userAccess: 10,
+        // userAccess: faker.datatype.number({ min: 1, max: 10 }),
+        userAccess: 0,
         matricule: 101,
         firstname: 'admin',
         lastname: 'admin',
@@ -10608,8 +10607,8 @@ redisClient.flushall((err, reply) => {
             ),
             numero: faker.random.numeric(2),
         },
-        picture:
-            'https://icons.veryicon.com/png/o/miscellaneous/yuanql/icon-admin.png',
+        picture: '',
+        // picture: 'http://localhost:3003/images/admin.png',
         // formations: faker.datatype.array(2),
         createdAt: new Date(),
         updatedAt: new Date(),
@@ -10637,8 +10636,8 @@ redisClient.flushall((err, reply) => {
                     ),
                     numero: faker.random.numeric(2),
                 },
-                picture:
-                    'https://cdn-icons-png.flaticon.com/512/1946/1946392.png',
+                picture: '',
+                // picture: 'http://localhost:3003/images/user.png',
                 formations: faker.datatype.array(2),
 
                 createdAt: new Date(),
@@ -10689,7 +10688,10 @@ redisClient.flushall((err, reply) => {
     bar1.update(i++);
 
     const validationsDto = [...Array(15)].map(() => ({
-        agents: [createdAgents[Math.floor(Math.random() * 15)].insertedId, createdAgents[Math.floor(Math.random() * 15)].insertedId],
+        agents: [
+            createdAgents[Math.floor(Math.random() * 15)].insertedId,
+            createdAgents[Math.floor(Math.random() * 15)].insertedId,
+        ],
         habitation:
             createdHabitations[Math.floor(Math.random() * 15)].insertedId,
 
