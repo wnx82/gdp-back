@@ -26,46 +26,49 @@ const schema = Joi.object({
     vehicule: Joi.object()
         .allow(null)
         .keys({
-            marque: Joi.string().allow(null),
-            modele: Joi.string().allow(null),
-            couleur: Joi.string().allow(null),
-            type: Joi.string().allow(null),
-            immatriculation: Joi.string().allow(null),
+            marque: Joi.string().allow(null).optional().empty(''),
+            modele: Joi.string().allow(null).optional().empty(''),
+            couleur: Joi.string().allow(null).optional().empty(''),
+            type: Joi.string().allow(null).optional().empty(''),
+            immatriculation: Joi.string().allow(null).optional().empty(''),
         }),
     personne: Joi.object()
         .allow(null)
         .keys({
-            firstname: Joi.string().allow(null),
-            lastname: Joi.string().allow(null),
-            birthday: Joi.date().allow(null),
-            birthday: Joi.date().allow(null),
-            nationalNumber: Joi.string().allow(null),
-            tel: Joi.string().allow(null),
+            firstname: Joi.string().allow(null).optional().empty(''),
+            lastname: Joi.string().allow(null).optional().empty(''),
+            birthday: Joi.date().allow(null).optional().empty(''),
+            nationalNumber: Joi.string().allow(null).optional().empty(''),
+            tel: Joi.string().allow(null).optional().empty(''),
             adresse: Joi.object()
                 .allow(null)
                 .keys({
-                    rue: Joi.string().allow(null),
-                    cp: Joi.string().allow(null),
-                    localite: Joi.string().allow(null),
+                    rue: Joi.string().allow(null).optional().empty(''),
+                    cp: Joi.string().allow(null).optional().empty(''),
+                    localite: Joi.string().allow(null).optional().empty(''),
                 }),
         }),
     adresse: {
         rue: Joi.string()
             .regex(/^[0-9a-fA-F]{24}$/)
-            .allow(null),
+            .allow(null)
+            .optional()
+            .empty(''),
         numero: Joi.string().allow(null).optional().empty(''),
     },
     geolocation: Joi.object()
         .allow(null)
         .keys({
-            latitude: Joi.string().allow(null),
-            longitude: Joi.string().allow(null),
-            horodatage: Joi.date().allow(null),
+            latitude: Joi.string().allow(null).optional().empty(''),
+            longitude: Joi.string().allow(null).optional().empty(''),
+            horodatage: Joi.date().allow(null).optional().empty(''),
         }),
     infractions: Joi.array()
         .items(Joi.string().allow(null).optional().empty(''))
         .optional()
-        .allow(null),
+        .allow(null)
+        .empty(),
+
     pv: Joi.boolean().allow(null),
     notes: Joi.string().allow(null).optional().empty(''),
     annexes: Joi.array()
@@ -414,7 +417,7 @@ const create = catchAsync(async (req, res) => {
     }
 
     const { value, error } = schema.validate(body);
-
+    console.log(value);
     if (error) {
         const errors = error.details.map(d => d.message);
         console.log('Validation error:', errors); // ajout d'un console.log()

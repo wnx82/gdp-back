@@ -120,6 +120,8 @@ constantinmaes@gmail.com samuel.lassoie@gmail.com
 
 -   protéger tous les dossiers autres que users grace à JWT une fois la phase déploiement lancée
 
+-   sendMail dans helpers pour l'envoi aux mails des agents
+
 ## 🎨 Front-End Tutorial
 
 -   [Angular](#)
