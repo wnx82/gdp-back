@@ -63,16 +63,21 @@ const schema = Joi.object({
             longitude: Joi.string().allow(null).optional().empty(''),
             horodatage: Joi.date().allow(null).optional().empty(''),
         }),
-    infractions: Joi.array()
-        .items(Joi.string().allow(null).optional().empty(''))
+    infractions: Joi.alternatives()
+        .try(
+            Joi.array().items(Joi.string().allow(null).optional().empty('')),
+            Joi.string().allow(null).optional().empty('')
+        )
         .optional()
-        .allow(null)
-        .empty(),
+        .allow(null),
 
     pv: Joi.boolean().allow(null),
     notes: Joi.string().allow(null).optional().empty(''),
-    annexes: Joi.array()
-        .items(Joi.string().allow(null).optional().empty(''))
+    annexes: Joi.alternatives()
+        .try(
+            Joi.array().items(Joi.string().allow(null).optional().empty('')),
+            Joi.string().allow(null).optional().empty('')
+        )
         .optional()
         .allow(null),
 });
