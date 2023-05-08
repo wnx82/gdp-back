@@ -11,9 +11,8 @@ module.exports = {
                 },
                 missions: {
                     bsonType: ['array', 'null'],
-                    items: {
-                        // bsonType: ['objectId'],
-                    },
+                    items: { bsonType: ['objectId', 'null'] },
+
                     description:
                         'missions must be an array of objectIds and is not required',
                 },

@@ -13,7 +13,7 @@ const schema = Joi.object({
     id: Joi.string().allow(null).optional().empty(''),
     title: Joi.string().required(),
     missions: Joi.array()
-        .items(Joi.string().regex(/^[0-9a-fA-F]{24}$/))
+        .items(Joi.any().allow(null, '', Joi.object()))
         .min(1)
         .required(),
 });
@@ -120,35 +120,49 @@ const create = catchAsync(async (req, res) => {
     const message = `✏️ Création d'un quartier`;
 
     const { body } = req;
+
     const { value, error } = schema.validate(body);
+
     // Handle validation errors
     if (error) {
         return res.status(400).json({ message: error.details[0].message });
     }
+
     try {
         const missionsID = value.missions.map(p => {
-            return new ObjectId(p);
+            return new ObjectId(p._id);
         });
         value.missions = missionsID;
+
         const { ...rest } = value;
         const createdAt = new Date();
         const updatedAt = new Date();
+        console.log('INSERTING DATA:', { ...rest, createdAt, updatedAt });
+
         const data = await collection
             .insertOne({
                 ...rest,
                 createdAt,
                 updatedAt,
             })
-            .then(
+            .then(result => {
+                // console.log('QUARTIER CREATION SUCCESS:', result.ops[0]);
                 console.log(
                     `----------->Le quartier a bien été créé<-----------`
-                )
-            );
-        // res.status(201).json(data);
+                );
+            })
+            .catch(error => {
+                console.error('QUARTIER CREATION ERROR:', error);
+                throw error;
+            });
+        console.log('SENDING RESPONSE DATA:', data);
         res.status(201).json(data);
+
         redisClient.del(`${collectionName}:all`);
+        console.log('REDIS CACHE DELETED');
     } catch (err) {
-        console.log(err);
+        console.log('QUARTIER CREATION ERROR:', err);
+        res.status(500).json({ message: 'Quartier creation failed' });
     }
 });
 
@@ -169,7 +183,9 @@ const updateOne = catchAsync(async (req, res) => {
     if (!value.missions) {
         delete updateValue.missions;
     } else {
-        updateValue.missions = value.missions.map(value => new ObjectId(value));
+        updateValue.missions = value.missions.map(
+            value => new ObjectId(value._id)
+        );
     }
     try {
         const updatedAt = new Date();
@@ -257,16 +273,17 @@ const deleteMany = catchAsync(async (req, res) => {
 const restoreMany = catchAsync(async (req, res) => {
     const result = await collection.updateMany(
         { deletedAt: { $exists: true } },
-        { $unset: { deletedAt: "" } }
+        { $unset: { deletedAt: '' } }
     );
     const restoredCount = result.nModified;
     if (restoredCount === 0) {
-        return res.status(404).json({ message: "Aucune donnée trouvée à restaurer." });
+        return res
+            .status(404)
+            .json({ message: 'Aucune donnée trouvée à restaurer.' });
     }
     redisClient.del(`${collectionName}:all`);
     res.status(200).json({ message: `${restoredCount} données restaurées.` });
 });
-
 
 module.exports = {
     findAll,
@@ -275,5 +292,5 @@ module.exports = {
     updateOne,
     deleteOne,
     deleteMany,
-    restoreMany
+    restoreMany,
 };

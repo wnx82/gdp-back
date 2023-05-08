@@ -115,6 +115,11 @@ const findAll = catchAsync(async (req, res) => {
                     },
                 },
             },
+            {
+                $sort: {
+                    date: -1,
+                },
+            },
         ];
 
         const data = await collection.aggregate(pipeline).toArray();
@@ -204,14 +209,7 @@ const create = catchAsync(async (req, res) => {
                 .json({ message: 'Invalid habitation ID provided' });
         }
 
-        // if (habitations.length !== habitationsID.length) {
-        //     return res
-        //         .status(400)
-        //         .json({ message: 'Invalid habitation ID provided' });
-        // }
-
         const { ...rest } = value;
-
         const createdAt = new Date();
         const updatedAt = new Date();
         const data = await collection
