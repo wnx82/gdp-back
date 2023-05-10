@@ -19,11 +19,8 @@ const schema = Joi.object({
     horaire: Joi.string().allow(null).optional().empty(''),
     vehicule: Joi.string().allow(null).optional().empty(''),
     quartiers: Joi.array().items(Joi.string().regex(/^[0-9a-fA-F]{24}$/)),
-
     missions: Joi.array().items(Joi.string().regex(/^[0-9a-fA-F]{24}$/)),
-
-    notes: Joi.array().items(Joi.string().allow(null).optional().empty('')),
-
+    notes: Joi.string().allow(null).optional().empty(''),
     annexes: Joi.array()
         .items(Joi.string().allow(null).optional().empty(''))
         .optional(),
@@ -281,16 +278,17 @@ const deleteMany = catchAsync(async (req, res) => {
 const restoreMany = catchAsync(async (req, res) => {
     const result = await collection.updateMany(
         { deletedAt: { $exists: true } },
-        { $unset: { deletedAt: "" } }
+        { $unset: { deletedAt: '' } }
     );
     const restoredCount = result.nModified;
     if (restoredCount === 0) {
-        return res.status(404).json({ message: "Aucune donnée trouvée à restaurer." });
+        return res
+            .status(404)
+            .json({ message: 'Aucune donnée trouvée à restaurer.' });
     }
     redisClient.del(`${collectionName}:all`);
     res.status(200).json({ message: `${restoredCount} données restaurées.` });
 });
-
 
 const findAgents = async (req, res) => {
     const { id } = req.params;
@@ -735,7 +733,6 @@ const sendDaily = catchAsync(async (req, res) => {
                 .format('YYYY/MM/DD à HH:mm')}`
         )
     );
-
 
     redisClient.del(`${collectionName}:all`);
     redisClient.del(`${collectionName}:${id}`);

@@ -11283,7 +11283,6 @@ redisClient.flushall((err, reply) => {
             createdMissions[Math.floor(Math.random() * 20)].insertedId,
         ],
         notes: '',
-
         createdAt: new Date(),
         updatedAt: new Date(),
     }));

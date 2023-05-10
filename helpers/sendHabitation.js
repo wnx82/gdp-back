@@ -106,7 +106,7 @@ const sendHabitation = async function (agentsData, habitationData, note) {
                 )}</strong>, l'agent GDP <strong>A${
         agentsData.matricule[0]
     } </strong>${
-        agentsData.matricule[0] !== undefined
+        agentsData.matricule[1] !== undefined
             ? `, accompagné de l'agent GDP <strong> A${agentsData.matricule[1]}`
             : ''
     }
