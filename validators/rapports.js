@@ -62,6 +62,10 @@ module.exports = {
                         bsonType: 'objectId',
                     },
                 },
+                sent: {
+                    bsonType: ['date', 'null'],
+                    description: ' must be a date and is required',
+                },
             },
         },
     },

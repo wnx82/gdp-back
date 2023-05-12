@@ -3,7 +3,7 @@ const sendMail = require('./sendMail');
 const fs = require('fs');
 const CONFIG_FILE_PATH = 'config.json';
 
-const sendRapport = async function (id, data) {
+const sendMailRapport = async function (id, data) {
     const configData = fs.readFileSync(CONFIG_FILE_PATH);
     const config = JSON.parse(configData);
     // const dataSubject = '✅ Rapport ' + data.date;
@@ -105,31 +105,31 @@ const sendRapport = async function (id, data) {
             <p><strong>🆔 Matricules:</strong></p>
             <ul>
                 ${data.matricules
-            .map(matricule => `<li>${matricule}</li>`)
-            .join('')}
+                    .map(matricule => `<li>${matricule}</li>`)
+                    .join('')}
             </ul>
             <p><strong>👮 Agents:</strong></p>
             <ul>
                 ${data.lastnames
-            .map(lastname => `<li>${lastname}</li>`)
-            .join('')}
+                    .map(lastname => `<li>${lastname}</li>`)
+                    .join('')}
             </ul>
             <p><strong>📅 Horaire presté:</strong> ${data.horaire}</p>
             <p><strong>🚙 Véhicule:</strong> ${data.vehicule}</p>
             <p><strong>📌 Quartiers effectués:</strong></p>
             <ul>
                 ${data.quartiers
-            .map(quartier => `<li>${quartier}</li>`)
-            .join('')}
+                    .map(quartier => `<li>${quartier}</li>`)
+                    .join('')}
             </ul>
             <p><strong>📌 Missions quartier effectuées:</strong></p>
             <ul>
                 ${data.missionsQuartierValidate
-            .map(
-                missionsQuartierValidate =>
-                    `<li>${missionsQuartierValidate}</li>`
-            )
-            .join('')}
+                    .map(
+                        missionsQuartierValidate =>
+                            `<li>${missionsQuartierValidate}</li>`
+                    )
+                    .join('')}
             </ul>
             <p><strong>📋 Liste des missions effectuées:</strong></p>
             <ul>
@@ -144,8 +144,8 @@ const sendRapport = async function (id, data) {
                 ${data.annexes.map(annexe => `<li>${annexe}</li>`).join('')}
             </ul><br><br>
             <p><strong>Envoyé le :</strong>${moment(data.createdAt)
-            .utcOffset('+0100')
-            .format('YYYY/MM/DD à HH:MM')}</p>
+                .utcOffset('+0100')
+                .format('YYYY/MM/DD à HH:MM')}</p>
         </div>
     </div>
     <div class="footer">
@@ -167,4 +167,4 @@ const sendRapport = async function (id, data) {
         .catch(err => console.error("Erreur lors de l'envoi du rapport:", err));
 };
 
-module.exports = sendRapport;
+module.exports = sendMailRapport;

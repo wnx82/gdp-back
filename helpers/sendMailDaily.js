@@ -1,12 +1,16 @@
 const moment = require('moment');
 const sendMail = require('./sendMail');
 const fs = require('fs');
+const CONFIG_FILE_PATH = 'config.json';
 
 const sendMailDaily = async function (id, data) {
+    const configData = fs.readFileSync(CONFIG_FILE_PATH);
+    const config = JSON.parse(configData);
     // const dataSubject = '✅ Rapport ' + data.date;
     const dataSubject =
-        '📝 Missions du ' + moment(data.date).format('YYYY/MM/DD');
+        '📝 Fiche Journalière du ' + moment(data.date).format('YYYY/MM/DD');
     const dataMessage = '';
+    const dataMailTo = config.mail.to_chef;
 
     console.log(data.agentsData.matricule);
 
@@ -18,7 +22,7 @@ const sendMailDaily = async function (id, data) {
         console.log(agentData.matricule);
     });
 
-    const dataMailTo = `vandermeulen.christophe@gmail.com`;
+    // const dataMailTo = `vandermeulen.christophe@gmail.com`;
     // const dataMailTo = `  ${data.agentsData
     //     .map(agentData => {
     //         return `${agentData.email}`;
@@ -121,43 +125,43 @@ const sendMailDaily = async function (id, data) {
     <div class="container">
         <div class="header">
             <h1>📝 Ordre du ${moment(data.date).format('YYYY/MM/DD')}</h1>
-            <h2>Bonjour les loulous</h2>
+            <h2>Bonjour à vous</h2>
             <p>ID unique: ${id}</p>
         </div>
         <div class="content">
 <p><strong>👤 Agents:</strong></p>
 <ul>
   ${data.agentsData
-            .map(agentData => {
-                return `<li>${agentData.matricule} - ${agentData.firstname} ${agentData.lastname}</li>`;
-            })
-            .join('')}
+      .map(agentData => {
+          return `<li>${agentData.matricule} - ${agentData.firstname} ${agentData.lastname}</li>`;
+      })
+      .join('')}
 </ul>
             <p><strong>📅 Horaire presté:</strong> ${data.horaire}</p>
             <p><strong>🚙 Véhicule:</strong> ${data.vehicule}</p>
             <p><strong>📌 Quartiers :</strong></p>
             <ul>
   ${data.quartiersData
-            .map(quartiersData => {
-                return `<li>${quartiersData.title}</li>`;
-            })
-            .join('')}
+      .map(quartiersData => {
+          return `<li>🏘️ ${quartiersData.title}</li>`;
+      })
+      .join('')}
             </ul>
             <p><strong>📌 Missions quartier(s) :</strong></p>
             <ul>
   ${data.quartiersMissionsData
-            .map(quartiersMissionsData => {
-                return `<li>${quartiersMissionsData.title}</li><ul><li>${quartiersMissionsData.description}</li></ul>`;
-            })
-            .join('')}
+      .map(quartiersMissionsData => {
+          return `<li>• ${quartiersMissionsData.title}</li><ul><li>⮑ ${quartiersMissionsData.description}</li></ul>`;
+      })
+      .join('')}
             </ul>
             <p><strong>📋 Liste des missions supplémentaires:</strong></p>
             <ul>
   ${data.missionsData
-            .map(missionsData => {
-                return `<li>${missionsData.title}</li><ul><li>${missionsData.description}</li></ul>`;
-            })
-            .join('')}
+      .map(missionsData => {
+          return `<li>• ${missionsData.title}</li><ul><li>⮑ ${missionsData.description}</li></ul>`;
+      })
+      .join('')}
             </ul>
             <p><strong>📝 Notes:</strong></p>
             <ul>
@@ -168,8 +172,8 @@ const sendMailDaily = async function (id, data) {
   ${data.annexes}
             </ul><br><br>
             <p><strong>Envoyé le :</strong>${moment(data.sent)
-            .utcOffset('+0100')
-            .format('YYYY/MM/DD à HH:mm')}</p>
+                .utcOffset('+0100')
+                .format('YYYY/MM/DD à HH:mm')}</p>
         </div>
     </div>
     <div class="footer">

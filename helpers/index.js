@@ -4,5 +4,6 @@ module.exports = {
     success: require('./success'),
     sendMail: require('./sendMail'),
     sendHabitation: require('./sendHabitation'),
-    sendRapport: require('./sendRapport'),
+    sendMailDaily: require('./sendMailDaily'),
+    sendMailRapport: require('./sendMailRapport'),
 };

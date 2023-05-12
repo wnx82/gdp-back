@@ -11282,7 +11282,7 @@ redisClient.flushall((err, reply) => {
             createdMissions[Math.floor(Math.random() * 20)].insertedId,
             createdMissions[Math.floor(Math.random() * 20)].insertedId,
         ],
-        notes: '',
+        notes: faker.lorem.words(),
         createdAt: new Date(),
         updatedAt: new Date(),
     }));

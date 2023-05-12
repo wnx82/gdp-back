@@ -8,7 +8,7 @@ const moment = require('moment');
 const Joi = require('joi');
 const ObjectId = require('mongodb').ObjectId;
 const collectionName = 'rapports';
-const sendRapport = require('../helpers/sendRapport');
+const sendMailRapport = require('../helpers/sendMailRapport');
 
 const schema = Joi.object({
     // daily: Joi.string().allow(null).optional().empty(''),
@@ -276,7 +276,7 @@ const create = catchAsync(async (req, res) => {
             ])
             .next();
         // console.log(data);
-        sendRapport(insertedId, data[0]);
+        sendMailRapport(insertedId, data[0]);
         // console.log(data[0].matricules);
     } catch (err) {
         console.log(err);
@@ -405,16 +405,17 @@ const deleteMany = catchAsync(async (req, res) => {
 const restoreMany = catchAsync(async (req, res) => {
     const result = await collection.updateMany(
         { deletedAt: { $exists: true } },
-        { $unset: { deletedAt: "" } }
+        { $unset: { deletedAt: '' } }
     );
     const restoredCount = result.nModified;
     if (restoredCount === 0) {
-        return res.status(404).json({ message: "Aucune donnée trouvée à restaurer." });
+        return res
+            .status(404)
+            .json({ message: 'Aucune donnée trouvée à restaurer.' });
     }
     redisClient.del(`${collectionName}:all`);
     res.status(200).json({ message: `${restoredCount} données restaurées.` });
 });
-
 
 const findAgents = async (req, res) => {
     const { id } = req.params;
