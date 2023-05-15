@@ -175,7 +175,13 @@ const sendMailDaily = async function (id, data) {
                 .utcOffset('+0100')
                 .format('YYYY/MM/DD à HH:mm')}</p>
         </div>
+        <div>
+        Lien vers le rapport : <a href='http://localhost:4200/rapports/${id}'>http://localhost:4200/rapports/${id}</a>
+
+        </div>
+
     </div>
+    
     <div class="footer">
         <div>Gardien de la Paix - Ville de Mouscron</div>
         <div class="logo">

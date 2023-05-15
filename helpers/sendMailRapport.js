@@ -137,12 +137,13 @@ const sendMailRapport = async function (id, data) {
             </ul>
             <p><strong>📝 Notes:</strong></p>
             <ul>
-                ${data.notes.map(note => `<li>${note}</li>`).join('')}
+  ${data.notes}
             </ul>
             <p><strong>📑 Annexes:</strong></p>
             <ul>
-                ${data.annexes.map(annexe => `<li>${annexe}</li>`).join('')}
+  ${data.annexes}
             </ul><br><br>
+
             <p><strong>Envoyé le :</strong>${moment(data.createdAt)
                 .utcOffset('+0100')
                 .format('YYYY/MM/DD à HH:MM')}</p>

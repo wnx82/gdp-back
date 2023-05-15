@@ -30,14 +30,7 @@ module.exports = {
                     bsonType: ['string', 'null'],
                     description: ' must be a string and is not required',
                 },
-                notes: {
-                    bsonType: ['array', 'null'],
-                    description: ' must be a array and is not required',
-                },
-                annexes: {
-                    bsonType: ['array', 'null'],
-                    description: ' must be a arrray and is not required',
-                },
+
                 quartiers: {
                     bsonType: ['array', 'null'],
                     minItems: 0,
@@ -61,6 +54,14 @@ module.exports = {
                     items: {
                         bsonType: 'objectId',
                     },
+                },
+                notes: {
+                    bsonType: ['string', 'null'],
+                    description: ' must be a string and is not required',
+                },
+                annexes: {
+                    bsonType: ['string', 'null'],
+                    description: ' must be a arrray and is not required',
                 },
                 sent: {
                     bsonType: ['date', 'null'],
