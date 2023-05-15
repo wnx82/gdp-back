@@ -99,27 +99,25 @@ const sendMailRapport = async function (id, data) {
     <div class="container">
         <div class="header">
             <h1>📝 Rapport du ${moment(data.date).format('YYYY/MM/DD')}</h1>
-            <p>ID unique: ${id}</p>
+            <p>🆔 unique: ${id}</p>
         </div>
         <div class="content">
-            <p><strong>🆔 Matricules:</strong></p>
-            <ul>
-                ${data.matricules
-                    .map(matricule => `<li>${matricule}</li>`)
-                    .join('')}
-            </ul>
-            <p><strong>👮 Agents:</strong></p>
-            <ul>
-                ${data.lastnames
-                    .map(lastname => `<li>${lastname}</li>`)
-                    .join('')}
-            </ul>
+<p><strong>👮 Agents:</strong></p>
+<ul>
+  ${data.matricules
+      .map(
+          (matricule, index) =>
+              `<li>${matricule} - ${data.lastnames[index]} ${data.firstnames[index]}</li>`
+      )
+      .join('')}
+</ul>
+
             <p><strong>📅 Horaire presté:</strong> ${data.horaire}</p>
             <p><strong>🚙 Véhicule:</strong> ${data.vehicule}</p>
             <p><strong>📌 Quartiers effectués:</strong></p>
             <ul>
                 ${data.quartiers
-                    .map(quartier => `<li>${quartier}</li>`)
+                    .map(quartier => `<li>🏘️ ${quartier}</li>`)
                     .join('')}
             </ul>
             <p><strong>📌 Missions quartier effectuées:</strong></p>
@@ -127,13 +125,15 @@ const sendMailRapport = async function (id, data) {
                 ${data.missionsQuartierValidate
                     .map(
                         missionsQuartierValidate =>
-                            `<li>${missionsQuartierValidate}</li>`
+                            `<li>• ${missionsQuartierValidate}</li>`
                     )
                     .join('')}
             </ul>
             <p><strong>📋 Liste des missions effectuées:</strong></p>
             <ul>
-                ${data.missions.map(mission => `<li>${mission}</li>`).join('')}
+                ${data.missions
+                    .map(mission => `<li>• ${mission}</li>`)
+                    .join('')}
             </ul>
             <p><strong>📝 Notes:</strong></p>
             <ul>

@@ -95,7 +95,7 @@ const sendHabitation = async function (agentsData, habitationData, note) {
 <body>
     <div class="container">
         <div class="header">
-            <h1>📌 Nouvelle entrée pour ${habitationData?.adresse.rue} ${
+            <h1>📌 Nouvelle entrée pour ${habitationData?.adresse.rue}, ${
         habitationData?.adresse.numero
     }  </h1>
         </div>
@@ -112,7 +112,7 @@ const sendHabitation = async function (agentsData, habitationData, note) {
     }
 </strong>, s'est rendu à l'habitation : <strong>${
         habitationData?.adresse.rue
-    } ${
+    }, ${
         habitationData?.adresse.numero
     }</strong> et a communiqué le commentaire suivant :
                 <strong>${note}</strong>

@@ -126,10 +126,10 @@ const sendMailDaily = async function (id, data) {
         <div class="header">
             <h1>📝 Ordre du ${moment(data.date).format('YYYY/MM/DD')}</h1>
             <h2>Bonjour à vous</h2>
-            <p>ID unique: ${id}</p>
+            <p>🆔 unique: ${id}</p>
         </div>
         <div class="content">
-<p><strong>👤 Agents:</strong></p>
+<p><strong>👮 Agents:</strong></p>
 <ul>
   ${data.agentsData
       .map(agentData => {
