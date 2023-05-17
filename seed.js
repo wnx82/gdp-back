@@ -11344,5 +11344,7 @@ redisClient.flushall((err, reply) => {
     collections.forEach(collection => {
         console.log('Collection ' + collection + ' créée');
     });
-    process.exit(0);
+    console.log('\x1b[41m', '\x1b[1m', 'Seed Implémenté', '\x1b[0m');
+
+    // process.exit(0);
 })();

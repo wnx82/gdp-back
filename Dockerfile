@@ -30,4 +30,4 @@ RUN npm install -g nodemon
 EXPOSE 3003
 
 # Démarre l'application avec nodemon
-CMD ["nodemon", "/app/seed.js", "&&", "nodemon", "/app/bin/www"]
+CMD nodemon /app/bin/www

@@ -27,9 +27,7 @@ const schema = Joi.object({
     notes: Joi.string().allow(null).optional().empty(''),
     // notes: Joi.array().items(Joi.string().allow(null).optional().empty('')),
 
-    annexes: Joi.array()
-        .items(Joi.string().allow(null).optional().empty(''))
-        .optional(),
+    annexes: Joi.array().allow(null).items(Joi.string().optional().empty('')),
     sent: Joi.date().allow(null).optional().empty(''),
 });
 
