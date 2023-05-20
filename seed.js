@@ -11346,5 +11346,5 @@ redisClient.flushall((err, reply) => {
     });
     console.log('\x1b[41m', '\x1b[1m', 'Seed Implémenté', '\x1b[0m');
 
-    // process.exit(0);
+    process.exit(0);
 })();

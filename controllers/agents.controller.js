@@ -121,7 +121,7 @@ const findAll = catchAsync(async (req, res) => {
                         $first: '$deletedAt',
                     },
                     adresse: {
-                        $push: {
+                        $first: {
                             numero: '$adresse.numero',
                             _id: {
                                 $first: '$adresseData._id',
@@ -149,6 +149,7 @@ const findAll = catchAsync(async (req, res) => {
                 },
             },
         ];
+
         const data = await collection.aggregate(pipeline).toArray();
         redisClient.set(
             `${collectionName}:all`,

@@ -152,15 +152,12 @@ const create = catchAsync(async (req, res) => {
         const { ...rest } = value;
         const createdAt = new Date();
         const updatedAt = new Date();
-        const data = await collection
-            .insertOne({
-                ...rest,
-                createdAt,
-                updatedAt,
-            })
-            .then(
-                console.log(`----------->Le daily a bien été créé<-----------`)
-            );
+        const data = await collection.insertOne({
+            ...rest,
+            createdAt,
+            updatedAt,
+        });
+        console.log(`----------->Le daily a bien été créé<-----------`);
         res.status(201).json(data);
         redisClient.del(`${collectionName}:all`);
     } catch (err) {

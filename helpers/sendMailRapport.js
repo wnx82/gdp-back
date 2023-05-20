@@ -99,7 +99,7 @@ const sendMailRapport = async function (id, data) {
     <div class="container">
         <div class="header">
             <h1>📝 Rapport du ${moment(data.date).format('YYYY/MM/DD')}</h1>
-            <p>🆔 unique: ${id}</p>
+            <p>🆔 : ${id}</p>
         </div>
         <div class="content">
 <p><strong>👮 Agents:</strong></p>

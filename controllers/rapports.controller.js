@@ -30,8 +30,14 @@ const schema = Joi.object({
     missions: Joi.array()
         .allow(null)
         .items(Joi.string().regex(/^[0-9a-fA-F]{24}$/)),
-    notes: Joi.string().allow(null).optional().empty(''),
-    annexes: Joi.string().allow(null).optional().empty(''),
+    notes: Joi.alternatives().try(
+        Joi.string().allow(null).optional().empty(''),
+        Joi.array().optional().allow(null).empty('')
+    ),
+    annexes: Joi.alternatives().try(
+        Joi.string().allow(null).optional().empty(''),
+        Joi.array().optional().allow(null).items(Joi.string())
+    ),
     // notes: Joi.array().items(Joi.string().allow(null).optional().empty('')),
 
     // annexes: Joi.array()
@@ -184,23 +190,19 @@ const create = catchAsync(async (req, res) => {
         const { ...rest } = value;
         const createdAt = new Date();
         const updatedAt = new Date();
-        const donnees = await collection
-            .insertOne({
-                ...rest,
-                createdAt,
-                updatedAt,
-            })
-            .then(
-                console.log(
-                    `----------->Le rapport a bien été créé<-----------`
-                )
-            );
+        const donnees = await collection.insertOne({
+            ...rest,
+            createdAt,
+            updatedAt,
+        });
+        console.log(`----------->Le rapport a bien été créé<-----------`);
         res.status(201).json(donnees);
         redisClient.del(`${collectionName}:all`);
         // Récupérer l'insertedId
         const insertedId = donnees.insertedId;
 
         // Récupération des données par aggregate et envoi de la validation par mail
+        console.log('trou du cul');
         const { data } = await collection
             .aggregate([
                 {
@@ -281,7 +283,7 @@ const create = catchAsync(async (req, res) => {
                 },
             ])
             .next();
-        // console.log(data);
+        console.log(data);
         sendMailRapport(insertedId, data[0]);
         // console.log(data[0].matricules);
     } catch (err) {
@@ -291,59 +293,72 @@ const create = catchAsync(async (req, res) => {
 const updateOne = catchAsync(async (req, res) => {
     const { id } = req.params;
     if (!id) {
+        console.log('No id provided');
         return res.status(400).json({ message: 'No id provided' });
     }
-    const message = `📝 Mise à jour du rapport ${id}`;
+
     const { body } = req;
     const { value, error } = schema.validate(body);
+
     if (error) {
         console.log(error);
         const errors = error.details.map(d => d.message);
         return res.status(400).json({ message: 'Validation error', errors });
     }
-    let updateValue = { ...value };
-    updateValue.daily = new ObjectId(updateValue.daily);
-    if (!value.daily) {
-        delete updateValue.daily;
-    } else {
-        updateValue.daily = value.daily.map(value => new ObjectId(value));
-    }
-
-    if (!value.agents) {
-        delete updateValue.agents;
-    } else {
-        updateValue.agents = value.agents.map(value => new ObjectId(value));
-    }
-    if (!value.quartiers) {
-        delete updateValue.quartiers;
-    } else {
-        updateValue.quartiers = value.quartiers.map(
-            value => new ObjectId(value)
-        );
-    }
-    if (!value.missions) {
-        delete updateValue.missions;
-    } else {
-        updateValue.missions = value.missions.map(value => new ObjectId(value));
-    }
-
-    if (!value.quartierMissionsValidate) {
-        delete updateValue.quartierMissionsValidate;
-    } else {
-        updateValue.quartierMissionsValidate =
-            value.quartierMissionsValidate.map(value => new ObjectId(value));
-    }
 
     try {
-        const updatedAt = new Date();
+        const rapport = await collection.findOne({ _id: ObjectId(id) });
+        if (!rapport) {
+            return res.status(404).json({ message: 'Rapport not found' });
+        }
+
+        const updateValue = {
+            ...value,
+            updatedAt: new Date(),
+        };
+
+        if (!updateValue.daily) {
+            delete updateValue.daily;
+        } else {
+            updateValue.daily = new ObjectId(updateValue.daily);
+        }
+
+        if (updateValue.agents) {
+            updateValue.agents = updateValue.agents.map(
+                agent => new ObjectId(agent)
+            );
+        }
+
+        if (updateValue.quartiers) {
+            updateValue.quartiers = updateValue.quartiers.map(
+                quartier => new ObjectId(quartier)
+            );
+        }
+
+        if (updateValue.missions) {
+            updateValue.missions = updateValue.missions.map(
+                mission => new ObjectId(mission)
+            );
+        }
+
+        if (updateValue.quartierMissionsValidate) {
+            updateValue.quartierMissionsValidate =
+                updateValue.quartierMissionsValidate.map(
+                    mission => new ObjectId(mission)
+                );
+        }
+
         const { modifiedCount } = await collection.findOneAndUpdate(
             { _id: ObjectId(id) },
-            { $set: { ...updateValue, updatedAt } },
+            { $set: updateValue },
             { returnDocument: 'after' }
         );
+
         if (modifiedCount === 0) {
-            return res.status(404).json({ message: 'Constat not found' });
+            console.log('Rapport not found');
+            return res.status(404).json({ message: 'Rapport not found' });
         }
+
         res.status(200).json(value);
         redisClient.del(`${collectionName}:all`);
         redisClient.del(`${collectionName}:${id}`);
@@ -352,6 +367,7 @@ const updateOne = catchAsync(async (req, res) => {
         res.status(500).json({ message: 'Server error' });
     }
 });
+
 const deleteOne = catchAsync(async (req, res) => {
     const { id } = req.params;
     const { force } = req.query;
