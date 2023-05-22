@@ -307,91 +307,94 @@ const findOne = catchAsync(async (req, res) => {
         if (inCache) {
             return res.status(200).json(JSON.parse(inCache));
         } else {
-            const pipeline = [
-                {
-                    $match: {
-                        _id: new ObjectId(id),
-                    },
-                },
-                {
-                    $lookup: {
-                        from: 'rues',
-                        localField: 'adresse.rue',
-                        foreignField: '_id',
-                        as: 'adresseData',
-                    },
-                },
-                {
-                    $lookup: {
-                        from: 'agents',
-                        localField: 'agents',
-                        foreignField: '_id',
-                        as: 'agentsData',
-                    },
-                },
-                {
-                    $group: {
-                        _id: '$_id',
-                        agents: {
-                            $first: '$agentsData.matricule',
-                        },
-                        date: {
-                            $first: '$date',
-                        },
-                        vehicule: {
-                            $first: '$vehicule',
-                        },
-                        personne: {
-                            $first: '$personne',
-                        },
-                        adresse: {
-                            $push: {
-                                numero: '$adresse.numero',
-                                _id: {
-                                    $first: '$adresseData._id',
-                                },
-                                nom: {
-                                    $first: '$adresseData.nom',
-                                },
-                                denomination: {
-                                    $first: '$adresseData.denomination',
-                                },
-                                quartier: {
-                                    $first: '$adresseData.quartier',
-                                },
-                                cp: {
-                                    $first: '$adresseData.cp',
-                                },
-                                localite: {
-                                    $first: '$adresseData.localite',
-                                },
-                            },
-                        },
-                        geolocation: {
-                            $first: '$geolocation',
-                        },
-                        infractions: {
-                            $first: '$infractions',
-                        },
-                        pv: {
-                            $first: '$pv',
-                        },
-                        notes: {
-                            $first: '$notes',
-                        },
-                        annexes: {
-                            $first: '$annexes',
-                        },
-                        createdAt: {
-                            $first: '$createdAt',
-                        },
-                        updatedAt: {
-                            $first: '$updatedAt',
-                        },
-                    },
-                },
-            ];
-            data = await collection.aggregate(pipeline).toArray();
+            // const pipeline = [
+            //     {
+            //         $match: {
+            //             _id: new ObjectId(id),
+            //         },
+            //     },
+            //     {
+            //         $lookup: {
+            //             from: 'rues',
+            //             localField: 'adresse.rue',
+            //             foreignField: '_id',
+            //             as: 'adresseData',
+            //         },
+            //     },
+            //     {
+            //         $lookup: {
+            //             from: 'agents',
+            //             localField: 'agents',
+            //             foreignField: '_id',
+            //             as: 'agentsData',
+            //         },
+            //     },
+            //     {
+            //         $group: {
+            //             _id: '$_id',
+            //             agents: {
+            //                 $first: '$agentsData.matricule',
+            //             },
+            //             date: {
+            //                 $first: '$date',
+            //             },
+            //             vehicule: {
+            //                 $first: '$vehicule',
+            //             },
+            //             personne: {
+            //                 $first: '$personne',
+            //             },
+            //             adresse: {
+            //                 $push: {
+            //                     numero: '$adresse.numero',
+            //                     _id: {
+            //                         $first: '$adresseData._id',
+            //                     },
+            //                     nom: {
+            //                         $first: '$adresseData.nom',
+            //                     },
+            //                     denomination: {
+            //                         $first: '$adresseData.denomination',
+            //                     },
+            //                     quartier: {
+            //                         $first: '$adresseData.quartier',
+            //                     },
+            //                     cp: {
+            //                         $first: '$adresseData.cp',
+            //                     },
+            //                     localite: {
+            //                         $first: '$adresseData.localite',
+            //                     },
+            //                 },
+            //             },
+            //             geolocation: {
+            //                 $first: '$geolocation',
+            //             },
+            //             infractions: {
+            //                 $first: '$infractions',
+            //             },
+            //             pv: {
+            //                 $first: '$pv',
+            //             },
+            //             notes: {
+            //                 $first: '$notes',
+            //             },
+            //             annexes: {
+            //                 $first: '$annexes',
+            //             },
+            //             createdAt: {
+            //                 $first: '$createdAt',
+            //             },
+            //             updatedAt: {
+            //                 $first: '$updatedAt',
+            //             },
+            //             deletedAt: {
+            //                 $first: '$deletedAt',
+            //             },
+            //         },
+            //     },
+            // ];
+            data = await collection.findOne({ _id: new ObjectId(id) });
             redisClient.set(
                 `${collectionName}:${id}`,
                 JSON.stringify(data),
