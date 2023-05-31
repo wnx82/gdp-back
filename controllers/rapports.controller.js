@@ -26,9 +26,13 @@ const schema = Joi.object({
         .items(Joi.string().regex(/^[0-9a-fA-F]{24}$/)),
     quartierMissionsValidate: Joi.array()
         .allow(null)
+        .optional()
+        .empty('')
         .items(Joi.string().regex(/^[0-9a-fA-F]{24}$/)),
     missions: Joi.array()
         .allow(null)
+        .optional()
+        .empty('')
         .items(Joi.string().regex(/^[0-9a-fA-F]{24}$/)),
     notes: Joi.alternatives().try(
         Joi.string().allow(null).optional().empty(''),

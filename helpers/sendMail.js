@@ -1,6 +1,8 @@
 const nodemailer = require('nodemailer');
 const fs = require('fs');
 
+const configHelper = require('../helpers/configHelper');
+configHelper.createConfigFile();
 const CONFIG_FILE_PATH = 'config.json';
 
 const SendMail = async function (dataSubject, dataMessage, dataHTML) {

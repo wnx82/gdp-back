@@ -1,0 +1,12 @@
+{
+    "mail": {
+        "host": "smtp.hostinger.com",
+        "port": 465,
+        "user": "noreply@gdlp.be",
+        "password": "****************",
+        "to_chef": "Vandermeulen Christophe<vandermeulen.christophe@gmail.com>",
+        "to_habitations": "Vandermeulen Christophe<vandermeulen.christophe@gmail.com>",
+        "to_police": "Vandermeulen Christophe<vandermeulen.christophe@gmail.com>",
+        "from": "Service GDP Mouscron 👻 <noreply@gdlp.be>"
+    }
+}

@@ -1,6 +1,9 @@
 const moment = require('moment');
 const sendMail = require('./sendMail');
 const fs = require('fs');
+
+const configHelper = require('../helpers/configHelper');
+configHelper.createConfigFile();
 const CONFIG_FILE_PATH = 'config.json';
 
 const sendMailDaily = async function (id, data) {

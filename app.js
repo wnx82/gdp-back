@@ -27,7 +27,6 @@ const accessLogStream = fs.createWriteStream(
 //     }
 // };
 
-
 require('./passport');
 var app = express();
 
@@ -48,9 +47,9 @@ var quartiersRouter = require('./routes/quartiers');
 var missionsRouter = require('./routes/missions');
 var validationsRouter = require('./routes/validations');
 var vehiculesRouter = require('./routes/vehicules');
-var uploadRouter = require('./routes/upload')
+var uploadRouter = require('./routes/upload');
 var imageController = require('./controllers/image.controller');
-var logsRouter = require('./routes/logs')
+var logsRouter = require('./routes/logs');
 
 // const swaggerUi = require('swagger-ui-express');
 // const swaggerJSDoc = require('swagger-jsdoc');
@@ -121,8 +120,8 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-const IMAGE_DIR = path.join(__dirname, 'public/uploads');
-console.log(IMAGE_DIR);
+// const IMAGE_DIR = path.join(__dirname, 'public/uploads');
+// console.log(IMAGE_DIR);
 
 // app.use('/uploads', express.static(path.join(__dirname, 'public/uploads')));
 // app.use('/images', express.static(path.join(__dirname, 'public/images')));
