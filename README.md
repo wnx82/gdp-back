@@ -1,4 +1,4 @@
-<p align="center"><img src="http://www.peruwelz.be/uploads/page324/86c361ea300e6d3bccbe46573caa688a.jpg" alt="GDP Logo"></p>
+<p align="center"><img src="https://github.com/winnux82/gdp-back/blob/main/public/images/gdplogo.png" alt="GDP Logo"></p>
 
 <h1 align="center">GDP Portail</h1>
 
