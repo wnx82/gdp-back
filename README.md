@@ -34,8 +34,7 @@ Elle offre également la validation JSON avec Joi, un accès avec différents ni
 
 Elle permet également la gestion des agents et des utilisateurs, des catégories pour les notes de rapports, des constats sur le terrain, des tâches journalières pour les équipes d'agents avec envoi de mail, des surveillances habitations, des horaires d'agents, des infractions les plus verbalisées, des missions journalières ou occasionnelles, des quartiers avec missions spécifiques, des rapports journaliers, des rues et des validations pour chaque surveillance d'habitation.
 
-Elle me servira également comme TFE & déploiement pour mon stage de fin d'étude d'où sa complexité et le temps consacré!
-Le front sera réalisé via Angular et le déploiement sur un serveur du service informatique de la Ville de Mouscron.
+Elle me servira également comme TFE d'où sa complexité et le temps consacré!
 
 | [GDP Back](https://github.com/winnux82/gdp-back) | [GDP Front](https://github.com/winnux82/gdp-front) | GDP Android Application |
 
