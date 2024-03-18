@@ -45,6 +45,7 @@ Le front sera réalisé via Angular et le déploiement sur un serveur du service
 -   🐳 docker-compose up -d
 -   📨 Importer dans Postman la collection GDP back via le fichier GDP Back.postman_collection dans le dossier racine.
 -   env.example disponible
+-   node seed.js
 
 </pre>
 
@@ -175,6 +176,6 @@ constantinmaes@gmail.com samuel.lassoie@gmail.com
 
 Copyright (c) 2023-present,
 
-[winnux82](https://github.com/winnux82)
+[winnux82](https://github.com/wnx82)
 
-[![Web](https://img.shields.io/badge/GitHub-winnux82-14a1f0?style=for-the-badge&logo=github&logoColor=white&labelColor=101010)](https://github.com/winnux82)
+[![Web](https://img.shields.io/badge/GitHub-winnux82-14a1f0?style=for-the-badge&logo=github&logoColor=white&labelColor=101010)](https://github.com/wnx82)

@@ -174,3 +174,98 @@ app.use(function (err, req, res, next) {
 });
 
 module.exports = app;
+
+// const createError = require('http-errors');
+// const cors = require('cors');
+// const express = require('express');
+// const path = require('path');
+// const cookieParser = require('cookie-parser');
+// const logger = require('morgan');
+// const passport = require('passport');
+// const bodyParser = require('body-parser');
+// const morgan = require('morgan');
+// const fs = require('fs');
+
+// // Import des modules de routes
+// const indexRouter = require('./routes/index');
+// const authRouter = require('./routes/auth');
+// const agentsRouter = require('./routes/agents');
+// const categoriesRouter = require('./routes/categories');
+// const configRouter = require('./routes/config');
+// const constatsRouter = require('./routes/constats');
+// const dailiesRouter = require('./routes/dailies');
+// const rapportsRouter = require('./routes/rapports');
+// const habitationsRouter = require('./routes/habitations');
+// const horairesRouter = require('./routes/horaires');
+// const infractionsRouter = require('./routes/infractions');
+// const ruesRouter = require('./routes/rues');
+// const statusRouter = require('./routes/status');
+// const quartiersRouter = require('./routes/quartiers');
+// const missionsRouter = require('./routes/missions');
+// const validationsRouter = require('./routes/validations');
+// const vehiculesRouter = require('./routes/vehicules');
+// const uploadRouter = require('./routes/upload');
+// const imageController = require('./controllers/image.controller');
+// const logsRouter = require('./routes/logs');
+
+// const { dbClient, redisClient } = require('./utils/');
+// const accessLogStream = fs.createWriteStream(
+//     path.join(__dirname, 'access.log'),
+//     { flags: 'a' }
+// );
+
+// // Initialisation de l'application Express
+// const app = express();
+
+// // Middleware
+// app.use(cors());
+// app.use(logger('dev'));
+// app.use(express.json());
+// app.use(express.urlencoded({ extended: false }));
+// app.use(cookieParser());
+// app.use(express.static(path.join(__dirname, 'public')));
+// app.use(bodyParser.json());
+// app.use(bodyParser.urlencoded({ extended: true }));
+// app.use(morgan('combined', { stream: accessLogStream }));
+
+// // Routes
+// app.use('/', indexRouter);
+// app.use('/login', authRouter);
+// app.use('/agents', agentsRouter);
+// app.use(
+//     '/users',
+//     passport.authenticate('jwt', { session: false }),
+//     agentsRouter
+// );
+// app.use('/categories', categoriesRouter);
+// app.use('/config', configRouter);
+// app.use('/constats', constatsRouter);
+// app.use('/dailies', dailiesRouter);
+// app.use('/rapports', rapportsRouter);
+// app.use('/habitations', habitationsRouter);
+// app.use('/horaires', horairesRouter);
+// app.use('/infractions', infractionsRouter);
+// app.use('/logs', logsRouter);
+// app.use('/quartiers', quartiersRouter);
+// app.use('/rues', ruesRouter);
+// app.use('/status', statusRouter);
+// app.use('/missions', missionsRouter);
+// app.use('/validations', validationsRouter);
+// app.use('/vehicules', vehiculesRouter);
+// app.use('/upload', uploadRouter);
+// app.post('/save-image', imageController.saveImage);
+
+// // Catch 404 and forward to error handler
+// app.use(function (req, res, next) {
+//     next(createError(404));
+// });
+
+// // Error handler
+// app.use(function (err, req, res, next) {
+//     res.locals.message = err.message;
+//     res.locals.error = req.app.get('env') === 'development' ? err : {};
+//     res.status(err.status || 500);
+//     res.render('error');
+// });
+
+// module.exports = app;
