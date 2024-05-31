@@ -29,5 +29,5 @@ RUN npm install -g nodemon
 # Expose le port utilisé par l'application
 EXPOSE 3003
 
-# Démarre l'application avec nodemon
-CMD nodemon /app/seed && node /app/bin/www 
+# Commande de démarrage de l'application
+CMD ["sh", "-c", "node /app/seed.js && node /app/seedRues.js && node /app/bin/www"]

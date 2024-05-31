@@ -1,73 +1,29 @@
-<!-- ./views/index.ejs -->
 <!DOCTYPE html>
 <html>
 
 <head>
   <meta charset="UTF-8">
-  <title>
-    <%= title %>
-  </title>
-  <style>
-    body {
-      font-family: 'Helvetica Neue', sans-serif;
-      font-size: 16px;
-      line-height: 1.5;
-      color: #333;
-    }
-
-    h1 {
-      font-size: 28px;
-      font-weight: bold;
-      margin-top: 40px;
-      margin-bottom: 20px;
-      text-align: center;
-    }
-
-    p {
-      font-size: 18px;
-      margin-bottom: 20px;
-    }
-
-    ul {
-      list-style-type: none;
-      margin-top: 0;
-      padding-left: 0;
-    }
-
-    li {
-      margin-bottom: 10px;
-    }
-
-    a {
-      color: #06c;
-      text-decoration: none;
-    }
-
-    a:hover {
-      text-decoration: underline;
-    }
-  </style>
+  <title><%= title %></title>
+  <link rel="stylesheet" type="text/css" href="../stylesheets/style.css">
 </head>
 
 <body>
   <header>
-    <h1>
-      <%= title %>
-    </h1>
+    <h1><%= title %></h1>
   </header>
   <main>
-    <p align="center"><img src="http://www.peruwelz.be/uploads/page324/86c361ea300e6d3bccbe46573caa688a.jpg"
-        alt="GDP Logo">
+    <p align="center">
+      <img src="../images/gdplogo.png" alt="GDP Logo">
     </p>
     <p>Bienvenue sur la page de présentation de l'API de gestion pour le service GDP de la Ville de Mouscron.</p>
 
-    Source Github : <a href="https://github.com/winnux82/gdp-back/">https://github.com/winnux82/gdp-back/</a>
+    <p>Source Github : <a href="https://github.com/wnx82/gdp-back/">https://github.com/wnx82/gdp-back/</a></p>
+
     <section>
       <h2>Description</h2>
       <p>Cette API permet la gestion des véhicules, des utilisateurs, des surveillances d'habitations, des rapports
         journaliers et bien plus encore pour le service GDP de la Ville de Mouscron. Elle utilise JWT pour la sécurité
-        des
-        données, Joi pour la validation JSON, et Redis pour le stockage en cache.</p>
+        des données, Joi pour la validation JSON, et Redis pour le stockage en cache.</p>
     </section>
 
     <section>
@@ -95,8 +51,7 @@
         <li>CRUD Rapports : permet aux agents de remplir un rapport en fin de service</li>
         <li>CRUD Rues : liste de la totalité des rues de l'entité Mouscronnoise</li>
         <li>CRUD Validations : validation réalisée à chaque surveillance d'habitation, avec envoi de mail à la
-          responsable et au
-          référent de la Police de Mouscron</li>
+          responsable et au référent de la Police de Mouscron</li>
         <li>Création d'un access.log pour la traçabilité</li>
       </ul>
     </section>
@@ -106,7 +61,7 @@
       <p>Pour installer l'API, suivez les étapes suivantes :</p>
       <ol>
         <li>Clonez le repository :</li>
-        <pre>git clone https://github.com/winnux82/gdp-back.git</pre>
+        <pre>git clone https://github.com/wnx82/gdp-back.git</pre>
         <li>Installez les dépendances :</li>
         <pre>npm install</pre>
         <li>Configurez le fichier .env :</li>
@@ -122,12 +77,11 @@
     <section>
       <h2>Références</h2>
       <ul>
-        <li><a href="https://github.com/winnux82/gdp-back" target="_blank">GDP Back</a></li>
-        <li><a href="https://github.com/winnux82/gdp-front" target="_blank">GDP Front</a></li>
+        <li><a href="https://github.com/wnx82/gdp-back" target="_blank">GDP Back</a></li>
+        <li><a href="https://github.com/wnx82/gdp-front" target="_blank">GDP Front</a></li>
         <li><a href="#" target="_blank">GDP Android Application</a></li>
       </ul>
     </section>
-
   </main>
 </body>
 
