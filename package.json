@@ -7,8 +7,7 @@
         "start:debug": "nodemon --inspect=0.0.0.0:9229 ./bin/www",
         "reset-admin": "nodemon resetAdmin.js",
         "seed": "nodemon seed.js",
-        "seed-rues": "node seedRues.js"      
-
+        "seed-rues": "node seedRues.js"
     },
     "dependencies": {
         "@faker-js/faker": "^8.4.1",
