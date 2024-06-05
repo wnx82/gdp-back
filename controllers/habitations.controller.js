@@ -412,15 +412,24 @@ const updateOne = catchAsync(async (req, res) => {
 const deleteOne = catchAsync(async (req, res) => {
     const { id } = req.params;
     const { force } = req.query;
+
     if (force === undefined || parseInt(force, 10) === 0) {
-        //Vérification si l'habitation a déjà été supprimée de manière logique
+        // Vérification si l'habitation a déjà été supprimée de manière logique
         const habitation = await collection.findOne({ _id: new ObjectId(id) });
         if (!isNaN(habitation.deletedAt)) {
-            // Constat already deleted, return appropriate response
-            const message = `L'habitation a déjà été supprimée de manière logique.`;
+            // Habitation already deleted, return appropriate response
+            const message = `🗑️ L'habitation a déjà été supprimée de manière logique.`;
             return res.status(200).json(habitation);
         }
-        //suppression logique
+
+        // Vérification de l'intégrité référentielle avec les validations
+        const references = await database.collection('validations').findOne({ habitation: new ObjectId(id) });
+        if (references !== null) {
+            const message = `L'habitation est référencée dans les validations et ne peut pas être supprimée.`;
+            return res.status(400).json({ message });
+        }
+
+        // Suppression logique
         const message = `🗑️ Suppression d'une habitation de manière logique`;
         const data = await collection.updateOne(
             {
@@ -434,9 +443,9 @@ const deleteOne = catchAsync(async (req, res) => {
         redisClient.del(`${collectionName}:all`);
         redisClient.del(`${collectionName}:${id}`);
     } else if (parseInt(force, 10) === 1) {
-        //suppression physique
+        // Suppression physique
         const message = `🗑️ Suppression d'une habitation de manière physique`;
-        console.log('suppression physique/valeur force:' + force);
+        console.log('Suppression physique/valeur force:' + force);
         const result = await collection.deleteOne({ _id: new ObjectId(id) });
         if (result.deletedCount === 1) {
             console.log('Successfully deleted');

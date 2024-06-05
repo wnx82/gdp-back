@@ -1,6 +1,5 @@
 // ./controllers/agents.controller.js
 
-// const dbClient = require('../utils/').dbClient;
 const { dbClient, redisClient } = require('../utils/');
 const { catchAsync, success } = require('../helpers/');
 const database = dbClient.db(process.env.MONGO_DB_DATABASE);
@@ -32,6 +31,7 @@ const schema = Joi.object({
     picture: Joi.string().allow(null).optional().empty(''),
     formations: Joi.array(),
 });
+
 const findAll = catchAsync(async (req, res) => {
     const message = '📄 Liste des agents';
     const inCache = await redisClient.get(`${collectionName}:all`);
@@ -50,6 +50,12 @@ const findAll = catchAsync(async (req, res) => {
                     localField: 'adresse.rue',
                     foreignField: '_id',
                     as: 'adresseData',
+                },
+            },
+            {
+                $unwind: {
+                    path: '$adresseData',
+                    preserveNullAndEmptyArrays: true,
                 },
             },
             {
@@ -78,76 +84,6 @@ const findAll = catchAsync(async (req, res) => {
                     'adresseData.localite': 1,
                 },
             },
-            {
-                $group: {
-                    _id: '$_id',
-                    email: {
-                        $first: '$email',
-                    },
-                    matricule: {
-                        $first: '$matricule',
-                    },
-                    firstname: {
-                        $first: '$firstname',
-                    },
-                    lastname: {
-                        $first: '$lastname',
-                    },
-                    birthday: {
-                        $first: '$birthday',
-                    },
-                    tel: {
-                        $first: '$tel',
-                    },
-                    iceContact: {
-                        $first: '$iceContact',
-                    },
-                    userAccess: {
-                        $first: '$userAccess',
-                    },
-                    picture: {
-                        $first: '$picture',
-                    },
-                    formations: {
-                        $first: '$formations',
-                    },
-                    createdAt: {
-                        $first: '$createdAt',
-                    },
-                    updatedAt: {
-                        $first: '$updatedAt',
-                    },
-                    deletedAt: {
-                        $first: '$deletedAt',
-                    },
-                    adresse: {
-                        $first: {
-                            numero: '$adresse.numero',
-                            _id: {
-                                $first: '$adresseData._id',
-                            },
-                            nom: {
-                                $first: '$adresseData.nom',
-                            },
-                            denomination: {
-                                $first: '$adresseData.denomination',
-                            },
-                            nomComplet: {
-                                $first: '$adresseData.nomComplet',
-                            },
-                            quartier: {
-                                $first: '$adresseData.quartier',
-                            },
-                            cp: {
-                                $first: '$adresseData.cp',
-                            },
-                            localite: {
-                                $first: '$adresseData.localite',
-                            },
-                        },
-                    },
-                },
-            },
         ];
 
         const data = await collection.aggregate(pipeline).toArray();
@@ -165,14 +101,6 @@ const findOne = catchAsync(async (req, res) => {
     try {
         const message = `📄 Détails de l'agent`;
         const { id } = req.params;
-        let data;
-        data = await collection.findOne({ _id: new ObjectId(id) });
-        if (!data) {
-            res.status(404).json({
-                message: `⛔ No agent found with id ${id}`,
-            });
-            return;
-        }
         const inCache = await redisClient.get(`${collectionName}:${id}`);
         if (inCache) {
             return res.status(200).json(JSON.parse(inCache));
@@ -194,6 +122,12 @@ const findOne = catchAsync(async (req, res) => {
                         localField: 'adresse.rue',
                         foreignField: '_id',
                         as: 'adresseData',
+                    },
+                },
+                {
+                    $unwind: {
+                        path: '$adresseData',
+                        preserveNullAndEmptyArrays: true,
                     },
                 },
                 {
@@ -222,90 +156,20 @@ const findOne = catchAsync(async (req, res) => {
                         'adresseData.localite': 1,
                     },
                 },
-                {
-                    $group: {
-                        _id: '$_id',
-                        email: {
-                            $first: '$email',
-                        },
-                        matricule: {
-                            $first: '$matricule',
-                        },
-                        firstname: {
-                            $first: '$firstname',
-                        },
-                        lastname: {
-                            $first: '$lastname',
-                        },
-                        birthday: {
-                            $first: '$birthday',
-                        },
-                        tel: {
-                            $first: '$tel',
-                        },
-                        iceContact: {
-                            $first: '$iceContact',
-                        },
-                        userAccess: {
-                            $first: '$userAccess',
-                        },
-                        picture: {
-                            $first: '$picture',
-                        },
-                        formations: {
-                            $first: '$formations',
-                        },
-                        createdAt: {
-                            $first: '$createdAt',
-                        },
-                        updatedAt: {
-                            $first: '$updatedAt',
-                        },
-                        deletedAt: {
-                            $first: '$deletedAt',
-                        },
-                        adresse: {
-                            $push: {
-                                numero: '$adresse.numero',
-                                _id: {
-                                    $first: '$adresseData._id',
-                                },
-                                nom: {
-                                    $first: '$adresseData.nom',
-                                },
-                                denomination: {
-                                    $first: '$adresseData.denomination',
-                                },
-                                nomComplet: {
-                                    $first: '$adresseData.nomComplet',
-                                },
-                                quartier: {
-                                    $first: '$adresseData.quartier',
-                                },
-                                cp: {
-                                    $first: '$adresseData.cp',
-                                },
-                                localite: {
-                                    $first: '$adresseData.localite',
-                                },
-                            },
-                        },
-                    },
-                },
             ];
-            data = await collection.aggregate(pipeline).toArray();
+            const data = await collection.aggregate(pipeline).toArray();
             redisClient.set(
                 `${collectionName}:${id}`,
                 JSON.stringify(data),
                 'EX',
                 600
             );
-        }
-        if (!data) {
-            res.status(404).json({ message: `No agent found with id ${id}` });
-            return;
-        } else {
-            res.status(200).json(data);
+            if (!data.length) {
+                res.status(404).json({ message: `No agent found with id ${id}` });
+                return;
+            } else {
+                res.status(200).json(data[0]);
+            }
         }
     } catch (e) {
         console.error(e);
@@ -353,9 +217,14 @@ const create = catchAsync(async (req, res) => {
             matricule,
         });
 
-        if (value.adresse) {
+        if (value.adresse && value.adresse.rue) {
+            const rueExists = await database.collection('rues').findOne({ _id: new ObjectId(value.adresse.rue) });
+            if (!rueExists) {
+                return res.status(400).json({ message: 'Invalid rue ID' });
+            }
             value.adresse.rue = new ObjectId(value.adresse.rue);
         }
+
         if (existingUser) {
             console.log('Email already exists');
             return res.status(409).json({ message: 'Email already exists' });
@@ -449,7 +318,13 @@ const updateOne = catchAsync(async (req, res) => {
         return res.status(400).json({ message: error.details[0].message });
     }
     try {
-        value.adresse.rue = new ObjectId(value.adresse.rue);
+        if (value.adresse && value.adresse.rue) {
+            const rueExists = await database.collection('rues').findOne({ _id: new ObjectId(value.adresse.rue) });
+            if (!rueExists) {
+                return res.status(400).json({ message: 'Invalid rue ID' });
+            }
+            value.adresse.rue = new ObjectId(value.adresse.rue);
+        }
         const updatedAt = new Date();
         console.log('Updated at:', updatedAt);
         const { modifiedCount } = await collection.updateOne(
@@ -476,59 +351,55 @@ const deleteOne = catchAsync(async (req, res) => {
     const { force } = req.query;
 
     if (force === undefined || parseInt(force, 10) === 0) {
-        //Vérification si l'agent a déjà été supprimé de manière logique
+        // Vérification si l'agent a déjà été supprimé de manière logique
         const agent = await collection.findOne({ _id: new ObjectId(id) });
-        redisClient.flushall();
-        if (!isNaN(agent.deletedAt)) {
-            // Agent already deleted, return appropriate response
-            const message = `🗑️ L'agent a déjà été supprimé de manière logique.`;
-            return res.status(200).json(agent);
+        if (agent.deletedAt instanceof Date) {
+            return res.status(200).json({ message: `🗑️ L'agent a déjà été supprimé de manière logique.` });
         }
+
         // Vérification si l'agent a le matricule A101
-        if (
-            agent.matricule === '101' ||
-            agent.lastname === 'admin' ||
-            agent.firstname === 'admin'
-        ) {
-            const message = `🚫 Impossible de supprimer l'agent avec le matricule A101.`;
-            return res.status(403).json({ message });
+        if (agent.matricule === '101' || agent.lastname === 'admin' || agent.firstname === 'admin') {
+            return res.status(403).json({ message: `🚫 Impossible de supprimer l'agent avec le matricule A101.` });
         }
 
-        //suppression logique
+        // Vérification de l'intégrité référentielle
+        const references = await Promise.all([
+            database.collection('constats').findOne({ agents: new ObjectId(id) }),
+            database.collection('dailies').findOne({ agents: new ObjectId(id) }),
+            database.collection('rapports').findOne({ agents: new ObjectId(id) }),
+            database.collection('validations').findOne({ agents: new ObjectId(id) })
+        ]);
 
-        const message = `🗑️ Suppression d'un agent de manière logique`;
+        const referencedTables = ['constats', 'dailies', 'missions', 'rapports', 'validations'];
+        const hasReferences = references.some((ref, index) => ref !== null);
+
+        if (hasReferences) {
+            return res.status(400).json({ message: `Cet agent est référencé dans d'autres tables et ne peut pas être supprimé.` });
+        }
+
+        // Suppression logique
         const data = await collection.findOneAndUpdate(
-            {
-                _id: new ObjectId(id),
-            },
-            {
-                $set: { deletedAt: new Date() },
-            }
+            { _id: new ObjectId(id) },
+            { $set: { deletedAt: new Date() } }
         );
         res.status(200).json(data);
         redisClient.del(`${collectionName}:all`);
         redisClient.del(`${collectionName}:${id}`);
-        // res.status(200).json({
-        //     message: "L'agent a bien été supprimé de manière logique.",
-        //     result,
-        // });
     } else if (parseInt(force, 10) === 1) {
-        //suppression physique
-        const message = `🗑️ Suppression d'un agent de manière physique`;
-        console.log('suppression physique/valeur force:' + force);
+        // Suppression physique
         const result = await collection.deleteOne({ _id: new ObjectId(id) });
         if (result.deletedCount === 1) {
-            console.log('Successfully deleted');
-            res.status(200).json(success(message));
+            res.status(200).json({ message: `🗑️ Suppression d'un agent de manière physique.` });
             redisClient.del(`${collectionName}:all`);
             redisClient.del(`${collectionName}:${id}`);
         } else {
-            res.status(404).json({ message: 'Failed to delete' });
+            res.status(404).json({ message: 'Impossible de supprimer l\'agent.' });
         }
     } else {
-        res.status(400).json({ message: 'Malformed parameter "force"' });
+        res.status(400).json({ message: 'Paramètre "force" mal formé.' });
     }
 });
+
 const deleteMany = catchAsync(async (req, res) => {
     const result = await collection.deleteMany({
         deletedAt: { $exists: true },
@@ -550,7 +421,7 @@ const restoreMany = catchAsync(async (req, res) => {
         { deletedAt: { $exists: true } },
         { $unset: { deletedAt: '' } }
     );
-    const restoredCount = result.nModified;
+    const restoredCount = result.modifiedCount;
     if (restoredCount === 0) {
         return res
             .status(404)

@@ -187,10 +187,6 @@ redisClient.flushall((err, reply) => {
         birthday: faker.date.past(),
         tel: faker.string.octal({ length: 6, prefix: '+32 47' }),
         iceContact: faker.person.firstName() + ' ' + faker.person.lastName() + ' ' + faker.string.octal({ length: 6, prefix: '+32 47' }),
-        adresse: {
-            rue: new ObjectId(createdRues[0].insertedId),
-            numero: Math.floor(Math.random() * 2).toString(),
-        },
         picture: '',
         formations: generateFormations(2),
         createdAt: new Date(),
@@ -215,10 +211,6 @@ redisClient.flushall((err, reply) => {
         matricule: 101,
         firstname: 'admin',
         lastname: 'admin',
-        adresse: {
-            rue: new ObjectId(createdRues[0].insertedId),
-            numero: Math.floor(Math.random() * 2).toString(),
-        },
         picture: '',
         formations: ['Formation 1', 'Formation 2'],
         createdAt: new Date(),

@@ -280,15 +280,26 @@ const updateOne = catchAsync(async (req, res) => {
 const deleteOne = catchAsync(async (req, res) => {
     const { id } = req.params;
     const { force } = req.query;
+
     if (force === undefined || parseInt(force, 10) === 0) {
-        //Vérification si le rue a déjà été supprimé de manière logique
+        // Vérification si la rue a déjà été supprimée de manière logique
         const rue = await collection.findOne({ _id: new ObjectId(id) });
         if (!isNaN(rue.deletedAt)) {
-            // Constat already deleted, return appropriate response
+            // Rue already deleted, return appropriate response
             const message = `🗑️ La rue a déjà été supprimée de manière logique.`;
             return res.status(200).json(rue);
         }
-        //suppression logique
+        // Vérification de l'intégrité référentielle
+        const references = await Promise.all([
+            database.collection('constats').findOne({ 'adresse.rue': new ObjectId(id) })
+        ]);
+        
+        if (references.some(reference => reference !== null)) {
+            const message = `La rue est référencée dans d'autres tables et ne peut pas être supprimée.`;
+            return res.status(400).json({ message });
+        }
+
+        // Suppression logique
         const message = `🗑️ Suppression d'une rue de manière logique`;
         const data = await collection.updateOne(
             {
@@ -302,9 +313,9 @@ const deleteOne = catchAsync(async (req, res) => {
         redisClient.del(`${collectionName}:all`);
         redisClient.del(`${collectionName}:${id}`);
     } else if (parseInt(force, 10) === 1) {
-        //suppression physique
+        // Suppression physique
         const message = `🗑️ Suppression d'une rue de manière physique`;
-        console.log('suppression physique/valeur force:' + force);
+        console.log('Suppression physique/valeur force:' + force);
         const result = await collection.deleteOne({ _id: new ObjectId(id) });
         if (result.deletedCount === 1) {
             console.log('Successfully deleted');
@@ -318,6 +329,7 @@ const deleteOne = catchAsync(async (req, res) => {
         res.status(400).json({ message: 'Malformed parameter "force"' });
     }
 });
+
 const deleteMany = catchAsync(async (req, res) => {
     const result = await collection.deleteMany({
         deletedAt: { $exists: true },

@@ -150,17 +150,27 @@ const deleteOne = catchAsync(async (req, res) => {
     const { force } = req.query;
 
     if (force === undefined || parseInt(force, 10) === 0) {
-        //Vérification si l'mission a déjà été supprimée de manière logique
+        // Vérification si la mission a déjà été supprimée de manière logique
         const mission = await collection.findOne({ _id: new ObjectId(id) });
         redisClient.flushall();
         if (!isNaN(mission.deletedAt)) {
             // Mission already deleted, return appropriate response
-            const message = `La mission a déjà été supprimé de manière logique.`;
+            const message = `🗑️ La mission a déjà été supprimée de manière logique.`;
             return res.status(200).json(mission);
         }
 
-        //suppression logique
+        // Vérification de l'intégrité référentielle avec les dailies et les rapports
+        const references = await Promise.all([
+            database.collection('dailies').findOne({ missions: new ObjectId(id) }),
+            database.collection('rapports').findOne({ missions: new ObjectId(id) })
+        ]);
 
+        if (references.some(reference => reference !== null)) {
+            const message = `La mission est référencée dans les dailies ou les rapports et ne peut pas être supprimée.`;
+            return res.status(400).json({ message });
+        }
+
+        // Suppression logique
         const message = `🗑️ Suppression d'une mission de manière logique`;
         const data = await collection.findOneAndUpdate(
             {
@@ -173,14 +183,10 @@ const deleteOne = catchAsync(async (req, res) => {
         res.status(200).json(data);
         redisClient.del(`${collectionName}:all`);
         redisClient.del(`${collectionName}:${id}`);
-        // res.status(200).json({
-        //     message: "L'mission a bien été supprimé de manière logique.",
-        //     result,
-        // });
     } else if (parseInt(force, 10) === 1) {
-        //suppression physique
+        // Suppression physique
         const message = `🗑️ Suppression d'une mission de manière physique`;
-        console.log('suppression physique/valeur force:' + force);
+        console.log('Suppression physique/valeur force:' + force);
         const result = await collection.deleteOne({ _id: new ObjectId(id) });
         if (result.deletedCount === 1) {
             console.log('Successfully deleted');
@@ -194,6 +200,7 @@ const deleteOne = catchAsync(async (req, res) => {
         res.status(400).json({ message: 'Malformed parameter "force"' });
     }
 });
+
 
 const deleteMany = catchAsync(async (req, res) => {
     const result = await collection.deleteMany({

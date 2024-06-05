@@ -211,18 +211,27 @@ const deleteOne = catchAsync(async (req, res) => {
     const { force } = req.query;
 
     if (force === undefined || parseInt(force, 10) === 0) {
-        //Vérification si le quartier a déjà été supprimé de manière logique
+        // Vérification si le quartier a déjà été supprimé de manière logique
         const quartier = await collection.findOne({ _id: new ObjectId(id) });
-        redisClient.flushall();
         if (!isNaN(quartier.deletedAt)) {
             // Quartier already deleted, return appropriate response
-            const message = `La quartier a déjà été supprimé de manière logique.`;
+            const message = `🗑️ Le quartier a déjà été supprimé de manière logique.`;
             return res.status(200).json(quartier);
         }
 
-        //suppression logique
+        // Vérification de l'intégrité référentielle avec les dailies et les rapports
+        const references = await Promise.all([
+            database.collection('dailies').findOne({ quartiers: new ObjectId(id) }),
+            database.collection('rapports').findOne({ quartiers: new ObjectId(id) })
+        ]);
 
-        const message = `🗑️ Suppression d'une quartier de manière logique`;
+        if (references.some(reference => reference !== null)) {
+            const message = `Le quartier est référencé dans les dailies ou les rapports et ne peut pas être supprimé.`;
+            return res.status(400).json({ message });
+        }
+
+        // Suppression logique
+        const message = `🗑️ Suppression d'un quartier de manière logique`;
         const data = await collection.findOneAndUpdate(
             {
                 _id: new ObjectId(id),
@@ -234,14 +243,10 @@ const deleteOne = catchAsync(async (req, res) => {
         res.status(200).json(data);
         redisClient.del(`${collectionName}:all`);
         redisClient.del(`${collectionName}:${id}`);
-        // res.status(200).json({
-        //     message: "Le quartier a bien été supprimé de manière logique.",
-        //     result,
-        // });
     } else if (parseInt(force, 10) === 1) {
-        //suppression physique
+        // Suppression physique
         const message = `🗑️ Suppression d'un quartier de manière physique`;
-        console.log('suppression physique/valeur force:' + force);
+        console.log('Suppression physique/valeur force:' + force);
         const result = await collection.deleteOne({ _id: new ObjectId(id) });
         if (result.deletedCount === 1) {
             console.log('Successfully deleted');
@@ -255,6 +260,7 @@ const deleteOne = catchAsync(async (req, res) => {
         res.status(400).json({ message: 'Malformed parameter "force"' });
     }
 });
+
 const deleteMany = catchAsync(async (req, res) => {
     const result = await collection.deleteMany({
         deletedAt: { $exists: true },

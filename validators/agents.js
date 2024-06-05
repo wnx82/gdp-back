@@ -44,17 +44,7 @@ module.exports = {
                     bsonType: ['string', 'null'],
                     description: 'iceContact must be a string',
                 },
-                adresse: {
-                    bsonType: 'object',
-                    properties: {
-                        rue: {
-                            bsonType: ['objectId', 'null'],
-                            description:
-                                'must be an objectId and is not required',
-                        },
-                        numero: { bsonType: ['string', 'null'] },
-                    },
-                },
+
                 picture: {
                     bsonType: ['string', 'null'],
                     description: 'must be a string and is not required',
