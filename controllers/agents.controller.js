@@ -292,8 +292,8 @@ const deleteOne = catchAsync(async (req, res) => {
         }
 
         // Vérification si l'agent a le matricule A101
-        if (agent.matricule === '101' || agent.lastname === 'admin' || agent.firstname === 'admin') {
-            return res.status(403).json({ message: `🚫 Impossible de supprimer l'agent avec le matricule A101.` });
+        if (agent.matricule === '101'|| agent.userAccess === 0) {
+            return res.status(403).json({ message: `🚫 Impossible de supprimer un administrateur.` });
         }
 
         // Vérification de l'intégrité référentielle
