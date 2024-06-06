@@ -34,7 +34,7 @@ var indexRouter = require('./routes/index');
 var authRouter = require('./routes/auth');
 var agentsRouter = require('./routes/agents');
 var categoriesRouter = require('./routes/categories');
-var configRouter = require('./routes/config');
+// var configRouter = require('./routes/config');
 var constatsRouter = require('./routes/constats');
 var dailiesRouter = require('./routes/dailies');
 var rapportsRouter = require('./routes/rapports');
@@ -137,7 +137,7 @@ app.use(
     agentsRouter
 );
 app.use('/categories', categoriesRouter);
-app.use('/config', configRouter);
+// app.use('/config', configRouter);
 app.use('/constats', constatsRouter);
 app.use('/dailies', dailiesRouter);
 app.use('/rapports', rapportsRouter);

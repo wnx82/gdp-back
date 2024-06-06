@@ -21,13 +21,6 @@ const schema = Joi.object({
     birthday: Joi.date().allow(null).optional().empty(''),
     tel: Joi.string().max(30).allow(null).optional().empty(''),
     iceContact: Joi.string().allow(null).optional().empty(''),
-    adresse: {
-        rue: Joi.string()
-            .regex(/^[0-9a-fA-F]{24}$/)
-            .allow(null)
-            .optional(),
-        numero: Joi.string().allow(null).optional().empty(''),
-    },
     picture: Joi.string().allow(null).optional().empty(''),
     formations: Joi.array(),
 });
@@ -42,20 +35,6 @@ const findAll = catchAsync(async (req, res) => {
             {
                 $project: {
                     password: 0,
-                },
-            },
-            {
-                $lookup: {
-                    from: 'rues',
-                    localField: 'adresse.rue',
-                    foreignField: '_id',
-                    as: 'adresseData',
-                },
-            },
-            {
-                $unwind: {
-                    path: '$adresseData',
-                    preserveNullAndEmptyArrays: true,
                 },
             },
             {
@@ -74,14 +53,6 @@ const findAll = catchAsync(async (req, res) => {
                     updatedAt: 1,
                     deletedAt: 1,
                     formations: 1,
-                    'adresse.numero': 1,
-                    'adresseData._id': 1,
-                    'adresseData.nom': 1,
-                    'adresseData.denomination': 1,
-                    'adresseData.nomComplet': 1,
-                    'adresseData.quartier': 1,
-                    'adresseData.cp': 1,
-                    'adresseData.localite': 1,
                 },
             },
         ];
@@ -117,20 +88,6 @@ const findOne = catchAsync(async (req, res) => {
                     },
                 },
                 {
-                    $lookup: {
-                        from: 'rues',
-                        localField: 'adresse.rue',
-                        foreignField: '_id',
-                        as: 'adresseData',
-                    },
-                },
-                {
-                    $unwind: {
-                        path: '$adresseData',
-                        preserveNullAndEmptyArrays: true,
-                    },
-                },
-                {
                     $project: {
                         _id: 1,
                         email: 1,
@@ -146,14 +103,6 @@ const findOne = catchAsync(async (req, res) => {
                         updatedAt: 1,
                         deletedAt: 1,
                         formations: 1,
-                        'adresse.numero': 1,
-                        'adresseData._id': 1,
-                        'adresseData.nom': 1,
-                        'adresseData.denomination': 1,
-                        'adresseData.nomComplet': 1,
-                        'adresseData.quartier': 1,
-                        'adresseData.cp': 1,
-                        'adresseData.localite': 1,
                     },
                 },
             ];
@@ -217,14 +166,6 @@ const create = catchAsync(async (req, res) => {
             matricule,
         });
 
-        if (value.adresse && value.adresse.rue) {
-            const rueExists = await database.collection('rues').findOne({ _id: new ObjectId(value.adresse.rue) });
-            if (!rueExists) {
-                return res.status(400).json({ message: 'Invalid rue ID' });
-            }
-            value.adresse.rue = new ObjectId(value.adresse.rue);
-        }
-
         if (existingUser) {
             console.log('Email already exists');
             return res.status(409).json({ message: 'Email already exists' });
@@ -267,13 +208,14 @@ const updateOne = catchAsync(async (req, res) => {
 
     // Check if the agent with the given ID exists
     try {
-        const agent = await collection.findOne({ _id: ObjectId(id) });
+        const agent = await collection.findOne({ _id: new ObjectId(id) }); // Utilisation de new ObjectId(id)
         if (!agent) {
             console.log('Agent not found');
             return res.status(404).json({ message: 'Agent not found' });
         }
     } catch (err) {
-        return res.status(500).json({ message: 'Server error' });
+        console.error('Error finding agent:', err);
+        return res.status(500).json({ message: 'Server error while finding agent' });
     }
 
     const message = `📝 Mise à jour de l'agent ${id}`;
@@ -283,7 +225,7 @@ const updateOne = catchAsync(async (req, res) => {
     if (body.email) {
         const existingUser = await collection.findOne({
             email: body.email,
-            _id: { $ne: ObjectId(id) },
+            _id: { $ne: new ObjectId(id) }, // Ajout de new ici
         });
 
         if (existingUser) {
@@ -296,14 +238,12 @@ const updateOne = catchAsync(async (req, res) => {
     if (body.matricule) {
         const existingMatricule = await collection.findOne({
             matricule: body.matricule,
-            _id: { $ne: ObjectId(id) },
+            _id: { $ne: new ObjectId(id) }, // Ajout de new ici
         });
 
         if (existingMatricule) {
             console.log('Matricule already exists');
-            return res
-                .status(409)
-                .json({ message: 'Matricule already exists' });
+            return res.status(409).json({ message: 'Matricule already exists' });
         }
     }
 
@@ -312,23 +252,16 @@ const updateOne = catchAsync(async (req, res) => {
         return res.status(400).json({ message: 'Email field is required' });
     }
     const { value, error } = schema.validate(body);
-    console.log('value:', value);
+    // console.log('value:', value);
     if (error) {
         // console.log('Error:', error);
         return res.status(400).json({ message: error.details[0].message });
     }
     try {
-        if (value.adresse && value.adresse.rue) {
-            const rueExists = await database.collection('rues').findOne({ _id: new ObjectId(value.adresse.rue) });
-            if (!rueExists) {
-                return res.status(400).json({ message: 'Invalid rue ID' });
-            }
-            value.adresse.rue = new ObjectId(value.adresse.rue);
-        }
         const updatedAt = new Date();
         console.log('Updated at:', updatedAt);
         const { modifiedCount } = await collection.updateOne(
-            { _id: ObjectId(id) },
+            { _id: new ObjectId(id) }, // Ajout de new ici
             { $set: { ...value, updatedAt } },
             { returnDocument: 'after' }
         );
@@ -341,10 +274,11 @@ const updateOne = catchAsync(async (req, res) => {
         redisClient.del(`${collectionName}:all`);
         redisClient.del(`${collectionName}:${id}`);
     } catch (err) {
-        console.log(err);
-        res.status(500).json({ message: 'Server error' });
+        console.error('Error updating agent:', err);
+        res.status(500).json({ message: 'Server error while updating agent' });
     }
 });
+
 
 const deleteOne = catchAsync(async (req, res) => {
     const { id } = req.params;

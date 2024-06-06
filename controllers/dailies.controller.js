@@ -198,13 +198,13 @@ const updateOne = catchAsync(async (req, res) => {
     }
 
     try {
-        const daily = await collection.findOne({ _id: ObjectId(id) });
+        const daily = await collection.findOne({ _id: new ObjectId(id) });
         if (!daily) {
             return res.status(404).json({ message: 'Daily not found' });
         }
         const updatedAt = new Date();
         const { modifiedCount } = await collection.findOneAndUpdate(
-            { _id: ObjectId(id) },
+            { _id: new ObjectId(id) },
             { $set: { ...updateValue, updatedAt } },
             { returnDocument: 'after' }
         );
@@ -715,7 +715,7 @@ const sendDaily = catchAsync(async (req, res) => {
     // console.log(data[0].matricules);
     let sent = new Date();
     const daily = await collection.findOneAndUpdate(
-        { _id: ObjectId(id) },
+        { _id: new ObjectId(id) },
         { $set: { sent } },
         { new: true }
     );

@@ -311,7 +311,7 @@ const updateOne = catchAsync(async (req, res) => {
     }
 
     try {
-        const rapport = await collection.findOne({ _id: ObjectId(id) });
+        const rapport = await collection.findOne({ _id: new ObjectId(id) });
         if (!rapport) {
             return res.status(404).json({ message: 'Rapport not found' });
         }
@@ -353,7 +353,7 @@ const updateOne = catchAsync(async (req, res) => {
         }
 
         const { modifiedCount } = await collection.findOneAndUpdate(
-            { _id: ObjectId(id) },
+            { _id: new ObjectId(id) },
             { $set: updateValue },
             { returnDocument: 'after' }
         );

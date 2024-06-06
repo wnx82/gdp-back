@@ -345,45 +345,59 @@ const updateOne = catchAsync(async (req, res) => {
         return res.status(400).json({ message: 'No id provided' });
     }
     const message = `📝 Mise à jour de la validation ${id}`;
-
     const { body } = req;
+    console.log('Request body:', body);
 
     const { value, error } = schema.validate(body);
     if (error) {
-        return res.status(400).json({ message: error.details[0].message });
+        console.log('Validation error:', error);
+        const errors = error.details.map(d => d.message);
+        return res.status(400).json({ message: 'Validation error', errors });
     }
+    console.log('Validated value:', value);
+
     let updateValue = { ...value };
 
-    if (!value.agents) {
-        delete updateValue.agents;
-    } else {
-        updateValue.agents = value.agents.map(value => new ObjectId(value));
+    // Transformer agents et habitation en ObjectId
+    if (updateValue.agents) {
+        updateValue.agents = updateValue.agents.map(agent => new ObjectId(agent));
     }
-    if (!value.habitation) {
-        delete updateValue.habitation;
-    } else {
-        updateValue.habitation = value.habitation.map(
-            value => new ObjectId(value)
-        );
+    if (updateValue.habitation) {
+        updateValue.habitation = new ObjectId(updateValue.habitation);
     }
+
     try {
         const updatedAt = new Date();
-        const { modifiedCount } = await collection.updateOne(
-            { _id: ObjectId(id) },
-            { $set: { ...updateValue, updatedAt } },
-            { returnDocument: 'after' }
+        console.log('Update value before sending to DB:', { ...updateValue, updatedAt });
+
+        const updateResult = await collection.updateOne(
+            { _id: new ObjectId(id) },
+            { $set: { ...updateValue, updatedAt } }
         );
-        if (modifiedCount === 0) {
+
+        console.log('Update result:', updateResult);
+
+        if (updateResult.matchedCount === 0) {
             return res.status(404).json({ message: 'Validation not found' });
         }
-        res.status(200).json(value);
+
+        const updatedDocument = await collection.findOne({ _id: new ObjectId(id) });
+        console.log('Updated document:', updatedDocument);
+
+        if (!updatedDocument) {
+            return res.status(404).json({ message: 'Validation not found after update' });
+        }
+
+        res.status(200).json(updatedDocument);
         redisClient.del(`${collectionName}:all`);
         redisClient.del(`${collectionName}:${id}`);
     } catch (err) {
-        console.log(err);
+        console.log('Server error:', err);
         res.status(500).json({ message: 'Server error' });
     }
 });
+
+
 
 const deleteOne = catchAsync(async (req, res) => {
     const { id } = req.params;

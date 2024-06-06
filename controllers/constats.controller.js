@@ -467,7 +467,7 @@ const updateOne = catchAsync(async (req, res) => {
         return res.status(400).json({ message: 'No id provided' });
     }
     try {
-        const constat = await collection.findOne({ _id: ObjectId(id) });
+        const constat = await collection.findOne({ _id: new ObjectId(id) });
 
         if (!constat) {
             console.log('Constat not found');
@@ -503,7 +503,7 @@ const updateOne = catchAsync(async (req, res) => {
         console.log('updatedAt:', updatedAt); // ajout d'un console.log()
 
         const { modifiedCount } = await collection.findOneAndUpdate(
-            { _id: ObjectId(id) },
+            { _id: new ObjectId(id) },
             { $set: { ...updateValue, updatedAt } },
             { returnDocument: 'after' }
         );

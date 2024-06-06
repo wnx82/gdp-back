@@ -122,7 +122,7 @@ const updateOne = catchAsync(async (req, res) => {
     try {
         const updatedAt = new Date();
         const { modifiedCount } = await collection.findOneAndUpdate(
-            { _id: ObjectId(id) },
+            { _id: new ObjectId(id) },
             { $set: { ...updateValue, updatedAt } },
             { returnDocument: 'after' }
         );

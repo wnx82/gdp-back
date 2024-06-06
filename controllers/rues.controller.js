@@ -255,14 +255,14 @@ const updateOne = catchAsync(async (req, res) => {
 
     try {
         // Vérifier si l'ID de la rue existe dans la collection
-        const rue = await collection.findOne({ _id: ObjectId(id) });
+        const rue = await collection.findOne({ _id: new ObjectId(id) });
         if (!rue) {
             return res.status(404).json({ message: 'ID Street not found' });
         }
 
         const updatedAt = new Date();
         const { modifiedCount } = await collection.findOneAndUpdate(
-            { _id: ObjectId(id) },
+            { _id: new ObjectId(id) },
             { $set: { ...updateValue, updatedAt } },
             { returnDocument: 'after' }
         );

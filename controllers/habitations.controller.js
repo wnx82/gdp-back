@@ -391,7 +391,7 @@ const updateOne = catchAsync(async (req, res) => {
         value.adresse.rue = new ObjectId(value.adresse.rue);
         console.log(`Updating habitation ${id} with data:`, value);
         const { modifiedCount } = await collection.updateOne(
-            { _id: ObjectId(id) },
+            { _id: new ObjectId(id) },
             { $set: { ...value, updatedAt } },
             { returnDocument: 'after' }
         );

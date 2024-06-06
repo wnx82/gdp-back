@@ -118,7 +118,7 @@ const updateOne = catchAsync(async (req, res) => {
     try {
         const updatedAt = new Date();
         const { modifiedCount } = await collection.findOneAndUpdate(
-            { _id: ObjectId(id) },
+            { _id: new ObjectId(id) },  // Utilisation de new ObjectId(id)
             { $set: { ...updateValue, updatedAt } },
             { returnDocument: 'after' }
         );
@@ -133,6 +133,7 @@ const updateOne = catchAsync(async (req, res) => {
         res.status(500).json({ message: 'Server error' });
     }
 });
+
 const deleteOne = catchAsync(async (req, res) => {
     const { id } = req.params;
     const { force } = req.query;
