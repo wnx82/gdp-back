@@ -1,7 +1,7 @@
 //./routes/rues.js
 var express = require('express');
 var router = express.Router();
-const controller = require('../controllers/rues.controller');
+const controller = require('../controllers/content/rues.controller');
 const validateId = require('../helpers/validateId');
 
 /* GET rues listing. */

@@ -1,13 +1,13 @@
 // ./controllers/validations.controller.js
 
-const { dbClient, redisClient } = require('../utils');
-const { catchAsync, success } = require('../helpers');
+const { dbClient, redisClient } = require('../../utils');
+const { catchAsync, success } = require('../../helpers');
 const database = dbClient.db(process.env.MONGO_DB_DATABASE);
 const collection = database.collection('validations');
 const Joi = require('joi');
 const ObjectId = require('mongodb').ObjectId;
 const collectionName = 'validations';
-const sendHabitation = require('../helpers/sendHabitation');
+const sendHabitation = require('../../helpers/sendHabitation');
 
 const schema = Joi.object({
     id: Joi.string().allow(null).optional().empty(''),

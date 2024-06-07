@@ -1,14 +1,14 @@
 // ./controllers/rapports.controller.js
 
-const { dbClient, redisClient } = require('../utils');
-const { catchAsync, success } = require('../helpers');
+const { dbClient, redisClient } = require('../../utils');
+const { catchAsync, success } = require('../../helpers');
 const database = dbClient.db(process.env.MONGO_DB_DATABASE);
 const collection = database.collection('rapports');
 const moment = require('moment');
 const Joi = require('joi');
 const ObjectId = require('mongodb').ObjectId;
 const collectionName = 'rapports';
-const sendMailRapport = require('../helpers/sendMailRapport');
+const sendMailRapport = require('../../helpers/sendMailRapport');
 
 const schema = Joi.object({
     // daily: Joi.string().allow(null).optional().empty(''),

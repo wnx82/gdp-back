@@ -1,7 +1,7 @@
 //./routes/missions.js
 var express = require('express');
 var router = express.Router();
-const controller = require('../controllers/missions.controller');
+const controller = require('../controllers/content/missions.controller');
 const validateId = require('../helpers/validateId');
 
 /* GET missions listing. */

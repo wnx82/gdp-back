@@ -1,13 +1,14 @@
-const dbClient = require('.').dbClient;
+const dbClient = require('../utils').dbClient; // Assurez-vous que le chemin est correct
 const database = dbClient.db(process.env.MONGO_DB_DATABASE);
 const userModel = database.collection('agents');
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
-const { compare: BcryptCompare } = require('bcrypt/bcrypt');
+const { compare: BcryptCompare } = require('bcrypt');
 const passportJWT = require('passport-jwt');
 const JWTStrategy = passportJWT.Strategy;
 const ExtractJWT = passportJWT.ExtractJwt;
 const { ObjectId } = require('mongodb');
+
 passport.use(
     new LocalStrategy(
         {
@@ -24,13 +25,9 @@ passport.use(
                         });
                     }
 
-                    const checkPassword = await BcryptCompare(
-                        password,
-                        user.password
-                    );
+                    const checkPassword = await BcryptCompare(password, user.password);
                     if (checkPassword) {
                         delete user.password;
-
                         return cb(null, user, {
                             message: 'Logged In Successfully',
                         });
@@ -55,7 +52,6 @@ passport.use(
             return userModel
                 .findOne({ _id: new ObjectId(jwtPayload._id) })
                 .then(user => {
-                    console.log('user ===>', user);
                     return cb(null, user);
                 })
                 .catch(err => {
@@ -64,3 +60,5 @@ passport.use(
         }
     )
 );
+
+module.exports = passport;

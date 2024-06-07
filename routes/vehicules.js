@@ -1,7 +1,7 @@
 //./routes/vehicules.js
 var express = require('express');
 var router = express.Router();
-const controller = require('../controllers/vehicules.controller');
+const controller = require('../controllers/content/vehicules.controller');
 const validateId = require('../helpers/validateId');
 /* GET vehicules listing. */
 router.get('/', controller.findAll);

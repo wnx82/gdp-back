@@ -32,9 +32,16 @@ var app = express();
 
 var indexRouter = require('./routes/index');
 var authRouter = require('./routes/auth');
+var statusRouter = require('./routes/status');
+var uploadRouter = require('./routes/upload');
+var logsRouter = require('./routes/logs');
+var imageController = require('./controllers/image.controller');
+var forgotPasswordRouter = require('./routes/forgotPassword')
+// var configRouter = require('./routes/config');
+
+
 var agentsRouter = require('./routes/agents');
 var categoriesRouter = require('./routes/categories');
-// var configRouter = require('./routes/config');
 var constatsRouter = require('./routes/constats');
 var dailiesRouter = require('./routes/dailies');
 var rapportsRouter = require('./routes/rapports');
@@ -42,15 +49,10 @@ var habitationsRouter = require('./routes/habitations');
 var horairesRouter = require('./routes/horaires');
 var infractionsRouter = require('./routes/infractions');
 var ruesRouter = require('./routes/rues');
-var statusRouter = require('./routes/status');
 var quartiersRouter = require('./routes/quartiers');
 var missionsRouter = require('./routes/missions');
 var validationsRouter = require('./routes/validations');
 var vehiculesRouter = require('./routes/vehicules');
-var uploadRouter = require('./routes/upload');
-var imageController = require('./controllers/image.controller');
-var logsRouter = require('./routes/logs');
-var forgetPassword = require('./routes/forget-password')
 
 // const swaggerUi = require('swagger-ui-express');
 // const swaggerJSDoc = require('swagger-jsdoc');
@@ -137,23 +139,29 @@ app.use(
     passport.authenticate('jwt', { session: false }),
     agentsRouter
 );
-app.use('/categories', categoriesRouter);
+app.use('/forgot-password', forgotPasswordRouter)
+app.use('/logs', logsRouter);
+app.use('/upload', uploadRouter);
+app.post('/save-image', imageController.saveImage);
 // app.use('/config', configRouter);
+
+
+app.use('/categories', categoriesRouter);
+
 app.use('/constats', constatsRouter);
 app.use('/dailies', dailiesRouter);
 app.use('/rapports', rapportsRouter);
 app.use('/habitations', habitationsRouter);
 app.use('/horaires', horairesRouter);
 app.use('/infractions', infractionsRouter);
-app.use('/logs', logsRouter);
+
 app.use('/quartiers', quartiersRouter);
 app.use('/rues', ruesRouter);
 app.use('/status', statusRouter);
 app.use('/missions', missionsRouter);
 app.use('/validations', validationsRouter);
 app.use('/vehicules', vehiculesRouter);
-app.use('/upload', uploadRouter);
-app.post('/save-image', imageController.saveImage);
+
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
     next(createError(404));

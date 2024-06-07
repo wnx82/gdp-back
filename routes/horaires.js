@@ -1,7 +1,7 @@
 //./routes/horaires.js
 var express = require('express');
 var router = express.Router();
-const controller = require('../controllers/horaires.controller');
+const controller = require('../controllers/content/horaires.controller');
 const validateId = require('../helpers/validateId');
 /* GET horaires listing. */
 router.get('/', controller.findAll);

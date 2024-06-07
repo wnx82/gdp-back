@@ -1,7 +1,7 @@
 //./routes/rapports.js
 var express = require('express');
 var router = express.Router();
-const controller = require('../controllers/rapports.controller');
+const controller = require('../controllers/content/rapports.controller');
 const validateId = require('../helpers/validateId');
 
 /* GET rapports listing. */

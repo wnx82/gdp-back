@@ -1,7 +1,7 @@
 //./routes/constats.js
 var express = require('express');
 var router = express.Router();
-const controller = require('../controllers/constats.controller');
+const controller = require('../controllers/content/constats.controller');
 const validateId = require('../helpers/validateId');
 
 /* GET constats listing. */

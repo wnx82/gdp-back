@@ -1,7 +1,7 @@
 //./routes/habitations.js
 var express = require('express');
 var router = express.Router();
-const controller = require('../controllers/habitations.controller');
+const controller = require('../controllers/content/habitations.controller');
 const validateId = require('../helpers/validateId');
 
 /* GET habitations listing. */

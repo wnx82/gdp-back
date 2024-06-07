@@ -1,21 +1,23 @@
-// ./controllers/horaires.controller.js
+// ./controllers/vehicules.controller.js
 
 // const dbClient = require('../utils/').dbClient;
-const { dbClient, redisClient } = require('../utils');
-const { catchAsync, success } = require('../helpers');
+const { dbClient, redisClient } = require('../../utils');
+const { catchAsync, success } = require('../../helpers');
 const database = dbClient.db(process.env.MONGO_DB_DATABASE);
-const collection = database.collection('horaires');
+const collection = database.collection('vehicules');
 const Joi = require('joi');
 const ObjectId = require('mongodb').ObjectId;
-const collectionName = 'horaires';
+const collectionName = 'vehicules';
 
 const schema = Joi.object({
     id: Joi.string().allow(null).optional().empty(''),
-    horaire: Joi.string().required(),
+    marque: Joi.string().allow(null).optional().empty(''),
+    modele: Joi.string().allow(null).optional().empty(''),
+    immatriculation: Joi.string().allow(null).optional().empty(''),
 });
 
 const findAll = catchAsync(async (req, res) => {
-    const message = '📄 Liste des horaires';
+    const message = '📄 Liste des vehicules';
     const inCache = await redisClient.get(`${collectionName}:all`);
     if (inCache) {
         return res.status(200).json(JSON.parse(inCache));
@@ -33,13 +35,13 @@ const findAll = catchAsync(async (req, res) => {
 
 const findOne = catchAsync(async (req, res) => {
     try {
-        const message = `📄 Détails de l'horaire`;
+        const message = `📄 Détails du vehicule`;
         const { id } = req.params;
         let data = null;
         data = await collection.findOne({ _id: new ObjectId(id) });
         if (!data) {
             res.status(404).json({
-                message: `⛔ No horaire found with id ${id}`,
+                message: `⛔ No vehicule found with id ${id}`,
             });
             return;
         }
@@ -59,7 +61,7 @@ const findOne = catchAsync(async (req, res) => {
 
         if (!data) {
             res.status(404).json({
-                message: `No horaire found with id ${id}`,
+                message: `No vehicule found with id ${id}`,
             });
             return;
         } else {
@@ -71,7 +73,7 @@ const findOne = catchAsync(async (req, res) => {
 });
 
 const create = catchAsync(async (req, res) => {
-    const message = `✏️ Création d'un horaire`;
+    const message = `✏️ Création d'un vehicule`;
 
     const { body } = req;
     const { value, error } = schema.validate(body);
@@ -92,7 +94,9 @@ const create = catchAsync(async (req, res) => {
                 updatedAt,
             })
             .then(
-                console.log(`----------->L'horaire a bien été créé<-----------`)
+                console.log(
+                    `----------->Le vehicule a bien été créé<-----------`
+                )
             );
         res.status(201).json(data);
         redisClient.del(`${collectionName}:all`);
@@ -105,7 +109,7 @@ const updateOne = catchAsync(async (req, res) => {
     if (!id) {
         return res.status(400).json({ message: 'No id provided' });
     }
-    const message = `📝 Mise à jour de l'horaire ${id}`;
+    const message = `📝 Mise à jour du vehicule ${id}`;
     const { body } = req;
     const { value, error } = schema.validate(body);
     if (error) {
@@ -118,12 +122,12 @@ const updateOne = catchAsync(async (req, res) => {
     try {
         const updatedAt = new Date();
         const { modifiedCount } = await collection.findOneAndUpdate(
-            { _id: new ObjectId(id) },  // Utilisation de new ObjectId(id)
+            { _id: new ObjectId(id) },
             { $set: { ...updateValue, updatedAt } },
             { returnDocument: 'after' }
         );
         if (modifiedCount === 0) {
-            return res.status(404).json({ message: 'horaire not found' });
+            return res.status(404).json({ message: 'Constat not found' });
         }
         res.status(200).json(value);
         redisClient.del(`${collectionName}:all`);
@@ -133,20 +137,19 @@ const updateOne = catchAsync(async (req, res) => {
         res.status(500).json({ message: 'Server error' });
     }
 });
-
 const deleteOne = catchAsync(async (req, res) => {
     const { id } = req.params;
     const { force } = req.query;
     if (force === undefined || parseInt(force, 10) === 0) {
-        //Vérification si le horaire a déjà été supprimé de manière logique
-        const horaire = await collection.findOne({ _id: new ObjectId(id) });
-        if (!isNaN(horaire.deletedAt)) {
+        //Vérification si le vehicule a déjà été supprimé de manière logique
+        const vehicule = await collection.findOne({ _id: new ObjectId(id) });
+        if (!isNaN(vehicule.deletedAt)) {
             // Constat already deleted, return appropriate response
-            const message = `L'horaire a déjà été supprimé de manière logique.`;
-            return res.status(200).json(horaire);
+            const message = `Le vehicule a déjà été supprimé de manière logique.`;
+            return res.status(200).json(vehicule);
         }
         //suppression logique
-        const message = `🗑️ Suppression d'un horaire de manière logique`;
+        const message = `🗑️ Suppression d'un vehicule de manière logique`;
         const data = await collection.updateOne(
             {
                 _id: new ObjectId(id),
@@ -160,7 +163,7 @@ const deleteOne = catchAsync(async (req, res) => {
         redisClient.del(`${collectionName}:${id}`);
     } else if (parseInt(force, 10) === 1) {
         //suppression physique
-        const message = `🗑️ Suppression d'un horaire de manière physique`;
+        const message = `🗑️ Suppression d'une vehicule de manière physique`;
         console.log('suppression physique/valeur force:' + force);
         const result = await collection.deleteOne({ _id: new ObjectId(id) });
         if (result.deletedCount === 1) {

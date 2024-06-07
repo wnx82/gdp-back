@@ -1,30 +1,30 @@
-// ./routes/agents.js
+// ./routes/users.js
 /**
  * @swagger
- * /agents:
+ * /users:
  *   get:
- *     summary: Get all agents
- *     description: Retrieve a list of all agents.
+ *     summary: Get all users
+ *     description: Retrieve a list of all users.
  *     responses:
  *       200:
- *         description: A list of agents.
+ *         description: A list of users.
  *
  *   post:
- *     summary: Post a agent
- *     description: Create a new agent
+ *     summary: Post a user
+ *     description: Create a new user
  *     responses:
  *       200:
- *         description: A list of agents.
+ *         description: A list of users.
  *       400:
  *         error request
  *
  */
 var express = require('express');
 var router = express.Router();
-const controller = require('../controllers/content/agents.controller');
+const controller = require('../controllers/users.controller');
 const validateId = require('../helpers/validateId');
 
-/* GET agents listing. */
+/* GET users listing. */
 router.get('/', controller.findAll);
 router.get('/:id', validateId, controller.findOne);
 router.post('/', controller.create);

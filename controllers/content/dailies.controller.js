@@ -1,8 +1,8 @@
 // ./controllers/dailies.controller.js
 
 // const dbClient = require('../utils/').dbClient;
-const { dbClient, redisClient } = require('../utils');
-const { catchAsync, success } = require('../helpers');
+const { dbClient, redisClient } = require('../../utils');
+const { catchAsync, success } = require('../../helpers');
 const database = dbClient.db(process.env.MONGO_DB_DATABASE);
 const collection = database.collection('dailies');
 const moment = require('moment');
@@ -654,7 +654,7 @@ const removeQuartier = async (req, res) => {
 
 const sendDaily = catchAsync(async (req, res) => {
     const { id } = req.params;
-    const sendMailDaily = require('../helpers/sendMailDaily');
+    const sendMailDaily = require('../../helpers/sendMailDaily');
 
     // Récupération des données par aggregate et envoi de la validation par mail
     const result = await collection

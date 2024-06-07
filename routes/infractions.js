@@ -1,7 +1,7 @@
 //./routes/infractions.js
 var express = require('express');
 var router = express.Router();
-const controller = require('../controllers/infractions.controller');
+const controller = require('../controllers/content/infractions.controller');
 const validateId = require('../helpers/validateId');
 
 /* GET infractions listing. */

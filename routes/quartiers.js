@@ -1,7 +1,7 @@
 //./routes/quartiers.js
 var express = require('express');
 var router = express.Router();
-const controller = require('../controllers/quartiers.controller');
+const controller = require('../controllers/content/quartiers.controller');
 const validateId = require('../helpers/validateId');
 
 /* GET quartiers listing. */
