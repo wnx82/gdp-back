@@ -2,7 +2,7 @@
     "mail": {
         "host": "smtp.hostinger.com",
         "port": 465,
-        "user": "noreply@gdlp.be",
+        "user": "api@gdlp.be",
         "password": "****************",
         "to_chef": "Vandermeulen Christophe<vandermeulen.christophe@gmail.com>",
         "to_habitations": "Vandermeulen Christophe<vandermeulen.christophe@gmail.com>",

@@ -1,4 +1,4 @@
-const dbClient = require('./utils/').dbClient;
+const dbClient = require('.').dbClient;
 const database = dbClient.db(process.env.MONGO_DB_DATABASE);
 const userModel = database.collection('agents');
 const passport = require('passport');

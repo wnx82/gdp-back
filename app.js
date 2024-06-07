@@ -27,7 +27,7 @@ const accessLogStream = fs.createWriteStream(
 //     }
 // };
 
-require('./passport');
+require('./utils/passport');
 var app = express();
 
 var indexRouter = require('./routes/index');
@@ -50,6 +50,7 @@ var vehiculesRouter = require('./routes/vehicules');
 var uploadRouter = require('./routes/upload');
 var imageController = require('./controllers/image.controller');
 var logsRouter = require('./routes/logs');
+var forgetPassword = require('./routes/forget-password')
 
 // const swaggerUi = require('swagger-ui-express');
 // const swaggerJSDoc = require('swagger-jsdoc');
