@@ -13,7 +13,7 @@ const collectionName = 'agents';
 const schema = Joi.object({
     id: Joi.string().allow(null).optional().empty(''),
     email: Joi.string().email().required().max(200),
-    password: Joi.string().required(),
+    password: Joi.string().optional(),
     userAccess: Joi.number().integer().min(0).max(10).required(),
     matricule: Joi.number().integer().min(0).max(999).required(),
     firstname: Joi.string().max(25).allow(null).optional().empty(''),

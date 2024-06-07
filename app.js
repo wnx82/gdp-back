@@ -152,6 +152,12 @@ app.use('/constats', constatsRouter);
 app.use('/dailies', dailiesRouter);
 app.use('/rapports', rapportsRouter);
 app.use('/habitations', habitationsRouter);
+// app.use(
+//     '/habitations',
+//     passport.authenticate('jwt', { session: false }),
+//     habitationsRouter
+// );
+
 app.use('/horaires', horairesRouter);
 app.use('/infractions', infractionsRouter);
 

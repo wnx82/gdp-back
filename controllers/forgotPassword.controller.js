@@ -17,104 +17,117 @@ const resetPasswordSchema = Joi.object({
     newPassword: Joi.string().min(6).required(),
 });
 
+
+const getResetPasswordEmailHtml = (resetLink) => `
+<html>
+<head>
+    <style>
+        body {
+            background-color: #f5f5f5;
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 16px;
+            color: #444444;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 5px;
+            box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.2);
+        }
+        .header {
+            background-color: #56007b;
+            color: #ffffff;
+            padding: 10px;
+            border-radius: 5px 5px 0 0;
+        }
+        .content {
+            padding: 20px;
+        }
+        .message {
+            font-size: 20px;
+            margin-bottom: 20px;
+        }
+        .footer {
+            margin-top: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+            color: #777;
+        }
+        .footer img {
+            height: 30px;
+            width: auto;
+            margin-right: 10px;
+        }
+        .logo {
+            height: 60px;
+            width: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔒 Réinitialisation de votre mot de passe</h1>
+        </div>
+        <div class="content">
+            <p class="message">
+                Bonjour, <br><br>
+                Vous avez demandé à réinitialiser votre mot de passe. Utilisez le lien ci-dessous pour définir un nouveau mot de passe. Ce lien est valable pendant une heure.<br><br>
+                <a href="${resetLink}">${resetLink}</a>
+            </p>
+        </div>
+        <div class="footer">
+            <div>Gardien de la Paix - Ville de Mouscron</div>
+            <div class="logo">
+                <img src="https://ekreativ.be/images/visuel.png" alt="Logo Gardien de la Paix Belgique" />
+                <img src="https://ekreativ.be/images/ville.png" alt="Logo Mouscron" />
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+`;
+
+
 const forgotPassword = catchAsync(async (req, res) => {
+    console.log('Received forgot password request');
     const { body } = req;
+    console.log('Request body:', body);
     const { value, error } = forgotPasswordSchema.validate(body);
     if (error) {
+        console.log('Validation error:', error.details.map(err => err.message).join(', '));
         return res.status(400).json({ message: error.details.map(err => err.message).join(', ') });
     }
 
     const { email } = value;
+    console.log('Validated email:', email);
 
     try {
         const user = await userModel.findOne({ email });
+        console.log('User found:', user);
         if (!user) {
+            console.log('Email not found in database');
             return res.status(404).json({ message: 'Email not found' });
         }
 
         // Générer un token de réinitialisation de mot de passe
         const resetToken = generateToken();
+        console.log('Generated reset token:', resetToken);
+
         // Enregistrer le token dans la base de données
         await userModel.updateOne({ email }, { $set: { resetToken, tokenExpiration: Date.now() + 3600000 } }); // 1 heure d'expiration
-
-        console.log(`Token généré pour ${email}: ${resetToken}`);
+        console.log(`Token saved for ${email}: ${resetToken}`);
 
         const resetLink = `${process.env.FRONTEND_URL}/reset-password/${resetToken}`;
+        console.log('Reset link:', resetLink);
+
         const subject = 'Récupération de mot de passe';
         const message = '';
-        const html = `
-        <html>
-        <head>
-            <style>
-                body {
-                    background-color: #f5f5f5;
-                    font-family: Arial, Helvetica, sans-serif;
-                    font-size: 16px;
-                    color: #444444;
-                }
-                .container {
-                    max-width: 600px;
-                    margin: 0 auto;
-                    padding: 20px;
-                    background-color: #ffffff;
-                    border-radius: 5px;
-                    box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.2);
-                }
-                .header {
-                    background-color: #56007b;
-                    color: #ffffff;
-                    padding: 10px;
-                    border-radius: 5px 5px 0 0;
-                }
-                .content {
-                    padding: 20px;
-                }
-                .message {
-                    font-size: 20px;
-                    margin-bottom: 20px;
-                }
-                .footer {
-                    margin-top: 20px;
-                    display: flex;
-                    justify-content: space-between;
-                    align-items: center;
-                    font-size: 12px;
-                    color: #777;
-                }
-                .footer img {
-                    height: 30px;
-                    width: auto;
-                    margin-right: 10px;
-                }
-                .logo {
-                    height: 60px;
-                    width: auto;
-                }
-            </style>
-        </head>
-        <body>
-            <div class="container">
-                <div class="header">
-                    <h1>🔒 Réinitialisation de votre mot de passe</h1>
-                </div>
-                <div class="content">
-                    <p class="message">
-                        Bonjour, <br><br>
-                        Vous avez demandé à réinitialiser votre mot de passe. Utilisez le lien ci-dessous pour définir un nouveau mot de passe. Ce lien est valable pendant une heure.<br><br>
-                        <a href="${resetLink}">${resetLink}</a>
-                    </p>
-                </div>
-                <div class="footer">
-                    <div>Gardien de la Paix - Ville de Mouscron</div>
-                    <div class="logo">
-                        <img src="https://ekreativ.be/images/visuel.png" alt="Logo Gardien de la Paix Belgique" />
-                        <img src="https://ekreativ.be/images/ville.png" alt="Logo Mouscron" />
-                    </div>
-                </div>
-            </div>
-        </body>
-        </html>
-        `;
+        const html = getResetPasswordEmailHtml(resetLink);
 
         await sendMail(subject, message, html, email);
 
@@ -124,6 +137,7 @@ const forgotPassword = catchAsync(async (req, res) => {
         res.status(500).json({ message: 'Server error' });
     }
 });
+
 
 const resetPassword = catchAsync(async (req, res) => {
     const { token } = req.params;
