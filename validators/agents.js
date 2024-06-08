@@ -5,7 +5,7 @@ module.exports = {
     validator: {
         $jsonSchema: {
             bsonType: 'object',
-            required: ['email', 'matricule', 'userAccess', ],
+            required: ['email', 'matricule',],
             properties: {
                 _id: {},
                 email: {
@@ -53,6 +53,27 @@ module.exports = {
                     bsonType: ['array', 'null'],
                     description: 'must be an array and is not required',
                 },
+                enable: {
+                    bsonType: 'bool',
+                    description: 'must be a boolean and is required',
+                },
+                lastConnection: {
+                    bsonType: ['date', 'null'],
+                    description: 'must be a date and is not required',
+                },
+                createdAt: {
+                    bsonType: ['date', 'null'],
+                    description: 'must be a date and is not required',
+                },
+                updatedAt: {
+                    bsonType: ['date', 'null'],
+                    description: 'must be a date and is not required',
+                },
+                deletedAt: {
+                    bsonType: ['date', 'null'],
+                    description: 'must be a date and is not required',
+                },
+
             },
         },
     },

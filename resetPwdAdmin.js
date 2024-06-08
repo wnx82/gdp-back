@@ -1,6 +1,6 @@
 // resetAdmin.js
 require('dotenv').config();
-const { dbClient } = require('./utils/');
+const { dbClient } = require('./utils');
 const bcrypt = require('bcrypt');
 const readline = require('readline');
 

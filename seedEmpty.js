@@ -132,7 +132,7 @@ redisClient.flushall((err, reply) => {
         createdRues = await Promise.all(
             ruesDto.map(u => db.collection('rues').insertOne(u))
         );
-        console.log('Rues inserted successfully:', createdRues);
+        // console.log('Rues inserted successfully:', createdRues);
     } catch (error) {
         console.error('Error inserting rues:', JSON.stringify(error, null, 2));
         process.exit(1);
@@ -191,12 +191,14 @@ redisClient.flushall((err, reply) => {
         formations: generateFormations(2),
         createdAt: new Date(),
         updatedAt: new Date(),
+        lastSeen : new Date(),
+        enable: true,
     };
     
     try {
         const createdAgent = await db.collection('agents').insertOne(agentDto);
         createdAgents.push(createdAgent); // Ajoute l'agent créé à la liste des agents
-        console.log('createdAgents:', createdAgents);
+        // console.log('createdAgents:', createdAgents);
     } catch (error) {
         console.error('Error inserting agent:', JSON.stringify(error, null, 2));
         process.exit(1);
@@ -215,6 +217,8 @@ redisClient.flushall((err, reply) => {
         formations: ['Formation 1', 'Formation 2'],
         createdAt: new Date(),
         updatedAt: new Date(),
+        lastConnection: new Date(),
+        enable: true,
     };
 
     try {
@@ -408,11 +412,6 @@ redisClient.flushall((err, reply) => {
     }
 
     // DailiesDto
-    console.log('createdAgents pour daily:', createdAgents);
-    console.log('createdHoraires pour daily:', createdHoraires);
-    console.log('createdMissionsQuartiers pour daily:', createdMissionsQuartiers);
-    console.log('createdMissions pour daily:', createdMissions);
-    console.log('vehiculeDto pour daily:', createdVehicules);
 
     if (createdAgents.length > 0 && createdHoraires.length > 0 && createdMissionsQuartiers.length > 0 && createdMissions.length > 0 && createdVehicules.length > 0) {
         const dailyDto = {
@@ -435,7 +434,7 @@ redisClient.flushall((err, reply) => {
 
         try {
             const createdDaily = await db.collection('dailies').insertOne(dailyDto);
-            console.log('Daily created:', createdDaily.insertedId);
+            // console.log('Daily created:', createdDaily.insertedId);
             createdDailyDto.push(createdDaily); // Ajouter à la liste des dailies créées
         } catch (error) {
             console.error('Error inserting daily:', JSON.stringify(error, null, 2));
@@ -448,11 +447,7 @@ redisClient.flushall((err, reply) => {
     }
 
     // RapportsDto
-    console.log('createdDailyDto pour Rapport:', createdDailyDto);
-    console.log('createdAgents pour Rapport:', createdAgents);
-    console.log('createdMissionsQuartiers pour Rapport:', createdMissionsQuartiers);
-    console.log('createdMissions pour Rapport:', createdMissions);
-    console.log('createdVehicules pour Rapport:', createdVehicules);
+
 
     if (createdDailyDto.length > 0) {
         console.log('createdDailyDto is not empty');
@@ -510,7 +505,7 @@ redisClient.flushall((err, reply) => {
 
         try {
             const createdRapport = await db.collection('rapports').insertOne(rapportDto);
-            console.log('Rapport created:', createdRapport.insertedId);
+            // console.log('Rapport created:', createdRapport.insertedId);
         } catch (error) {
             console.error('Error inserting rapport:', JSON.stringify(error, null, 2));
             process.exit(1);

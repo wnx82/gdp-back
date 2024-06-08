@@ -614,6 +614,8 @@ redisClient.flushall((err, reply) => {
         formations: faker.datatype.array(2),
         createdAt: new Date(),
         updatedAt: new Date(),
+        // lastConnection: new Date(),
+        enable: true,
     };
     try {
         await db.collection('agents').insertOne(admin);
@@ -645,6 +647,8 @@ redisClient.flushall((err, reply) => {
 
                 createdAt: new Date(),
                 updatedAt: new Date(),
+                // lastConnection: new Date(),
+                enable: true,
             };
         })
     );

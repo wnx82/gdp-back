@@ -22,7 +22,11 @@ const schema = Joi.object({
     tel: Joi.string().max(30).allow(null).optional().empty(''),
     iceContact: Joi.string().allow(null).optional().empty(''),
     picture: Joi.string().allow(null).optional().empty(''),
-    formations: Joi.array(),
+    formations: Joi.array().optional(),
+    createdAt: Joi.date().optional(),
+    updatedAt: Joi.date().optional(),
+    lastConnection: Joi.date().optional(),
+    enable: Joi.boolean().optional(),
 });
 
 const findAll = catchAsync(async (req, res) => {
@@ -53,8 +57,11 @@ const findAll = catchAsync(async (req, res) => {
                     updatedAt: 1,
                     deletedAt: 1,
                     formations: 1,
+                    lastConnection: 1,
+                    enable: 1,
                 },
             },
+            
         ];
 
         const data = await collection.aggregate(pipeline).toArray();
@@ -103,8 +110,12 @@ const findOne = catchAsync(async (req, res) => {
                         updatedAt: 1,
                         deletedAt: 1,
                         formations: 1,
+                        lastConnection: 1,
+                        enable: 1,
                     },
                 },
+                
+               
             ];
             const data = await collection.aggregate(pipeline).toArray();
             redisClient.set(

@@ -1,15 +1,13 @@
-//./routes/logs.js
 var express = require('express');
 var router = express.Router();
 const controller = require('../controllers/logs.controller');
-// const validateId = require('../helpers/validateId');
-/* GET logs listing. */
-router.get('/', controller.get);
-// router.get('/:id', validateId, controller.findOne);
-// router.post('/', controller.create);
-// router.post('/purge', controller.deleteMany);
-// router.post('/restore', controller.restoreMany);
-// router.patch('/:id', validateId, controller.updateOne);
-router.delete('/', controller.deleteFile);
+
+// Routes pour access.log
+router.get('/access', controller.getAccessLog);
+router.delete('/access', controller.deleteAccessLog);
+
+// Routes pour console.log
+router.get('/console', controller.getConsoleLog);
+router.delete('/console', controller.deleteConsoleLog);
 
 module.exports = router;
