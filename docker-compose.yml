@@ -3,7 +3,7 @@ version: '3.9'
 services:
     mongodb:
         container_name: gdp-back-mongodb
-        image: mongo
+        image: mongo:latest
         restart: unless-stopped
         environment:
             MONGO_INITDB_ROOT_USERNAME: ${MONGO_DB_USERNAME}

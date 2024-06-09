@@ -1,4 +1,4 @@
-const dbClient = require('../utils').dbClient; // Assurez-vous que le chemin est correct
+const dbClient = require('..').dbClient; // Assurez-vous que le chemin est correct
 const database = dbClient.db(process.env.MONGO_DB_DATABASE);
 const userModel = database.collection('agents');
 const passport = require('passport');
@@ -8,6 +8,7 @@ const passportJWT = require('passport-jwt');
 const JWTStrategy = passportJWT.Strategy;
 const ExtractJWT = passportJWT.ExtractJwt;
 const { ObjectId } = require('mongodb');
+const connectedUsers = require('./connectedUsers'); // Assurez-vous que le chemin est correct
 
 passport.use(
     new LocalStrategy(
@@ -28,7 +29,6 @@ passport.use(
                         });
                     }
 
-                    // Vérifier si l'utilisateur est désactivé
                     if (user.enable === false) {
                         console.log('Compte utilisateur désactivé:', email);
                         return cb(null, false, {
@@ -40,8 +40,21 @@ passport.use(
                     const checkPassword = await BcryptCompare(password, user.password);
                     if (checkPassword) {
                         console.log('Connexion réussie pour l\'utilisateur:', email);
-                        delete user.password;
-                        return cb(null, user, {
+                        
+                        // Mettre à jour la date de dernière connexion
+                        await userModel.updateOne(
+                            { _id: user._id },
+                            { $set: { lastConnection: new Date() } }
+                        );
+
+                        // Enregistrer l'utilisateur comme connecté dans Redis
+                        connectedUsers.addUser(user);
+
+                        // Rafraîchir l'utilisateur après la mise à jour
+                        const updatedUser = await userModel.findOne({ _id: user._id });
+                        delete updatedUser.password;
+
+                        return cb(null, updatedUser, {
                             message: 'Connexion réussie.',
                         });
                     }
@@ -75,6 +88,10 @@ passport.use(
                         console.log('Utilisateur non trouvé pour l\'ID:', jwtPayload._id);
                         return cb(null, false);
                     }
+
+                    // Enregistrer l'utilisateur comme connecté dans Redis
+                    connectedUsers.addUser(user);
+
                     console.log('Utilisateur trouvé pour l\'ID:', jwtPayload._id);
                     return cb(null, user);
                 })
@@ -85,5 +102,10 @@ passport.use(
         }
     )
 );
+
+// Supprimer l'utilisateur de Redis lors de la déconnexion
+passport.logout = (userId) => {
+    connectedUsers.removeUser(userId);
+};
 
 module.exports = passport;

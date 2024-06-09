@@ -2,6 +2,10 @@
 
 ## Docker Machine
 
+
+docker build -t gdp-api .
+
+
 -   `docker-machine start` - Start VM
 -   `docker-machine stop` - Stop VM
 -   `docker-machine env` - Display Docker client setup commands

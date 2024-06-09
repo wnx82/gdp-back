@@ -30,4 +30,5 @@ RUN npm install -g nodemon
 EXPOSE 3003
 
 # Commande de démarrage de l'application
-CMD ["sh", "-c", "node /app/seed.js && node /app/seedRues.js && node /app/bin/www"]
+CMD ["sh", "-c", "node /app/seedEmpty.js && node /app/bin/www"]
+# CMD ["sh", "-c", "node /app/seed.js && node /app/seedRues.js && node /app/bin/www"]

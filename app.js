@@ -9,13 +9,10 @@ const passport = require('passport');
 const bodyParser = require('body-parser');
 const fs = require('fs');
 const { dbClient, redisClient } = require('./utils/');
-const logConsole = require('./utils/logger'); // Chemin vers le fichier logger.js
+const { consoleLogStream, accessLogStream, formatAccessLog } = require('./utils/logger'); // Chemin vers le fichier logger.js
 
-// Configuration des logs d'accès
-const accessLogStream = fs.createWriteStream(
-    path.join(__dirname, 'access.log'),
-    { flags: 'a' }
-);
+// Fuseau horaire de Bruxelles
+process.env.TZ = 'Europe/Brussels';
 
 // Initialisation de l'application Express
 var app = express();
@@ -29,6 +26,8 @@ var uploadRouter = require('./routes/upload');
 var logsRouter = require('./routes/logs');
 var imageController = require('./controllers/image.controller');
 var forgotPasswordRouter = require('./routes/forgotPassword');
+var connectedUsersRouter = require('./routes/connectedUsers'); // Assurez-vous que le chemin est correct
+
 // Administration
 var agentsRouter = require('./routes/agents');
 var categoriesRouter = require('./routes/categories');
@@ -45,7 +44,7 @@ var validationsRouter = require('./routes/validations');
 var vehiculesRouter = require('./routes/vehicules');
 
 // Importation des configurations nécessaires
-require('./utils/passport');
+require('./utils/auth/passport');
 
 // Configuration de CORS
 var corsOptions = {
@@ -61,7 +60,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(logger('combined', { stream: accessLogStream }));
+app.use(logger(formatAccessLog, { stream: accessLogStream })); // Utilisation du format personnalisé pour les logs d'accès
 
 // Configuration du moteur de vues
 app.set('views', path.join(__dirname, 'views'));
@@ -70,6 +69,7 @@ app.set('view engine', 'ejs');
 // Configuration des routes
 app.use('/', indexRouter);
 app.use('/config', configRouter);
+app.use('/connected', connectedUsersRouter);
 app.use('/login', authRouter);
 app.use('/forgot-password', forgotPasswordRouter);
 app.use('/logs', logsRouter);

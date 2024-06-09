@@ -4,7 +4,6 @@ require('dotenv').config();
 
 const { dbClient, redisClient } = require('./utils');
 const { faker } = require('@faker-js/faker');
-
 const bcrypt = require('bcrypt');
 const validators = require('./validators');
 const ObjectId = require('mongodb').ObjectId;
@@ -191,7 +190,7 @@ redisClient.flushall((err, reply) => {
         formations: generateFormations(2),
         createdAt: new Date(),
         updatedAt: new Date(),
-        lastSeen : new Date(),
+        // lastConnection: new Date(),
         enable: true,
     };
     
@@ -217,7 +216,7 @@ redisClient.flushall((err, reply) => {
         formations: ['Formation 1', 'Formation 2'],
         createdAt: new Date(),
         updatedAt: new Date(),
-        lastConnection: new Date(),
+        // lastConnection: new Date(),
         enable: true,
     };
 
