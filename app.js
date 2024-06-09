@@ -30,6 +30,7 @@ var connectedUsersRouter = require('./routes/connectedUsers'); // Assurez-vous q
 
 // Administration
 var agentsRouter = require('./routes/agents');
+var articlesRouter = require('./routes/articles');
 var categoriesRouter = require('./routes/categories');
 var constatsRouter = require('./routes/constats');
 var dailiesRouter = require('./routes/dailies');
@@ -77,6 +78,7 @@ app.use('/upload', uploadRouter);
 app.post('/save-image', imageController.saveImage);
 
 app.use('/agents', agentsRouter);
+app.use('/articles', articlesRouter);
 app.use('/users', passport.authenticate('jwt', { session: false }), agentsRouter);
 app.use('/categories', categoriesRouter);
 app.use('/constats', constatsRouter);

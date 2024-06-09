@@ -13,6 +13,7 @@ const bar1 = new cliProgress.SingleBar({}, cliProgress.Presets.shades_classic);
 // Initialisation des variables globales
 let createdRues = [];
 let createdAgents = [];
+let createdArticles= [];
 let createdHabitations = [];
 let createdMissions = [];
 let createdMissionsQuartiers = [];
@@ -34,6 +35,7 @@ redisClient.flushall((err, reply) => {
     const db = dbClient.db(process.env.MONGO_DB_DATABASE);
     const collections = [
         'agents',
+        'articles',
         'categories',
         'constats',
         'dailies',
@@ -174,6 +176,53 @@ redisClient.flushall((err, reply) => {
         process.exit(1);
     }
     bar1.update(i++);
+
+
+    // Articles DTO
+    const articlesDto = [
+        {
+            title: 'New Features in Our Product',
+            category: 'Announcements',
+            date: new Date(),
+            content: 'We are excited to announce the new features in our product...',
+            attachments: [
+                {
+                    filename: 'feature_overview.pdf',
+                    url: 'https://example.com/feature_overview.pdf'
+                },
+                {
+                    filename: 'screenshot.png',
+                    url: 'https://example.com/screenshot.png'
+                }
+            ],
+            author: 'John Doe',
+            createdAt: new Date(),
+            updatedAt: new Date(),
+        },
+        {
+            title: 'Upcoming Maintenance Schedule',
+            category: 'Maintenance',
+            date: new Date(),
+            content: 'Please be informed about the upcoming maintenance schedule...',
+            attachments: null,
+            author: 'Admin',
+            createdAt: new Date(),
+            updatedAt: new Date(),
+        }
+    // Ajoutez plus d'articles ici si nécessaire
+    ];
+
+    for (const articleDto of articlesDto) {
+        try {
+            const createdArticle = await db.collection('articles').insertOne(articleDto);
+            console.log('Article inserted successfully.');
+            createdArticles.push(createdArticle);
+        } catch (error) {
+            console.error('Error inserting article:', JSON.stringify(error, null, 2));
+            process.exit(1);
+        }
+        bar1.update(i++);
+    }
 
     // AgentDto
     const agentDto = {
