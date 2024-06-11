@@ -14,6 +14,7 @@ const schema = Joi.object({
     category: Joi.string().optional().allow(null).description('Category is optional'),
     date: Joi.date().required().description('Date is required'),
     content: Joi.string().required().description('Content is required'),
+    severity: Joi.string().required().description('Severity is required'),
     attachments: Joi.array().items(
         Joi.object({
             filename: Joi.string().optional(),

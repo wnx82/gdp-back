@@ -673,6 +673,7 @@ redisClient.flushall((err, reply) => {
             category: 'Announcements',
             date: new Date(),
             content: 'We are excited to announce the new features in our product...',
+            severity: 'success',
             attachments: [
                 {
                     filename: 'feature_overview.pdf',
@@ -692,6 +693,7 @@ redisClient.flushall((err, reply) => {
             category: 'Maintenance',
             date: new Date(),
             content: 'Please be informed about the upcoming maintenance schedule...',
+            severity: 'warn',
             attachments: null,
             author: 'Admin',
             createdAt: new Date(),
