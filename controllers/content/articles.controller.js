@@ -120,7 +120,7 @@ const deleteOne = catchAsync(async (req, res) => {
     const { force } = req.query;
     if (force === undefined || parseInt(force, 10) === 0) {
         const article = await collection.findOne({ _id: new ObjectId(id) });
-        if (article && article.deletedAt) {
+        if (article?.deletedAt) {
             return res.status(200).json(article);
         }
         const data = await collection.updateOne(
