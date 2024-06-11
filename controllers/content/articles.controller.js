@@ -1,5 +1,3 @@
-// ./controllers/articles.controller.js
-
 const { dbClient, redisClient } = require('../../utils');
 const { catchAsync, success } = require('../../helpers');
 const database = dbClient.db(process.env.MONGO_DB_DATABASE);
@@ -25,64 +23,40 @@ const schema = Joi.object({
 });
 
 const findAll = catchAsync(async (req, res) => {
-    const message = '📄 List of articles';
     const inCache = await redisClient.get(`${collectionName}:all`);
     if (inCache) {
         return res.status(200).json(JSON.parse(inCache));
     } else {
         const data = await collection.find({}).toArray();
-        redisClient.set(
-            `${collectionName}:all`,
-            JSON.stringify(data),
-            'EX',
-            600
-        );
+        redisClient.set(`${collectionName}:all`, JSON.stringify(data), 'EX', 600);
         res.status(200).json(data);
     }
 });
 
 const findOne = catchAsync(async (req, res) => {
     try {
-        const message = `📄 Article details`;
         const { id } = req.params;
-        let data = null;
-        data = await collection.findOne({ _id: new ObjectId(id) });
+        let data = await collection.findOne({ _id: new ObjectId(id) });
         if (!data) {
-            res.status(404).json({
+            return res.status(404).json({
                 message: `⛔ No article found with id ${id}`,
             });
-            return;
         }
         const inCache = await redisClient.get(`${collectionName}:${id}`);
-
         if (inCache) {
             return res.status(200).json(JSON.parse(inCache));
         } else {
             data = await collection.findOne({ _id: new ObjectId(id) });
-            redisClient.set(
-                `${collectionName}:${id}`,
-                JSON.stringify(data),
-                'EX',
-                600
-            );
-        }
-
-        if (!data) {
-            res.status(404).json({
-                message: `No article found with id ${id}`,
-            });
-            return;
-        } else {
+            redisClient.set(`${collectionName}:${id}`, JSON.stringify(data), 'EX', 600);
             res.status(200).json(data);
         }
     } catch (e) {
         console.error(e);
+        res.status(500).json({ message: 'Internal server error' });
     }
 });
 
 const create = catchAsync(async (req, res) => {
-    const message = `✏️ Creating an article`;
-
     const { body } = req;
     const { value, error } = schema.validate(body);
     if (error) {
@@ -95,43 +69,36 @@ const create = catchAsync(async (req, res) => {
         const { ...rest } = value;
         const createdAt = new Date();
         const updatedAt = new Date();
-        const data = await collection
-            .insertOne({
-                ...rest,
-                createdAt,
-                updatedAt,
-            })
-            .then(
-                console.log(
-                    `----------->Article created successfully<-----------`
-                )
-            );
+        const data = await collection.insertOne({
+            ...rest,
+            createdAt,
+            updatedAt,
+        });
+        console.log(`----------->Article created successfully<-----------`);
         res.status(201).json(data);
         redisClient.del(`${collectionName}:all`);
     } catch (err) {
         console.log(err);
+        res.status(500).json({ message: 'Internal server error' });
     }
 });
 
-// Avec vérification
 const updateOne = catchAsync(async (req, res) => {
     const { id } = req.params;
     if (!id) {
         return res.status(400).json({ message: 'No id provided' });
     }
-    const message = `📝 Updating article ${id}`;
     const { body } = req;
     const { value, error } = schema.validate(body);
     if (error) {
-        console.log(error);
         const errors = error.details.map(d => d.message);
         return res.status(400).json({ message: 'Validation error', errors });
     }
-    let updateValue = { ...value };
+    const updateValue = { ...value };
 
     try {
         const updatedAt = new Date();
-        const { modifiedCount } = await collection.findOneAndUpdate(
+        const { modifiedCount } = await collection.updateOne(
             { _id: new ObjectId(id) },
             { $set: { ...updateValue, updatedAt } },
             { returnDocument: 'after' }
@@ -152,32 +119,22 @@ const deleteOne = catchAsync(async (req, res) => {
     const { id } = req.params;
     const { force } = req.query;
     if (force === undefined || parseInt(force, 10) === 0) {
-        // Vérification si l'article a déjà été supprimé de manière logique
         const article = await collection.findOne({ _id: new ObjectId(id) });
         if (article && article.deletedAt) {
-            // Article already deleted, return appropriate response
             return res.status(200).json(article);
         }
-        // Suppression logique
-        const message = `🗑️ Logical deletion of an article`;
         const data = await collection.updateOne(
-            {
-                _id: new ObjectId(id),
-            },
-            {
-                $set: { deletedAt: new Date() },
-            }
+            { _id: new ObjectId(id) },
+            { $set: { deletedAt: new Date() } }
         );
         res.status(200).json(data);
         redisClient.del(`${collectionName}:all`);
         redisClient.del(`${collectionName}:${id}`);
     } else if (parseInt(force, 10) === 1) {
-        // Suppression physique
-        const message = `🗑️ Physical deletion of an article`;
         const result = await collection.deleteOne({ _id: new ObjectId(id) });
         if (result.deletedCount === 1) {
             console.log('Successfully deleted');
-            res.status(200).json(success(message));
+            res.status(200).json(success('🗑️ Physical deletion of an article'));
             redisClient.del(`${collectionName}:all`);
             redisClient.del(`${collectionName}:${id}`);
         } else {
@@ -194,9 +151,7 @@ const deleteMany = catchAsync(async (req, res) => {
     });
     const deletedCount = result.deletedCount;
     if (!deletedCount) {
-        return res
-            .status(404)
-            .json({ message: 'No data found to delete.' });
+        return res.status(404).json({ message: 'No data found to delete.' });
     }
     redisClient.del(`${collectionName}:all`);
     res.status(200).json({
