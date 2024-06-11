@@ -1,6 +1,3 @@
-// ./controllers/categories.controller.js
-
-// const dbClient = require('../utils/').dbClient;
 const { dbClient, redisClient } = require('../utils');
 const { catchAsync, success } = require('../helpers');
 const fs = require('fs');

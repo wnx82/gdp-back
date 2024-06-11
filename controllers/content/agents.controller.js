@@ -1,5 +1,3 @@
-// ./controllers/agents.controller.js
-
 const { dbClient, redisClient } = require('../../utils');
 const { catchAsync, success } = require('../../helpers');
 const database = dbClient.db(process.env.MONGO_DB_DATABASE);
@@ -30,7 +28,6 @@ const schema = Joi.object({
 });
 
 const findAll = catchAsync(async (req, res) => {
-    const message = '📄 Liste des agents';
     const inCache = await redisClient.get(`${collectionName}:all`);
     if (inCache) {
         return res.status(200).json(JSON.parse(inCache));
@@ -61,23 +58,16 @@ const findAll = catchAsync(async (req, res) => {
                     enable: 1,
                 },
             },
-            
         ];
 
         const data = await collection.aggregate(pipeline).toArray();
-        redisClient.set(
-            `${collectionName}:all`,
-            JSON.stringify(data),
-            'EX',
-            600
-        );
+        redisClient.set(`${collectionName}:all`, JSON.stringify(data), 'EX', 600);
         res.status(200).json(data);
     }
 });
 
 const findOne = catchAsync(async (req, res) => {
     try {
-        const message = `📄 Détails de l'agent`;
         const { id } = req.params;
         const inCache = await redisClient.get(`${collectionName}:${id}`);
         if (inCache) {
@@ -114,16 +104,9 @@ const findOne = catchAsync(async (req, res) => {
                         enable: 1,
                     },
                 },
-                
-               
             ];
             const data = await collection.aggregate(pipeline).toArray();
-            redisClient.set(
-                `${collectionName}:${id}`,
-                JSON.stringify(data),
-                'EX',
-                600
-            );
+            redisClient.set(`${collectionName}:${id}`, JSON.stringify(data), 'EX', 600);
             if (!data.length) {
                 res.status(404).json({ message: `No agent found with id ${id}` });
                 return;
@@ -137,58 +120,38 @@ const findOne = catchAsync(async (req, res) => {
 });
 
 const create = catchAsync(async (req, res) => {
-    console.log('Create agent request received');
-    const message = `✏️ Création d'un agent`;
     const { body } = req;
 
-    if (typeof body.email === 'undefined') {
-        console.log('Email field is undefined');
-        return res.status(400).json({ message: 'Email field is required' });
-    }
-    if (!body.email) {
-        console.log('Email field is empty');
+    if (typeof body.email === 'undefined' || !body.email) {
         return res.status(400).json({ message: 'Email field is required' });
     }
     if (!body.password) {
-        console.log('Password field is empty');
         return res.status(400).json({ message: 'Password field is required' });
     }
     // Set default picture if empty
     if (!body.picture) {
-        console.log('Picture field is empty. Setting default picture');
-        body.picture =
-            'https://cdn-icons-png.flaticon.com/512/1946/1946392.png';
+        body.picture = 'https://cdn-icons-png.flaticon.com/512/1946/1946392.png';
     }
 
     const { value, error } = schema.validate(body);
     // Handle validation errors
     if (error) {
-        console.log(`Validation error: ${error.details[0].message}`);
         return res.status(400).json({ message: error.details[0].message });
     }
 
     try {
         const { email, matricule, password, ...rest } = value;
         // Check for existing email
-        const existingUser = await collection.findOne({
-            email,
-        });
-        const existingMatricule = await collection.findOne({
-            matricule,
-        });
+        const existingUser = await collection.findOne({ email });
+        const existingMatricule = await collection.findOne({ matricule });
 
         if (existingUser) {
-            console.log('Email already exists');
             return res.status(409).json({ message: 'Email already exists' });
         }
         if (existingMatricule) {
-            console.log('Matricule already exists');
-            return res
-                .status(409)
-                .json({ message: 'Matricule already exists' });
+            return res.status(409).json({ message: 'Matricule already exists' });
         }
-        //on efface le pwd
-        delete password;
+
         const hash = await bcrypt.hash(password, 10);
         const createdAt = new Date();
         const updatedAt = new Date();
@@ -200,7 +163,6 @@ const create = catchAsync(async (req, res) => {
             createdAt,
             updatedAt,
         });
-        console.log('Agent created successfully');
         res.status(201).json(data);
         redisClient.del(`${collectionName}:all`);
     } catch (err) {
@@ -211,17 +173,14 @@ const create = catchAsync(async (req, res) => {
 
 const updateOne = catchAsync(async (req, res) => {
     const { id } = req.params;
-    console.log('id:', id);
     if (!id) {
-        console.log('No id provided');
         return res.status(400).json({ message: 'No id provided' });
     }
 
     // Check if the agent with the given ID exists
     try {
-        const agent = await collection.findOne({ _id: new ObjectId(id) }); // Utilisation de new ObjectId(id)
+        const agent = await collection.findOne({ _id: new ObjectId(id) });
         if (!agent) {
-            console.log('Agent not found');
             return res.status(404).json({ message: 'Agent not found' });
         }
     } catch (err) {
@@ -229,18 +188,16 @@ const updateOne = catchAsync(async (req, res) => {
         return res.status(500).json({ message: 'Server error while finding agent' });
     }
 
-    const message = `📝 Mise à jour de l'agent ${id}`;
     const { body } = req;
 
     // Check for existing email
     if (body.email) {
         const existingUser = await collection.findOne({
             email: body.email,
-            _id: { $ne: new ObjectId(id) }, // Ajout de new ici
+            _id: { $ne: new ObjectId(id) },
         });
 
         if (existingUser) {
-            console.log('Email already exists');
             return res.status(409).json({ message: 'Email already exists' });
         }
     }
@@ -249,36 +206,29 @@ const updateOne = catchAsync(async (req, res) => {
     if (body.matricule) {
         const existingMatricule = await collection.findOne({
             matricule: body.matricule,
-            _id: { $ne: new ObjectId(id) }, // Ajout de new ici
+            _id: { $ne: new ObjectId(id) },
         });
 
         if (existingMatricule) {
-            console.log('Matricule already exists');
             return res.status(409).json({ message: 'Matricule already exists' });
         }
     }
 
     if (!body.email) {
-        console.log('Email field is required');
         return res.status(400).json({ message: 'Email field is required' });
     }
     const { value, error } = schema.validate(body);
-    // console.log('value:', value);
     if (error) {
-        // console.log('Error:', error);
         return res.status(400).json({ message: error.details[0].message });
     }
     try {
         const updatedAt = new Date();
-        console.log('Updated at:', updatedAt);
         const { modifiedCount } = await collection.updateOne(
-            { _id: new ObjectId(id) }, // Ajout de new ici
+            { _id: new ObjectId(id) },
             { $set: { ...value, updatedAt } },
             { returnDocument: 'after' }
         );
-        console.log('Modified count:', modifiedCount);
         if (modifiedCount === 0) {
-            console.log('Agent not found');
             return res.status(404).json({ message: 'Agent not found' });
         }
         res.status(200).json(value);
@@ -290,24 +240,20 @@ const updateOne = catchAsync(async (req, res) => {
     }
 });
 
-
 const deleteOne = catchAsync(async (req, res) => {
     const { id } = req.params;
     const { force } = req.query;
 
     if (force === undefined || parseInt(force, 10) === 0) {
-        // Vérification si l'agent a déjà été supprimé de manière logique
         const agent = await collection.findOne({ _id: new ObjectId(id) });
         if (agent.deletedAt instanceof Date) {
             return res.status(200).json({ message: `🗑️ L'agent a déjà été supprimé de manière logique.` });
         }
 
-        // Vérification si l'agent a le matricule A101
-        if (agent.matricule === '101'|| agent.userAccess === 0) {
+        if (agent.matricule === '101' || agent.userAccess === 0) {
             return res.status(403).json({ message: `🚫 Impossible de supprimer un administrateur.` });
         }
 
-        // Vérification de l'intégrité référentielle
         const references = await Promise.all([
             database.collection('constats').findOne({ agents: new ObjectId(id) }),
             database.collection('dailies').findOne({ agents: new ObjectId(id) }),
@@ -315,14 +261,12 @@ const deleteOne = catchAsync(async (req, res) => {
             database.collection('validations').findOne({ agents: new ObjectId(id) })
         ]);
 
-        const referencedTables = ['constats', 'dailies', 'missions', 'rapports', 'validations'];
-        const hasReferences = references.some((ref, index) => ref !== null);
+        const hasReferences = references.some(ref => ref !== null);
 
         if (hasReferences) {
             return res.status(400).json({ message: `Cet agent est référencé dans d'autres tables et ne peut pas être supprimé.` });
         }
 
-        // Suppression logique
         const data = await collection.findOneAndUpdate(
             { _id: new ObjectId(id) },
             { $set: { deletedAt: new Date() } }
@@ -331,7 +275,6 @@ const deleteOne = catchAsync(async (req, res) => {
         redisClient.del(`${collectionName}:all`);
         redisClient.del(`${collectionName}:${id}`);
     } else if (parseInt(force, 10) === 1) {
-        // Suppression physique
         const result = await collection.deleteOne({ _id: new ObjectId(id) });
         if (result.deletedCount === 1) {
             res.status(200).json({ message: `🗑️ Suppression d'un agent de manière physique.` });
@@ -351,9 +294,7 @@ const deleteMany = catchAsync(async (req, res) => {
     });
     const deletedCount = result.deletedCount;
     if (!deletedCount) {
-        return res
-            .status(404)
-            .json({ message: 'Aucune donnée trouvée à supprimer.' });
+        return res.status(404).json({ message: 'Aucune donnée trouvée à supprimer.' });
     }
     redisClient.del(`${collectionName}:all`);
     res.status(200).json({
@@ -368,9 +309,7 @@ const restoreMany = catchAsync(async (req, res) => {
     );
     const restoredCount = result.modifiedCount;
     if (restoredCount === 0) {
-        return res
-            .status(404)
-            .json({ message: 'Aucune donnée trouvée à restaurer.' });
+        return res.status(404).json({ message: 'Aucune donnée trouvée à restaurer.' });
     }
     redisClient.del(`${collectionName}:all`);
     res.status(200).json({ message: `${restoredCount} données restaurées.` });

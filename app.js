@@ -1,10 +1,10 @@
 // Importation des modules nécessaires
-var createError = require('http-errors');
-var cors = require('cors');
+const createError = require('http-errors');
+const cors = require('cors');
 const express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
+const path = require('path');
+const cookieParser = require('cookie-parser');
+const logger = require('morgan');
 const passport = require('passport');
 const bodyParser = require('body-parser');
 const fs = require('fs');
@@ -15,40 +15,40 @@ const { consoleLogStream, accessLogStream, formatAccessLog } = require('./utils/
 process.env.TZ = 'Europe/Brussels';
 
 // Initialisation de l'application Express
-var app = express();
+const app = express();
 
 // Importation des modules de routes et contrôleurs
-var indexRouter = require('./routes/index');
-var authRouter = require('./routes/auth');
-var configRouter = require('./routes/config');
-var statusRouter = require('./routes/status');
-var uploadRouter = require('./routes/upload');
-var logsRouter = require('./routes/logs');
-var imageController = require('./controllers/image.controller');
-var forgotPasswordRouter = require('./routes/forgotPassword');
-var connectedUsersRouter = require('./routes/connectedUsers'); // Assurez-vous que le chemin est correct
+const indexRouter = require('./routes/index');
+const authRouter = require('./routes/auth');
+const configRouter = require('./routes/config');
+const statusRouter = require('./routes/status');
+const uploadRouter = require('./routes/upload');
+const logsRouter = require('./routes/logs');
+const imageController = require('./controllers/image.controller');
+const forgotPasswordRouter = require('./routes/forgotPassword');
+const connectedUsersRouter = require('./routes/connectedUsers'); // Assurez-vous que le chemin est correct
 
 // Administration
-var agentsRouter = require('./routes/agents');
-var articlesRouter = require('./routes/articles');
-var categoriesRouter = require('./routes/categories');
-var constatsRouter = require('./routes/constats');
-var dailiesRouter = require('./routes/dailies');
-var rapportsRouter = require('./routes/rapports');
-var habitationsRouter = require('./routes/habitations');
-var horairesRouter = require('./routes/horaires');
-var infractionsRouter = require('./routes/infractions');
-var ruesRouter = require('./routes/rues');
-var quartiersRouter = require('./routes/quartiers');
-var missionsRouter = require('./routes/missions');
-var validationsRouter = require('./routes/validations');
-var vehiculesRouter = require('./routes/vehicules');
+const agentsRouter = require('./routes/agents');
+const articlesRouter = require('./routes/articles');
+const categoriesRouter = require('./routes/categories');
+const constatsRouter = require('./routes/constats');
+const dailiesRouter = require('./routes/dailies');
+const rapportsRouter = require('./routes/rapports');
+const habitationsRouter = require('./routes/habitations');
+const horairesRouter = require('./routes/horaires');
+const infractionsRouter = require('./routes/infractions');
+const ruesRouter = require('./routes/rues');
+const quartiersRouter = require('./routes/quartiers');
+const missionsRouter = require('./routes/missions');
+const validationsRouter = require('./routes/validations');
+const vehiculesRouter = require('./routes/vehicules');
 
 // Importation des configurations nécessaires
 require('./utils/auth/passport');
 
 // Configuration de CORS
-var corsOptions = {
+const corsOptions = {
     origin: '*',
     methods: ['GET', 'PUT', 'POST', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
@@ -95,7 +95,7 @@ app.use('/validations', validationsRouter);
 app.use('/vehicules', vehiculesRouter);
 
 // Route pour gérer les erreurs 404
-app.use(function (req, res, next) {
+app.use((req, res, next) => {
     next(createError(404));
 });
 
@@ -107,7 +107,7 @@ app.get('/public/uploads/:imageName', (req, res) => {
 });
 
 // Gestionnaire d'erreurs
-app.use(function (err, req, res, next) {
+app.use((err, req, res, next) => {
     res.locals.message = err.message;
     res.locals.error = req.app.get('env') === 'development' ? err : {};
     res.status(err.status || 500);
