@@ -503,13 +503,12 @@ const sendDaily = catchAsync(async (req, res) => {
     if (!daily) {
         return res.status(404).json({ message: 'Daily not found' });
     }
-
     redisClient.del(`${collectionName}:all`);
     redisClient.del(`${collectionName}:${id}`);
-
     res.status(200).json(
-        await success(`📝 Envoi du daily ${id}`, `Mail envoyé aux agents le ${moment(sent).utcOffset('+0100').format('YYYY/MM/DD à HH:mm')}`)
+        success(`📝 Envoi du daily ${id}`, `Mail envoyé aux agents le ${moment(sent).utcOffset('+0100').format('YYYY/MM/DD à HH:mm')}`)
     );
+    
 });
 
 module.exports = {

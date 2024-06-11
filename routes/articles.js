@@ -1,7 +1,7 @@
 //./routes/articles.js
 
-var express = require('express');
-var router = express.Router();
+const express = require('express');
+const router = express.Router();
 const controller = require('../controllers/content/articles.controller');
 const validateId = require('../helpers/validateId');
 /* GET articles listing. */

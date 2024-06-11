@@ -301,7 +301,7 @@ const addAgent = catchAsync(async (req, res) => {
         { returnDocument: 'after' }
     );
 
-    if (data && data.value) {
+    if (data?.value) {
         res.status(201).json({ message: '👍 Agent added' });
         redisClient.del(`rapport:${id}`);
     } else {
@@ -385,7 +385,7 @@ const addMission = catchAsync(async (req, res) => {
         { returnDocument: 'after' }
     );
 
-    if (data && data.value) {
+    if (data?.value) {
         res.status(201).json({ message: '👍 Mission added' });
         redisClient.del(`rapport:${id}`);
     } else {
@@ -469,7 +469,7 @@ const addQuartier = catchAsync(async (req, res) => {
         { returnDocument: 'after' }
     );
 
-    if (data && data.value) {
+    if (data?.value) {
         res.status(201).json({ message: '👍 Quartier added' });
         redisClient.del(`rapport:${id}`);
     } else {
@@ -553,7 +553,7 @@ const addMissionQuartier = catchAsync(async (req, res) => {
         { returnDocument: 'after' }
     );
 
-    if (data && data.value) {
+    if (data?.value) {
         res.status(201).json({ message: '👍 Mission added' });
         redisClient.del(`rapport:${id}`);
     } else {

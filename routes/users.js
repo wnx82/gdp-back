@@ -19,8 +19,8 @@
  *         error request
  *
  */
-var express = require('express');
-var router = express.Router();
+const express = require('express');
+const router = express.Router();
 const controller = require('../controllers/users.controller');
 const validateId = require('../helpers/validateId');
 

@@ -15,8 +15,8 @@ const sendHabitation = async function (agentsData, habitationData, note) {
     const dataMessage = '';
     const dataMailTo = config.mail.to_habitations;
     const dataHTML = `
+<!DOCTYPE html>
 <html>
-
 <head>
     <style>
         body {
