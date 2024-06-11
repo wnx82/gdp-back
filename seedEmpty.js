@@ -97,7 +97,6 @@ redisClient.flushall((err, reply) => {
 
     try {
         const createdHoraire = await db.collection('horaires').insertOne(horairesDto);
-        console.log('Horaire inserted successfully:', createdHoraire.insertedId);
         createdHoraires.push({ ...horairesDto, insertedId: createdHoraire.insertedId }); // Ajout de l'insertedId à l'objet
     } catch (error) {
         console.error('Error inserting horaire:', error.message, error.stack);

@@ -716,7 +716,9 @@ redisClient.flushall((err, reply) => {
 
     const habitationsDto = [...Array(15)].map(() => ({
         adresse: {
-            rue: new ObjectId(createdRues[randomInt(0, 5)].insertedId),
+            rue: new ObjectId(
+                createdRues[Math.floor(Math.random() * 5)].insertedId
+            ),
             numero: faker.string.numeric(2),
         },
         demandeur: {
@@ -803,7 +805,9 @@ redisClient.flushall((err, reply) => {
             },
         },
         adresse: {
-            rue: new ObjectId(createdRues[randomInt(0, 5)].insertedId),
+            rue: new ObjectId(
+                createdRues[Math.floor(Math.random() * 5)].insertedId
+            ),
             numero: faker.string.numeric(2),
         },
         geolocation: {
@@ -1219,73 +1223,129 @@ redisClient.flushall((err, reply) => {
     bar1.update(i++);
 
 
-    const getRandomMissions = (createdMissions, count) => {
-        return Array.from({ length: count }, () => createdMissions[Math.floor(Math.random() * createdMissions.length)].insertedId);
-    };
-    
     const quartiersDto = [
         {
             title: 'Nouveau-Monde',
-            missions: getRandomMissions(createdMissions, 5),
+            missions: [
+                createdMissions[Math.floor(Math.random() * 20)].insertedId,
+                createdMissions[Math.floor(Math.random() * 20)].insertedId,
+                createdMissions[Math.floor(Math.random() * 20)].insertedId,
+                createdMissions[Math.floor(Math.random() * 20)].insertedId,
+                createdMissions[Math.floor(Math.random() * 20)].insertedId,
+            ],
             createdAt: new Date(),
             updatedAt: new Date(),
         },
         {
             title: 'Centre',
-            missions: getRandomMissions(createdMissions, 5),
+            missions: [
+                createdMissions[Math.floor(Math.random() * 20)].insertedId,
+                createdMissions[Math.floor(Math.random() * 20)].insertedId,
+                createdMissions[Math.floor(Math.random() * 20)].insertedId,
+                createdMissions[Math.floor(Math.random() * 20)].insertedId,
+                createdMissions[Math.floor(Math.random() * 20)].insertedId,
+            ],
             createdAt: new Date(),
             updatedAt: new Date(),
         },
         {
             title: 'Risquons-Tout',
-            missions: getRandomMissions(createdMissions, 5),
+            missions: [
+                createdMissions[Math.floor(Math.random() * 20)].insertedId,
+                createdMissions[Math.floor(Math.random() * 20)].insertedId,
+                createdMissions[Math.floor(Math.random() * 20)].insertedId,
+                createdMissions[Math.floor(Math.random() * 20)].insertedId,
+                createdMissions[Math.floor(Math.random() * 20)].insertedId,
+            ],
             createdAt: new Date(),
             updatedAt: new Date(),
         },
         {
             title: 'Mont-à-Leux',
-            missions: getRandomMissions(createdMissions, 5),
+            missions: [
+                createdMissions[Math.floor(Math.random() * 20)].insertedId,
+                createdMissions[Math.floor(Math.random() * 20)].insertedId,
+                createdMissions[Math.floor(Math.random() * 20)].insertedId,
+                createdMissions[Math.floor(Math.random() * 20)].insertedId,
+                createdMissions[Math.floor(Math.random() * 20)].insertedId,
+            ],
             createdAt: new Date(),
             updatedAt: new Date(),
         },
         {
             title: 'Tuquet-Parc',
-            missions: getRandomMissions(createdMissions, 5),
+            missions: [
+                createdMissions[Math.floor(Math.random() * 20)].insertedId,
+                createdMissions[Math.floor(Math.random() * 20)].insertedId,
+                createdMissions[Math.floor(Math.random() * 20)].insertedId,
+                createdMissions[Math.floor(Math.random() * 20)].insertedId,
+                createdMissions[Math.floor(Math.random() * 20)].insertedId,
+            ],
             createdAt: new Date(),
             updatedAt: new Date(),
         },
         {
             title: 'Coquinie-CHM',
-            missions: getRandomMissions(createdMissions, 5),
+            missions: [
+                createdMissions[Math.floor(Math.random() * 20)].insertedId,
+                createdMissions[Math.floor(Math.random() * 20)].insertedId,
+                createdMissions[Math.floor(Math.random() * 20)].insertedId,
+                createdMissions[Math.floor(Math.random() * 20)].insertedId,
+                createdMissions[Math.floor(Math.random() * 20)].insertedId,
+            ],
             createdAt: new Date(),
             updatedAt: new Date(),
         },
         {
             title: 'Herseaux',
-            missions: getRandomMissions(createdMissions, 5),
+            missions: [
+                createdMissions[Math.floor(Math.random() * 20)].insertedId,
+                createdMissions[Math.floor(Math.random() * 20)].insertedId,
+                createdMissions[Math.floor(Math.random() * 20)].insertedId,
+                createdMissions[Math.floor(Math.random() * 20)].insertedId,
+                createdMissions[Math.floor(Math.random() * 20)].insertedId,
+            ],
             createdAt: new Date(),
             updatedAt: new Date(),
         },
         {
             title: 'Dottignies',
-            missions: getRandomMissions(createdMissions, 5),
+            missions: [
+                createdMissions[Math.floor(Math.random() * 20)].insertedId,
+                createdMissions[Math.floor(Math.random() * 20)].insertedId,
+                createdMissions[Math.floor(Math.random() * 20)].insertedId,
+                createdMissions[Math.floor(Math.random() * 20)].insertedId,
+                createdMissions[Math.floor(Math.random() * 20)].insertedId,
+            ],
             createdAt: new Date(),
             updatedAt: new Date(),
         },
         {
             title: 'Luingne',
-            missions: getRandomMissions(createdMissions, 5),
+            missions: [
+                createdMissions[Math.floor(Math.random() * 20)].insertedId,
+                createdMissions[Math.floor(Math.random() * 20)].insertedId,
+                createdMissions[Math.floor(Math.random() * 20)].insertedId,
+                createdMissions[Math.floor(Math.random() * 20)].insertedId,
+                createdMissions[Math.floor(Math.random() * 20)].insertedId,
+            ],
             createdAt: new Date(),
             updatedAt: new Date(),
         },
         {
             title: 'Gare',
-            missions: getRandomMissions(createdMissions, 5),
+            missions: [
+                createdMissions[Math.floor(Math.random() * 20)].insertedId,
+                createdMissions[Math.floor(Math.random() * 20)].insertedId,
+                createdMissions[Math.floor(Math.random() * 20)].insertedId,
+                createdMissions[Math.floor(Math.random() * 20)].insertedId,
+                createdMissions[Math.floor(Math.random() * 20)].insertedId,
+            ],
             createdAt: new Date(),
             updatedAt: new Date(),
         },
     ];
-    
+
 
     
     try {
@@ -1307,7 +1367,9 @@ redisClient.flushall((err, reply) => {
         ],
         horaire: horairesDto[Math.floor(Math.random() * 4)].horaire,
         vehicule: vehiculesDto[Math.floor(Math.random() * 3)].marque,
-        quartiers: new ObjectId(createdMissionsQuartiers[randomInt(0, 5)].insertedId),
+        quartiers: [
+            createdMissionsQuartiers[Math.floor(Math.random() * 10)].insertedId,
+        ],
         missions: [
             createdMissions[Math.floor(Math.random() * 20)].insertedId,
             createdMissions[Math.floor(Math.random() * 20)].insertedId,
@@ -1341,7 +1403,9 @@ redisClient.flushall((err, reply) => {
             createdAgents[Math.floor(Math.random() * 15)].insertedId,
         ],
         vehicule: vehiculesDto[Math.floor(Math.random() * 4)].marque,
-        quartiers: new ObjectId(createdMissionsQuartiers[randomInt(0, 5)].insertedId),
+        quartiers: [
+            createdMissionsQuartiers[Math.floor(Math.random() * 10)].insertedId,
+        ],
         quartierMissionsValidate: [
             createdMissions[Math.floor(Math.random() * 20)].insertedId,
             createdMissions[Math.floor(Math.random() * 20)].insertedId,
