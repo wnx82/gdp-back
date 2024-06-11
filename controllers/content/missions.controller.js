@@ -1,6 +1,5 @@
 // ./controllers/missions.controller.js
 
-// const dbClient = require('../utils/').dbClient;
 const { dbClient, redisClient } = require('../../utils');
 const { catchAsync, success } = require('../../helpers');
 const database = dbClient.db(process.env.MONGO_DB_DATABASE);
@@ -12,7 +11,6 @@ const collectionName = 'missions';
 const schema = Joi.object({
     id: Joi.string().allow(null).optional().empty(''),
     title: Joi.string().allow(null).optional().empty(''),
-    // title: Joi.string().required(),
     description: Joi.string().allow(null).optional().empty(''),
     category: Joi.string().allow(null).optional().empty(''),
     horaire: Joi.string().allow(null).optional().empty(''),
@@ -25,7 +23,6 @@ const schema = Joi.object({
 });
 
 const findAll = catchAsync(async (req, res) => {
-    const message = '📄 Liste des missions';
     const inCache = await redisClient.get(`${collectionName}:all`);
     if (inCache) {
         return res.status(200).json(JSON.parse(inCache));
@@ -43,35 +40,23 @@ const findAll = catchAsync(async (req, res) => {
 
 const findOne = catchAsync(async (req, res) => {
     try {
-        const message = `📄 Détails de la mission`;
         const { id } = req.params;
-        let data = null;
-        data = await collection.findOne({ _id: new ObjectId(id) });
-        if (!data) {
-            res.status(404).json({
-                message: `⛔ No mission found with id ${id}`,
-            });
-            return;
-        }
-        const inCache = await redisClient.get(`mission:${id}`);
+        const inCache = await redisClient.get(`${collectionName}:${id}`);
         if (inCache) {
             return res.status(200).json(JSON.parse(inCache));
         } else {
-            data = await collection.findOne({ _id: new ObjectId(id) });
+            const data = await collection.findOne({ _id: new ObjectId(id) });
             redisClient.set(
                 `${collectionName}:${id}`,
                 JSON.stringify(data),
                 'EX',
                 600
             );
-        }
-        if (!data) {
-            res.status(404).json({
-                message: `No mission found with id ${id}`,
-            });
-            return;
-        } else {
-            res.status(200).json(data);
+            if (!data) {
+                return res.status(404).json({ message: `No mission found with id ${id}` });
+            } else {
+                return res.status(200).json(data);
+            }
         }
     } catch (e) {
         console.error(e);
@@ -79,38 +64,27 @@ const findOne = catchAsync(async (req, res) => {
 });
 
 const create = catchAsync(async (req, res) => {
-    console.log("Starting create function"); // Ajout d'une instruction console.log pour savoir si la fonction est appelée
-    const message = `✏️ Création d'une mission`;
-
+    console.log("Starting create function");
     const { body } = req;
     const { value, error } = schema.validate(body);
-    // Handle validation errors
     if (error) {
-        console.log("Validation error:", error.details[0].message); // Ajout d'une instruction console.log pour afficher le message d'erreur de validation
+        console.log("Validation error:", error.details[0].message);
         return res.status(400).json({ message: error.details[0].message });
     }
     try {
-        console.log("Inserting data into database"); // Ajout d'une instruction console.log pour savoir si l'insertion dans la base de données est appelée
-        const { ...rest } = value;
-
+        console.log("Inserting data into database");
         const createdAt = new Date();
         const updatedAt = new Date();
-        const data = await collection
-            .insertOne({
-                ...rest,
-                createdAt,
-                updatedAt,
-            })
-            .then(
-                console.log(
-                    `----------->La mission a bien été créé<-----------`
-                )
-            );
-        console.log("Sending response"); // Ajout d'une instruction console.log pour savoir si la réponse est envoyée
+        const data = await collection.insertOne({
+            ...value,
+            createdAt,
+            updatedAt,
+        });
+        console.log("Sending response");
         res.status(201).json(data);
         redisClient.del(`${collectionName}:all`);
     } catch (err) {
-        console.log("Error:", err); // Ajout d'une instruction console.log pour afficher les erreurs
+        console.log("Error:", err);
     }
 });
 
@@ -119,8 +93,6 @@ const updateOne = catchAsync(async (req, res) => {
     if (!id) {
         return res.status(400).json({ message: 'No id provided' });
     }
-    const message = `📝 Mise à jour de la mission ${id}`;
-
     const { body } = req;
     const { value, error } = schema.validate(body);
     if (error) {
@@ -150,47 +122,31 @@ const deleteOne = catchAsync(async (req, res) => {
     const { force } = req.query;
 
     if (force === undefined || parseInt(force, 10) === 0) {
-        // Vérification si la mission a déjà été supprimée de manière logique
         const mission = await collection.findOne({ _id: new ObjectId(id) });
-        redisClient.flushall();
-        if (!isNaN(mission.deletedAt)) {
-            // Mission already deleted, return appropriate response
-            const message = `🗑️ La mission a déjà été supprimée de manière logique.`;
+        if (!isNaN(mission?.deletedAt?.getTime())) {
             return res.status(200).json(mission);
         }
 
-        // Vérification de l'intégrité référentielle avec les dailies et les rapports
         const references = await Promise.all([
             database.collection('dailies').findOne({ missions: new ObjectId(id) }),
             database.collection('rapports').findOne({ missions: new ObjectId(id) })
         ]);
 
         if (references.some(reference => reference !== null)) {
-            const message = `La mission est référencée dans les dailies ou les rapports et ne peut pas être supprimée.`;
-            return res.status(400).json({ message });
+            return res.status(400).json({ message: 'La mission est référencée dans les dailies ou les rapports et ne peut pas être supprimée.' });
         }
 
-        // Suppression logique
-        const message = `🗑️ Suppression d'une mission de manière logique`;
-        const data = await collection.findOneAndUpdate(
-            {
-                _id: new ObjectId(id),
-            },
-            {
-                $set: { deletedAt: new Date() },
-            }
+        const data = await collection.updateOne(
+            { _id: new ObjectId(id) },
+            { $set: { deletedAt: new Date() } }
         );
         res.status(200).json(data);
         redisClient.del(`${collectionName}:all`);
         redisClient.del(`${collectionName}:${id}`);
     } else if (parseInt(force, 10) === 1) {
-        // Suppression physique
-        const message = `🗑️ Suppression d'une mission de manière physique`;
-        console.log('Suppression physique/valeur force:' + force);
         const result = await collection.deleteOne({ _id: new ObjectId(id) });
         if (result.deletedCount === 1) {
-            console.log('Successfully deleted');
-            res.status(200).json(success(message));
+            res.status(200).json(success(`🗑️ Suppression d'une mission de manière physique`));
             redisClient.del(`${collectionName}:all`);
             redisClient.del(`${collectionName}:${id}`);
         } else {
@@ -201,22 +157,18 @@ const deleteOne = catchAsync(async (req, res) => {
     }
 });
 
-
 const deleteMany = catchAsync(async (req, res) => {
     const result = await collection.deleteMany({
         deletedAt: { $exists: true },
     });
     const deletedCount = result.deletedCount;
     if (!deletedCount) {
-        return res
-            .status(404)
-            .json({ message: 'Aucune donnée trouvée à supprimer.' });
+        return res.status(404).json({ message: 'Aucune donnée trouvée à supprimer.' });
     }
     redisClient.del(`${collectionName}:all`);
-    res.status(200).json({
-        message: `${deletedCount} donnée(s) supprimée(s).`,
-    });
+    res.status(200).json({ message: `${deletedCount} donnée(s) supprimée(s).` });
 });
+
 const restoreMany = catchAsync(async (req, res) => {
     const result = await collection.updateMany(
         { deletedAt: { $exists: true } },
@@ -229,8 +181,6 @@ const restoreMany = catchAsync(async (req, res) => {
     redisClient.del(`${collectionName}:all`);
     res.status(200).json({ message: `${restoredCount} données restaurées.` });
 });
-
-
 
 module.exports = {
     findAll,

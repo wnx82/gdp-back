@@ -716,9 +716,7 @@ redisClient.flushall((err, reply) => {
 
     const habitationsDto = [...Array(15)].map(() => ({
         adresse: {
-            rue: new ObjectId(
-                createdRues[Math.floor(Math.random() * 5)].insertedId
-            ),
+            rue: new ObjectId(createdRues[randomInt(0, 5)].insertedId),
             numero: faker.string.numeric(2),
         },
         demandeur: {
@@ -805,9 +803,7 @@ redisClient.flushall((err, reply) => {
             },
         },
         adresse: {
-            rue: new ObjectId(
-                createdRues[Math.floor(Math.random() * 5)].insertedId
-            ),
+            rue: new ObjectId(createdRues[randomInt(0, 5)].insertedId),
             numero: faker.string.numeric(2),
         },
         geolocation: {
@@ -1367,9 +1363,7 @@ redisClient.flushall((err, reply) => {
         ],
         horaire: horairesDto[Math.floor(Math.random() * 4)].horaire,
         vehicule: vehiculesDto[Math.floor(Math.random() * 3)].marque,
-        quartiers: [
-            createdMissionsQuartiers[Math.floor(Math.random() * 10)].insertedId,
-        ],
+        quartiers: new ObjectId(createdMissionsQuartiers[randomInt(0, 5)].insertedId),
         missions: [
             createdMissions[Math.floor(Math.random() * 20)].insertedId,
             createdMissions[Math.floor(Math.random() * 20)].insertedId,
@@ -1403,9 +1397,7 @@ redisClient.flushall((err, reply) => {
             createdAgents[Math.floor(Math.random() * 15)].insertedId,
         ],
         vehicule: vehiculesDto[Math.floor(Math.random() * 4)].marque,
-        quartiers: [
-            createdMissionsQuartiers[Math.floor(Math.random() * 10)].insertedId,
-        ],
+        quartiers: new ObjectId(createdMissionsQuartiers[randomInt(0, 5)].insertedId),
         quartierMissionsValidate: [
             createdMissions[Math.floor(Math.random() * 20)].insertedId,
             createdMissions[Math.floor(Math.random() * 20)].insertedId,

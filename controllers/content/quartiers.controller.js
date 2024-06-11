@@ -1,6 +1,5 @@
 // ./controllers/quartiers.controller.js
 
-// const dbClient = require('../utils/').dbClient;
 const { dbClient, redisClient } = require('../../utils');
 const { catchAsync, success } = require('../../helpers');
 const database = dbClient.db(process.env.MONGO_DB_DATABASE);
@@ -19,7 +18,6 @@ const schema = Joi.object({
 });
 
 const findAll = catchAsync(async (req, res) => {
-    const message = '📄 Liste des quartiers';
     const inCache = await redisClient.get(`${collectionName}:all`);
     if (inCache) {
         return res.status(200).json(JSON.parse(inCache));
@@ -37,26 +35,21 @@ const findAll = catchAsync(async (req, res) => {
 
 const findOne = catchAsync(async (req, res) => {
     try {
-        const message = `📄 Détails du quartier`;
         const { id } = req.params;
         let data = null;
 
         data = await collection.findOne({ _id: new ObjectId(id) });
         if (!data) {
-            res.status(404).json({
-                message: `No quartier found with id ${id}`,
-            });
-            return;
+            return res.status(404).json({ message: `No quartier found with id ${id}` });
         }
+
         const inCache = await redisClient.get(`${collectionName}:${id}`);
         if (inCache) {
             return res.status(200).json(JSON.parse(inCache));
         } else {
             const pipeline = [
                 {
-                    $match: {
-                        _id: new ObjectId(id),
-                    },
+                    $match: { _id: new ObjectId(id) },
                 },
                 {
                     $lookup: {
@@ -80,9 +73,7 @@ const findOne = catchAsync(async (req, res) => {
                 {
                     $group: {
                         _id: '$_id',
-                        title: {
-                            $first: '$title',
-                        },
+                        title: { $first: '$title' },
                         missions: {
                             $push: {
                                 titleMissions: '$titleMission',
@@ -104,12 +95,9 @@ const findOne = catchAsync(async (req, res) => {
             );
         }
         if (!data) {
-            res.status(404).json({
-                message: `⛔ No quartier found with id ${id}`,
-            });
-            return;
+            return res.status(404).json({ message: `No quartier found with id ${id}` });
         } else {
-            res.status(200).json(data);
+            return res.status(200).json(data);
         }
     } catch (e) {
         console.error(e);
@@ -117,21 +105,15 @@ const findOne = catchAsync(async (req, res) => {
 });
 
 const create = catchAsync(async (req, res) => {
-    const message = `✏️ Création d'un quartier`;
-
     const { body } = req;
-
     const { value, error } = schema.validate(body);
 
-    // Handle validation errors
     if (error) {
         return res.status(400).json({ message: error.details[0].message });
     }
 
     try {
-        const missionsID = value.missions.map(p => {
-            return new ObjectId(p._id);
-        });
+        const missionsID = value.missions.map(p => new ObjectId(p._id));
         value.missions = missionsID;
 
         const { ...rest } = value;
@@ -139,25 +121,14 @@ const create = catchAsync(async (req, res) => {
         const updatedAt = new Date();
         console.log('INSERTING DATA:', { ...rest, createdAt, updatedAt });
 
-        const data = await collection
-            .insertOne({
-                ...rest,
-                createdAt,
-                updatedAt,
-            })
-            .then(result => {
-                // console.log('QUARTIER CREATION SUCCESS:', result.ops[0]);
-                console.log(
-                    `----------->Le quartier a bien été créé<-----------`
-                );
-            })
-            .catch(error => {
-                console.error('QUARTIER CREATION ERROR:', error);
-                throw error;
-            });
-        console.log('SENDING RESPONSE DATA:', data);
-        res.status(201).json(data);
+        const data = await collection.insertOne({
+            ...rest,
+            createdAt,
+            updatedAt,
+        });
+        console.log(`----------->Le quartier a bien été créé<-----------`);
 
+        res.status(201).json(data);
         redisClient.del(`${collectionName}:all`);
         console.log('REDIS CACHE DELETED');
     } catch (err) {
@@ -171,7 +142,6 @@ const updateOne = catchAsync(async (req, res) => {
     if (!id) {
         return res.status(400).json({ message: 'No id provided' });
     }
-    const message = `📝 Mise à jour du quartier ${id}`;
 
     const { body } = req;
     const { value, error } = schema.validate(body);
@@ -180,13 +150,10 @@ const updateOne = catchAsync(async (req, res) => {
     }
     let updateValue = { ...value };
 
-    if (!value.missions) {
-        delete updateValue.missions;
-    } else {
-        updateValue.missions = value.missions.map(
-            value => new ObjectId(value._id)
-        );
+    if (value.missions) {
+        updateValue.missions = value.missions.map(m => new ObjectId(m._id));
     }
+
     try {
         const updatedAt = new Date();
         const { modifiedCount } = await collection.updateOne(
@@ -211,46 +178,31 @@ const deleteOne = catchAsync(async (req, res) => {
     const { force } = req.query;
 
     if (force === undefined || parseInt(force, 10) === 0) {
-        // Vérification si le quartier a déjà été supprimé de manière logique
         const quartier = await collection.findOne({ _id: new ObjectId(id) });
-        if (!isNaN(quartier.deletedAt)) {
-            // Quartier already deleted, return appropriate response
-            const message = `🗑️ Le quartier a déjà été supprimé de manière logique.`;
+        if (!isNaN(quartier?.deletedAt?.getTime())) {
             return res.status(200).json(quartier);
         }
 
-        // Vérification de l'intégrité référentielle avec les dailies et les rapports
         const references = await Promise.all([
             database.collection('dailies').findOne({ quartiers: new ObjectId(id) }),
             database.collection('rapports').findOne({ quartiers: new ObjectId(id) })
         ]);
 
         if (references.some(reference => reference !== null)) {
-            const message = `Le quartier est référencé dans les dailies ou les rapports et ne peut pas être supprimé.`;
-            return res.status(400).json({ message });
+            return res.status(400).json({ message: 'Le quartier est référencé dans les dailies ou les rapports et ne peut pas être supprimé.' });
         }
 
-        // Suppression logique
-        const message = `🗑️ Suppression d'un quartier de manière logique`;
-        const data = await collection.findOneAndUpdate(
-            {
-                _id: new ObjectId(id),
-            },
-            {
-                $set: { deletedAt: new Date() },
-            }
+        const data = await collection.updateOne(
+            { _id: new ObjectId(id) },
+            { $set: { deletedAt: new Date() } }
         );
         res.status(200).json(data);
         redisClient.del(`${collectionName}:all`);
         redisClient.del(`${collectionName}:${id}`);
     } else if (parseInt(force, 10) === 1) {
-        // Suppression physique
-        const message = `🗑️ Suppression d'un quartier de manière physique`;
-        console.log('Suppression physique/valeur force:' + force);
         const result = await collection.deleteOne({ _id: new ObjectId(id) });
         if (result.deletedCount === 1) {
-            console.log('Successfully deleted');
-            res.status(200).json(success(message));
+            res.status(200).json(success(`🗑️ Suppression d'un quartier de manière physique`));
             redisClient.del(`${collectionName}:all`);
             redisClient.del(`${collectionName}:${id}`);
         } else {
@@ -267,15 +219,12 @@ const deleteMany = catchAsync(async (req, res) => {
     });
     const deletedCount = result.deletedCount;
     if (!deletedCount) {
-        return res
-            .status(404)
-            .json({ message: 'Aucune donnée trouvée à supprimer.' });
+        return res.status(404).json({ message: 'Aucune donnée trouvée à supprimer.' });
     }
     redisClient.del(`${collectionName}:all`);
-    res.status(200).json({
-        message: `${deletedCount} donnée(s) supprimée(s).`,
-    });
+    res.status(200).json({ message: `${deletedCount} donnée(s) supprimée(s).` });
 });
+
 const restoreMany = catchAsync(async (req, res) => {
     const result = await collection.updateMany(
         { deletedAt: { $exists: true } },
@@ -283,9 +232,7 @@ const restoreMany = catchAsync(async (req, res) => {
     );
     const restoredCount = result.nModified;
     if (restoredCount === 0) {
-        return res
-            .status(404)
-            .json({ message: 'Aucune donnée trouvée à restaurer.' });
+        return res.status(404).json({ message: 'Aucune donnée trouvée à restaurer.' });
     }
     redisClient.del(`${collectionName}:all`);
     res.status(200).json({ message: `${restoredCount} données restaurées.` });

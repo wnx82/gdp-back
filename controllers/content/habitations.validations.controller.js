@@ -25,7 +25,6 @@ const schema = Joi.object({
 });
 
 const findAll = catchAsync(async (req, res) => {
-    const message = '📄 Liste des validations';
     const inCache = await redisClient.get(`${collectionName}:all`);
     if (inCache) {
         return res.status(200).json(JSON.parse(inCache));
@@ -78,21 +77,11 @@ const findAll = catchAsync(async (req, res) => {
             {
                 $group: {
                     _id: '$_id',
-                    date: {
-                        $first: '$date',
-                    },
-                    note: {
-                        $first: '$note',
-                    },
-                    createdAt: {
-                        $first: '$createdAt',
-                    },
-                    updatedAt: {
-                        $first: '$updatedAt',
-                    },
-                    deletedAt: {
-                        $first: '$deletedAt',
-                    },
+                    date: { $first: '$date' },
+                    note: { $first: '$note' },
+                    createdAt: { $first: '$createdAt' },
+                    updatedAt: { $first: '$updatedAt' },
+                    deletedAt: { $first: '$deletedAt' },
                     agents: {
                         $first: {
                             _id: '$agentsData._id',
@@ -103,12 +92,8 @@ const findAll = catchAsync(async (req, res) => {
                         $first: {
                             _id: '$habitationData._id',
                             adresse: {
-                                rue: {
-                                    $arrayElemAt: ['$RueData.nomComplet', 0],
-                                },
-                                localite: {
-                                    $arrayElemAt: ['$RueData.localite', 0],
-                                },
+                                rue: { $arrayElemAt: ['$RueData.nomComplet', 0] },
+                                localite: { $arrayElemAt: ['$RueData.localite', 0] },
                                 numero: '$habitationData.adresse.numero',
                             },
                         },
@@ -116,126 +101,70 @@ const findAll = catchAsync(async (req, res) => {
                 },
             },
             {
-                $sort: {
-                    date: -1,
-                },
+                $sort: { date: -1 },
             },
         ];
 
         const data = await collection.aggregate(pipeline).toArray();
-        redisClient.set(
-            `${collectionName}:all`,
-            JSON.stringify(data),
-            'EX',
-            600
-        );
+        redisClient.set(`${collectionName}:all`, JSON.stringify(data), 'EX', 600);
         res.status(200).json(data);
     }
 });
 
 const findOne = catchAsync(async (req, res) => {
     try {
-        const message = `📄 Détails de la validation`;
         const { id } = req.params;
-        let data = null;
-        data = await collection.findOne({ _id: new ObjectId(id) });
-        if (!data) {
-            res.status(404).json({
-                message: `⛔ No validation found with id ${id}`,
-            });
-            return;
-        }
         const inCache = await redisClient.get(`${collectionName}:${id}`);
         if (inCache) {
             return res.status(200).json(JSON.parse(inCache));
         } else {
-            data = await collection.findOne({ _id: new ObjectId(id) });
-            redisClient.set(
-                `validation:${id}`,
-                JSON.stringify(data),
-                'EX',
-                600
-            );
+            const data = await collection.findOne({ _id: new ObjectId(id) });
+            redisClient.set(`${collectionName}:${id}`, JSON.stringify(data), 'EX', 600);
+            if (!data) {
+                return res.status(404).json({ message: `No validation found with id ${id}` });
+            } else {
+                return res.status(200).json(data);
+            }
         }
-        if (!data) {
-            res.status(404).json({
-                message: `No validation found with id ${id}`,
-            });
-            return;
-        } else {
-            res.status(200).json(data);
-        }
-
-        // res.status(200).json(success(`Détails l'agent : `, data));
     } catch (e) {
         console.error(e);
     }
 });
 
 const create = catchAsync(async (req, res) => {
-    const message = `✏️ Création d'une validation`;
-
     const { body } = req;
     const { value, error } = schema.validate(body);
 
     if (error) {
-        return res.status(400).json({ message: error });
+        return res.status(400).json({ message: error.details.map(err => err.message).join(', ') });
     }
+
     try {
-        const agentsID = value.agents.map(p => {
-            return new ObjectId(p);
-        });
+        const agentsID = value.agents.map(p => new ObjectId(p));
         value.agents = agentsID;
 
-        const agents = await database
-            .collection('agents')
-            .find({
-                _id: { $in: agentsID },
-            })
-            .toArray();
+        const agents = await database.collection('agents').find({ _id: { $in: agentsID } }).toArray();
         if (agents.length !== agentsID.length) {
-            return res
-                .status(400)
-                .json({ message: 'Invalid agent ID provided' });
+            return res.status(400).json({ message: 'Invalid agent ID provided' });
         }
+
         value.habitation = new ObjectId(value.habitation);
-        const habitationVerif = await database
-            .collection('habitations')
-            .findOne({ _id: value.habitation });
-
+        const habitationVerif = await database.collection('habitations').findOne({ _id: value.habitation });
         if (!habitationVerif) {
-            return res
-                .status(400)
-                .json({ message: 'Invalid habitation ID provided' });
+            return res.status(400).json({ message: 'Invalid habitation ID provided' });
         }
 
-        const { ...rest } = value;
         const createdAt = new Date();
         const updatedAt = new Date();
-        const data = await collection
-            .insertOne({
-                ...rest,
-                createdAt,
-                updatedAt,
-            })
-            .then(
-                console.log(
-                    `----------->La validation a bien été créé<-----------`
-                )
-            );
+        const data = await collection.insertOne({ ...value, createdAt, updatedAt });
         res.status(201).json(data);
         redisClient.del(`${collectionName}:all`);
-        // Récupérer l'insertedId
+
         const insertedId = data.insertedId;
 
-        // Récupération des données par aggregate et envoi de la validation par mail
         const result = await collection
             .aggregate([
-                {
-                    $match: {
-                        _id: new ObjectId(insertedId),
-                    },
-                },
+                { $match: { _id: new ObjectId(insertedId) } },
                 {
                     $lookup: {
                         from: 'agents',
@@ -253,9 +182,7 @@ const create = catchAsync(async (req, res) => {
                     },
                 },
                 {
-                    $unwind: {
-                        path: '$habitationData',
-                    },
+                    $unwind: { path: '$habitationData' },
                 },
                 {
                     $project: {
@@ -283,21 +210,11 @@ const create = catchAsync(async (req, res) => {
                 {
                     $group: {
                         _id: '$_id',
-                        date: {
-                            $first: '$date',
-                        },
-                        note: {
-                            $first: '$note',
-                        },
-                        createdAt: {
-                            $first: '$createdAt',
-                        },
-                        updatedAt: {
-                            $first: '$updatedAt',
-                        },
-                        deletedAt: {
-                            $first: '$deletedAt',
-                        },
+                        date: { $first: '$date' },
+                        note: { $first: '$note' },
+                        createdAt: { $first: '$createdAt' },
+                        updatedAt: { $first: '$updatedAt' },
+                        deletedAt: { $first: '$deletedAt' },
                         agents: {
                             $first: {
                                 _id: '$agentsData._id',
@@ -308,12 +225,8 @@ const create = catchAsync(async (req, res) => {
                             $first: {
                                 _id: '$habitationData._id',
                                 adresse: {
-                                    rue: {
-                                        $first: '$RueData.nomComplet',
-                                    },
-                                    localite: {
-                                        $first: '$RueData.localite',
-                                    },
+                                    rue: { $first: '$RueData.nomComplet' },
+                                    localite: { $first: '$RueData.localite' },
                                     numero: '$habitationData.adresse.numero',
                                 },
                             },
@@ -325,40 +238,25 @@ const create = catchAsync(async (req, res) => {
 
         if (result) {
             const { agents, habitation, note } = result;
-            console.log('agentsData', agents);
-            console.log('habitationData', habitation);
-            console.log('note', note);
             sendHabitation(agents, habitation, note);
-        } else {
-            // handle case where no documents were found
-            console.log('agentsData', agentsData);
-            console.log('habitationData', habitation);
-            console.log('note', note);
         }
     } catch (err) {
         console.log(err);
     }
 });
+
 const updateOne = catchAsync(async (req, res) => {
     const { id } = req.params;
     if (!id) {
         return res.status(400).json({ message: 'No id provided' });
     }
-    const message = `📝 Mise à jour de la validation ${id}`;
     const { body } = req;
-    console.log('Request body:', body);
-
     const { value, error } = schema.validate(body);
     if (error) {
-        console.log('Validation error:', error);
-        const errors = error.details.map(d => d.message);
-        return res.status(400).json({ message: 'Validation error', errors });
+        return res.status(400).json({ message: error.details.map(d => d.message).join(', ') });
     }
-    console.log('Validated value:', value);
 
     let updateValue = { ...value };
-
-    // Transformer agents et habitation en ObjectId
     if (updateValue.agents) {
         updateValue.agents = updateValue.agents.map(agent => new ObjectId(agent));
     }
@@ -368,22 +266,16 @@ const updateOne = catchAsync(async (req, res) => {
 
     try {
         const updatedAt = new Date();
-        console.log('Update value before sending to DB:', { ...updateValue, updatedAt });
-
         const updateResult = await collection.updateOne(
             { _id: new ObjectId(id) },
             { $set: { ...updateValue, updatedAt } }
         );
-
-        console.log('Update result:', updateResult);
 
         if (updateResult.matchedCount === 0) {
             return res.status(404).json({ message: 'Validation not found' });
         }
 
         const updatedDocument = await collection.findOne({ _id: new ObjectId(id) });
-        console.log('Updated document:', updatedDocument);
-
         if (!updatedDocument) {
             return res.status(404).json({ message: 'Validation not found after update' });
         }
@@ -397,40 +289,25 @@ const updateOne = catchAsync(async (req, res) => {
     }
 });
 
-
-
 const deleteOne = catchAsync(async (req, res) => {
     const { id } = req.params;
     const { force } = req.query;
     if (force === undefined || parseInt(force, 10) === 0) {
-        //Vérification si l'habitation a déjà été supprimée de manière logique
         const validation = await collection.findOne({ _id: new ObjectId(id) });
-        if (!isNaN(validation.deletedAt)) {
-            // Constat already deleted, return appropriate response
-            const message = `La validation a déjà été supprimée de manière logique.`;
+        if (!isNaN(validation?.deletedAt?.getTime())) {
             return res.status(200).json(validation);
         }
-        //suppression logique
-        const message = `🗑️ Suppression d'une validation de manière logique`;
         const data = await collection.updateOne(
-            {
-                _id: new ObjectId(id),
-            },
-            {
-                $set: { deletedAt: new Date() },
-            }
+            { _id: new ObjectId(id) },
+            { $set: { deletedAt: new Date() } }
         );
         res.status(200).json(data);
         redisClient.del(`${collectionName}:all`);
         redisClient.del(`${collectionName}:${id}`);
     } else if (parseInt(force, 10) === 1) {
-        //suppression physique
-        const message = `🗑️ Suppression d'une validation de manière physique`;
-        console.log('suppression physique/valeur force:' + force);
         const result = await collection.deleteOne({ _id: new ObjectId(id) });
         if (result.deletedCount === 1) {
-            console.log('Successfully deleted');
-            res.status(200).json(success(message));
+            res.status(200).json(success(`🗑️ Suppression d'une validation de manière physique`));
             redisClient.del(`${collectionName}:all`);
             redisClient.del(`${collectionName}:${id}`);
         } else {
@@ -447,25 +324,20 @@ const deleteMany = catchAsync(async (req, res) => {
     });
     const deletedCount = result.deletedCount;
     if (!deletedCount) {
-        return res
-            .status(404)
-            .json({ message: 'Aucune donnée trouvée à supprimer.' });
+        return res.status(404).json({ message: 'Aucune donnée trouvée à supprimer.' });
     }
     redisClient.del(`${collectionName}:all`);
-    res.status(200).json({
-        message: `${deletedCount} donnée(s) supprimée(s).`,
-    });
+    res.status(200).json({ message: `${deletedCount} donnée(s) supprimée(s).` });
 });
+
 const restoreMany = catchAsync(async (req, res) => {
     const result = await collection.updateMany(
         { deletedAt: { $exists: true } },
-        { $unset: { deletedAt: '' } }
+        { $unset: { deletedAt: "" } }
     );
     const restoredCount = result.nModified;
     if (restoredCount === 0) {
-        return res
-            .status(404)
-            .json({ message: 'Aucune donnée trouvée à restaurer.' });
+        return res.status(404).json({ message: 'Aucune donnée trouvée à restaurer.' });
     }
     redisClient.del(`${collectionName}:all`);
     res.status(200).json({ message: `${restoredCount} données restaurées.` });

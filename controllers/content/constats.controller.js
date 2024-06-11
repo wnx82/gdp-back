@@ -1,3 +1,5 @@
+// ./controllers/constats.controller.js
+
 const { dbClient, redisClient } = require('../../utils');
 const { catchAsync, success } = require('../../helpers');
 const database = dbClient.db(process.env.MONGO_DB_DATABASE);
@@ -505,7 +507,7 @@ const addAgent = async (req, res) => {
         }
     );
 
-    if (data && data.value) {
+    if (data?.value) {
         res.status(201).json({ message: 'Agent added' });
     } else {
         res.status(500).json({ message: 'Failed to add agent' });
