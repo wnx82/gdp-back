@@ -16,7 +16,8 @@ const getAccessLog = catchAsync(async (req, res) => {
             res.status(500).json({ error: 'Error reading access.log file' });
         } else {
             const logs = data.split('\n').filter(log => log); // Filtrer les lignes vides
-            res.json(logs);
+            const reversedLogs = logs.reverse(); // Inverser l'ordre des logs
+            res.json(reversedLogs);
         }
     });
 });
@@ -45,7 +46,8 @@ const getConsoleLog = catchAsync(async (req, res) => {
             res.status(500).json({ error: 'Error reading console.log file' });
         } else {
             const logs = data.split('\n').filter(log => log); // Filtrer les lignes vides
-            res.json(logs);
+            const reversedLogs = logs.reverse(); // Inverser l'ordre des logs
+            res.json(reversedLogs);
         }
     });
 });

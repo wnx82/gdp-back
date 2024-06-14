@@ -150,10 +150,12 @@ const updateOne = catchAsync(async (req, res) => {
     }
     let updateValue = { ...value };
 
-    if (value.missions) {
-        updateValue.missions = value.missions.map(m => new ObjectId(m._id));
+    if (updateValue.missions) {
+        updateValue.missions = updateValue.missions.map(mission => new ObjectId(mission));
     }
-
+    // if (value.missions) {
+    //     updateValue.missions = value.missions.map(m => new ObjectId(m._id));
+    // }
     try {
         const updatedAt = new Date();
         const { modifiedCount } = await collection.updateOne(
