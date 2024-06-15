@@ -245,6 +245,7 @@ const create = catchAsync(async (req, res) => {
     }
 });
 
+
 const updateOne = catchAsync(async (req, res) => {
     const { id } = req.params;
     if (!id) {
@@ -288,6 +289,7 @@ const updateOne = catchAsync(async (req, res) => {
         res.status(500).json({ message: 'Server error' });
     }
 });
+
 
 const deleteOne = catchAsync(async (req, res) => {
     const { id } = req.params;

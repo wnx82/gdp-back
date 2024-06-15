@@ -10818,7 +10818,7 @@ redisClient.flushall((err, reply) => {
     }
     bar1.update(i++);
 
-    const constatsDto = [...Array(25)].map(() => ({
+    const constatsDto = [...Array(2500)].map(() => ({
         agents: [
             createdAgents[Math.floor(Math.random() * 15)].insertedId,
             createdAgents[Math.floor(Math.random() * 15)].insertedId,

@@ -7,6 +7,7 @@ const collection = database.collection('dailies');
 const Joi = require('joi');
 const ObjectId = require('mongodb').ObjectId;
 const collectionName = 'dailies';
+const moment = require('moment');
 
 const schema = Joi.object({
     id: Joi.string().allow(null).optional().empty(''),
