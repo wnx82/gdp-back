@@ -14,6 +14,9 @@ const sendMailDaily = async function (id, data) {
         '📝 Fiche Journalière du ' + moment(data.date).format('YYYY/MM/DD');
     const dataMessage = '';
     const dataMailTo = config.mail.to_chef;
+    //const dataMailTo = data.agentsData.map(agentData => agentData.email).join(',');
+
+
 
     console.log(data.agentsData.matricule);
 
