@@ -113,7 +113,8 @@ const create = catchAsync(async (req, res) => {
     }
 
     try {
-        const missionsID = value.missions.map(p => new ObjectId(p._id));
+        // Vérifiez si les missions sont déjà des chaînes d'ID
+        const missionsID = value.missions.map(p => new ObjectId(p));
         value.missions = missionsID;
 
         const { ...rest } = value;
@@ -136,6 +137,7 @@ const create = catchAsync(async (req, res) => {
         res.status(500).json({ message: 'Quartier creation failed' });
     }
 });
+
 
 const updateOne = catchAsync(async (req, res) => {
     const { id } = req.params;

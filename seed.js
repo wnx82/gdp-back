@@ -10796,8 +10796,8 @@ redisClient.flushall((err, reply) => {
     
     const validationsDto = [...Array(15)].map(() => ({
         agents: [
-            createdAgents[Math.floor(Math.random() * 15)].insertedId,
-            createdAgents[Math.floor(Math.random() * 15)].insertedId,
+            createdAgents[Math.floor(Math.random() * 10)].insertedId,
+            createdAgents[Math.floor(Math.random() * 10)].insertedId,
         ],
         habitation:
             createdHabitations[Math.floor(Math.random() * 15)].insertedId,
@@ -10817,13 +10817,22 @@ redisClient.flushall((err, reply) => {
         process.exit(1);
     }
     bar1.update(i++);
-
+    const infractionsList = [
+        "Sur trottoir",
+        "A -5m du carrefour",
+        "Sur/à moins de 3m d'une piste cyclable",
+        "Sur/à moins de 3m d'un passage piétons",
+        "Zone de livraison",
+        "Zone bleue : Mauvaise heure",
+        "Zone bleue : Pas de disque",
+        "Emplacement PMR : Sans carte"
+    ];
     const constatsDto = [...Array(2500)].map(() => ({
         agents: [
-            createdAgents[Math.floor(Math.random() * 15)].insertedId,
-            createdAgents[Math.floor(Math.random() * 15)].insertedId,
+            createdAgents[Math.floor(Math.random() * 10)].insertedId,
+            createdAgents[Math.floor(Math.random() * 10)].insertedId,
         ],
-        date: faker.date.recent(),
+        date: faker.date.between({ from: '2022-01-01', to: new Date() }),
         vehicule: {
             marque: faker.vehicle.manufacturer(),
             modele: faker.vehicle.model(),
@@ -10845,7 +10854,7 @@ redisClient.flushall((err, reply) => {
         },
         adresse: {
             rue: new ObjectId(
-                createdRues[Math.floor(Math.random() * 695)].insertedId
+                createdRues[Math.floor(Math.random() * 50)].insertedId
             ),
             numero: faker.string.numeric(2),
         },
@@ -10854,13 +10863,16 @@ redisClient.flushall((err, reply) => {
             longitude: faker.location.longitude().toString(),
             horodatage: faker.date.recent(),
         },
-        infractions: [faker.lorem.words(), faker.lorem.words()],
+        infractions: [
+            infractionsList[Math.floor(Math.random() * infractionsList.length)]
+        ],
         pv: faker.datatype.boolean(),
         notes: faker.lorem.words(),
         annexes: [faker.lorem.words(), faker.lorem.words()],
         createdAt: new Date(),
         updatedAt: new Date(),
     }));
+    
     
     try {
         await Promise.all(
@@ -11401,8 +11413,8 @@ redisClient.flushall((err, reply) => {
     const dailiesDto = [...Array(15)].map(() => ({
         date: faker.date.recent(),
         agents: [
-            createdAgents[Math.floor(Math.random() * 15)].insertedId,
-            createdAgents[Math.floor(Math.random() * 15)].insertedId,
+            createdAgents[Math.floor(Math.random() * 10)].insertedId,
+            createdAgents[Math.floor(Math.random() * 10)].insertedId,
         ],
         horaire: horairesDto[Math.floor(Math.random() * 4)].horaire,
         vehicule: vehiculesDto[Math.floor(Math.random() * 3)].marque,
@@ -11438,8 +11450,8 @@ redisClient.flushall((err, reply) => {
         horaire: horairesDto[Math.floor(Math.random() * 4)].horaire,
 
         agents: [
-            createdAgents[Math.floor(Math.random() * 15)].insertedId,
-            createdAgents[Math.floor(Math.random() * 15)].insertedId,
+            createdAgents[Math.floor(Math.random() * 10)].insertedId,
+            createdAgents[Math.floor(Math.random() * 10)].insertedId,
         ],
         vehicule: vehiculesDto[Math.floor(Math.random() * 4)].marque,
         quartiers: [
