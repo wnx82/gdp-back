@@ -101,6 +101,12 @@ Attention : Ne commencez pas le développement sans validation au préalable et 
 L’application devra être remise au plus tard le mercredi 12 mars par email à l’adresse suivante :
 constantinmaes@gmail.com samuel.lassoie@gmail.com
 
+<!--START_SECTION:waka-->
+<!--END_SECTION:waka-->
+
+
+
+
 ## 🐉 Utilz!
 
 -   [**Git Emojis**](https://gitmoji.dev/)

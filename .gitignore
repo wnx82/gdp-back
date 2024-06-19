@@ -1,6 +1,10 @@
 #data
 data/
 
+#workflows
+# .github/worflows/
+
+
 #fichier Config.json
 config.json
 
