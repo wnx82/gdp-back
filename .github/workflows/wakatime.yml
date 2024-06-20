@@ -8,28 +8,15 @@ on:
             - main
 
 jobs:
-    build:
+    update-readme:
+        name: Update Readme with Metrics
         runs-on: ubuntu-latest
         steps:
-            - name: Checkout repository
-              uses: actions/checkout@v2
-
-            - name: Set up Python
-              uses: actions/setup-python@v2
+            - uses: anmol098/waka-readme-stats@master
               with:
-                  python-version: '3.x'
-
-            - name: Install dependencies
-              run: |
-                  pip install python-dotenv
-
-            - name: Run script
-              env:
                   WAKATIME_API_KEY: ${{ secrets.WAKATIME_API_KEY }}
-                  GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-                  # Ajoutez les autres variables d'environnement ici
-              run: python main.py
-# name: Waka Readme
+                  GH_TOKEN: ${{ secrets.GH_TOKEN }}
+#    name: Waka Readme
 
 # on:
 #   schedule:
