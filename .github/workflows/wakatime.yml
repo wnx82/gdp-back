@@ -16,11 +16,17 @@ jobs:
             - name: Checkout
               uses: actions/checkout@v2
 
-            - name: Debug Environment
+            - name: Debug GitHub context
+              env:
+                  GITHUB_CONTEXT: ${{ toJson(github) }}
+              run: echo "$GITHUB_CONTEXT"
+
+            - name: Debug Info
               run: |
-                  echo "Repository: ${{ github.repository }}"
-                  echo "Actor: ${{ github.actor }}"
-                  echo "Ref: ${{ github.ref }}"
+                  echo "GITHUB_REPOSITORY: $GITHUB_REPOSITORY"
+                  echo "GITHUB_ACTOR: $GITHUB_ACTOR"
+                  echo "GITHUB_REF: $GITHUB_REF"
+                  echo "GITHUB_WORKSPACE: $GITHUB_WORKSPACE"
 
             - name: Check secrets
               run: |
@@ -29,9 +35,12 @@ jobs:
 
             - name: Update Readme
               uses: anmol098/waka-readme-stats@master
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                  WAKATIME_API_KEY: ${{ secrets.WAKATIME_API_KEY }}
               with:
                   WAKATIME_API_KEY: ${{ secrets.WAKATIME_API_KEY }}
-                  GH_TOKEN: ${{ secrets.GH_TOKEN }}
+                  GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
                   SHOW_OS: 'True'
                   SHOW_PROJECTS: 'True'
                   SHOW_EDITORS: 'True'
