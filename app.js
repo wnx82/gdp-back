@@ -63,6 +63,20 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(logger(formatAccessLog, { stream: accessLogStream })); // Utilisation du format personnalisé pour les logs d'accès
 
+// Servir statiquement le dossier uploads
+app.use('/uploads', express.static(path.join(__dirname, 'public/uploads')));
+
+// Route pour lister les fichiers dans le dossier uploads
+app.get('/uploads/', (req, res) => {
+    const uploadsDir = path.join(__dirname, 'public/uploads');
+    fs.readdir(uploadsDir, (err, files) => {
+        if (err) {
+            return res.status(500).send('Unable to scan directory: ' + err);
+        }
+        res.json(files);
+    });
+});
+
 // Configuration du moteur de vues
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');

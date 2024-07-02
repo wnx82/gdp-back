@@ -10620,6 +10620,16 @@ redisClient.flushall((err, reply) => {
 
     bar1.update(i++);
 
+    const possibleFormations = ["GDP", "Agent constatateur", "Agent de police environnement", "Premiers secours"];
+    function generateRandomFormations() {
+        const formations = [];
+        for (let i = 0; i < 2; i++) {
+            const formation = possibleFormations[Math.floor(Math.random() * possibleFormations.length)];
+            formations.push(formation);
+        }
+        return formations;
+    }
+
     const admin = {
         email: 'admin@admin.com',
         password: await bcrypt.hash('1234', 10),
@@ -10630,7 +10640,7 @@ redisClient.flushall((err, reply) => {
         lastname: 'admin',
         picture: '',
         // picture: 'http://localhost:3003/images/admin.png',
-        formations: faker.datatype.array(2),
+        formations: generateRandomFormations(),
         createdAt: new Date(),
         updatedAt: new Date(),
         // lastConnection: new Date(),
@@ -10653,7 +10663,7 @@ redisClient.flushall((err, reply) => {
         lastname: 'Christophe',
         picture: '',
         // picture: 'http://localhost:3003/images/admin.png',
-        formations: faker.datatype.array(2),
+        formations: generateRandomFormations(),
         createdAt: new Date(),
         updatedAt: new Date(),
         // lastConnection: new Date(),
