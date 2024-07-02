@@ -1,17 +1,20 @@
 const { dbClient } = require('../../utils');
 const { catchAsync, success } = require('../../helpers');
 const database = dbClient.db(process.env.MONGO_DB_DATABASE);
-const collection = database.collection('constatVehicule');
+const collection = database.collection('constatPersonne');
 const Joi = require('joi');
 const ObjectId = require('mongodb').ObjectId;
-const collectionName = 'vehicules';
+const collectionName = 'personnes';
 
 const schema = Joi.object({
-    marque: Joi.string().required(),
-    modele: Joi.string(),
-    couleur: Joi.string().required(),
-    type: Joi.string(),
-    immatriculation: Joi.string().required(),
+    firstname: Joi.string().required(),
+    lastname: Joi.string().required(),
+    birthday: Joi.date().required(),
+    nationalNumber: Joi.string().required(),
+    tel: Joi.string().required(),
+    rue: Joi.string().required(),
+    cp: Joi.string().required(),
+    localite: Joi.string().required(),
 });
 
 const findAll = catchAsync(async (req, res) => {
@@ -23,7 +26,7 @@ const findOne = catchAsync(async (req, res) => {
     const { id } = req.params;
     const data = await collection.findOne({ _id: new ObjectId(id) });
     if (!data) {
-        res.status(404).json({ message: `No vehicule found with id ${id}` });
+        res.status(404).json({ message: `No personne found with id ${id}` });
         return;
     }
     res.status(200).json(data);
@@ -60,7 +63,7 @@ const updateOne = catchAsync(async (req, res) => {
     );
 
     if (modifiedCount === 0) {
-        return res.status(404).json({ message: 'Vehicule not found' });
+        return res.status(404).json({ message: 'Personne not found' });
     }
 
     res.status(200).json(value);
@@ -70,9 +73,9 @@ const deleteOne = catchAsync(async (req, res) => {
     const { id } = req.params;
     const result = await collection.deleteOne({ _id: new ObjectId(id) });
     if (result.deletedCount === 1) {
-        res.status(200).json(success('Vehicule deleted successfully'));
+        res.status(200).json(success('Personne deleted successfully'));
     } else {
-        res.status(404).json({ message: 'Vehicule not found' });
+        res.status(404).json({ message: 'Personne not found' });
     }
 });
 const deleteMany = catchAsync(async (req, res) => {

@@ -14,7 +14,7 @@ const bar1 = new cliProgress.SingleBar({}, cliProgress.Presets.shades_classic);
 
 // Initialisation des variables globales
 const createdArticles = [];
-let createdRues, createdAgents, createdHabitations, createdMissions, createdMissionsQuartiers, createdDailyDto;
+let createdRues, createdAgents, createdHabitations, createdMissions, createdMissionsQuartiers, createdDailyDto,createdVehiculesConstats,createdPersonnesConstats ;
 
 // Flush Redis
 redisClient.flushall((err, reply) => {
@@ -36,11 +36,13 @@ redisClient.flushall((err, reply) => {
         'horaires',
         'infractions',
         'missions',
+        'personnes',
         'quartiers',
         'rapports',
         'rues',
         'validations',
         'vehicules',
+        'vehiculesgdp',
     ];
     bar1.start(collections.length, 0);
     let i = 0;
@@ -110,7 +112,7 @@ redisClient.flushall((err, reply) => {
     }
     bar1.update(i++);
 
-    const vehiculesDto = [
+    const vehiculesgdpDto = [
         {
             marque: 'Aucun',
             modele: '',
@@ -126,8 +128,15 @@ redisClient.flushall((err, reply) => {
             updatedAt: new Date(),
         },
         {
-            marque: 'Dacia',
-            modele: 'Duster',
+            marque: 'Skoda',
+            modele: 'Octavia',
+            immatriculation: '1XRJ629',
+            createdAt: new Date(),
+            updatedAt: new Date(),
+        },
+        {
+            marque: 'Citroen',
+            modele: 'Electrique',
             immatriculation: '1GFV206',
             createdAt: new Date(),
             updatedAt: new Date(),
@@ -142,7 +151,7 @@ redisClient.flushall((err, reply) => {
     ];
     try {
         await Promise.all(
-            vehiculesDto.map(u => db.collection('vehicules').insertOne(u))
+            vehiculesgdpDto.map(u => db.collection('vehiculesgdp').insertOne(u))
         );
     } catch (error) {
         console.error('Error inserting vehicules:', JSON.stringify(error, null, 2));
@@ -10620,6 +10629,17 @@ redisClient.flushall((err, reply) => {
 
     bar1.update(i++);
 
+
+    const possibleFormations = ["GDP", "Agent constatateur", "Agent de police environnement", "Premiers secours"];
+    function generateRandomFormations() {
+        const formations = [];
+        for (let i = 0; i < 2; i++) {
+            const formation = possibleFormations[Math.floor(Math.random() * possibleFormations.length)];
+            formations.push(formation);
+        }
+        return formations;
+    }
+
     const admin = {
         email: 'admin@admin.com',
         password: await bcrypt.hash('1234', 10),
@@ -10630,7 +10650,7 @@ redisClient.flushall((err, reply) => {
         lastname: 'admin',
         picture: '',
         // picture: 'http://localhost:3003/images/admin.png',
-        formations: faker.datatype.array(2),
+        formations: generateRandomFormations(),
         createdAt: new Date(),
         updatedAt: new Date(),
         // lastConnection: new Date(),
@@ -10653,7 +10673,7 @@ redisClient.flushall((err, reply) => {
         lastname: 'Christophe',
         picture: '',
         // picture: 'http://localhost:3003/images/admin.png',
-        formations: faker.datatype.array(2),
+        formations: generateRandomFormations(),
         createdAt: new Date(),
         updatedAt: new Date(),
         // lastConnection: new Date(),
@@ -10744,7 +10764,7 @@ redisClient.flushall((err, reply) => {
     for (const articleDto of articlesDto) {
         try {
             const createdArticle = await db.collection('articles').insertOne(articleDto);
-            console.log('Article inserted successfully.');
+            // console.log('Article inserted successfully.');
             createdArticles.push(createdArticle);
         } catch (error) {
             console.error('Error inserting article:', JSON.stringify(error, Object.getOwnPropertyNames(error), 2));
@@ -10827,44 +10847,80 @@ redisClient.flushall((err, reply) => {
         "Zone bleue : Pas de disque",
         "Emplacement PMR : Sans carte"
     ];
+
+
+    function generateLicensePlate() {
+        const isBelgian = Math.random() < 0.7; // 70% chance for Belgian plate
+        if (isBelgian) {
+            // Generate Belgian license plate
+            return faker.helpers.fromRegExp(/^[1-9]-[A-Z]{3}-\d{3}$/); // Example pattern for Belgian plates
+        } else {
+            // Generate French license plate
+            return faker.helpers.fromRegExp(/^[A-Z]{2}-\d{3}-[A-Z]{2}$/); // Example pattern for French plates
+        }
+    }
+    const constatvehiculesgdpDto = [...Array(2500)].map(() => ({
+        marque: faker.vehicle.manufacturer(),
+        modele: faker.vehicle.model(),
+        couleur: faker.vehicle.color(),
+        type: faker.vehicle.type(),
+        immatriculation: generateLicensePlate(),
+    }));
+
+    // Try-catch block for inserting vehicles
+    let createdVehiculesConstats;
+    try {
+        const vehiculeInsertResults = await db.collection('constatVehicule').insertMany(constatvehiculesgdpDto);
+        createdVehiculesConstats = Object.values(vehiculeInsertResults.insertedIds);
+    } catch (error) {
+        console.error('Error inserting vehicules:', JSON.stringify(error, null, 2));
+        process.exit(1);
+    }
+    bar1.update(i++);
+
+    const constatPersonnesDto = [...Array(2500)].map(() => ({
+        firstname: faker.person.firstName(),
+        lastname: faker.person.lastName(),
+        birthday: faker.date.past({ years: 30, refDate: '1990-01-01' }),
+        nationalNumber: faker.finance.iban({ formatted: true, countryCode: 'BE' }),
+        tel: faker.string.numeric({ length: 9, prefix: '+32 47' }), 
+        adresse_rue: createdRues[Math.floor(Math.random() * 50)].insertedId,
+        adresse_numero: faker.string.numeric(2),
+        cp: faker.location.zipCode(),
+        localite: faker.location.city(),
+    }));
+    // Try-catch block for inserting persons
+    let createdPersonnesConstats;
+    try {
+        const personneInsertResults = await db.collection('constatPersonne').insertMany(constatPersonnesDto);
+        createdPersonnesConstats = Object.values(personneInsertResults.insertedIds);
+    } catch (error) {
+        console.error('Error inserting personnes:', JSON.stringify(error, null, 2));
+        process.exit(1);
+    }
+    bar1.update(i++);
+
+ // Ensure createdVehiculesConstats and createdPersonnesConstats are not undefined
+    if (!createdVehiculesConstats || !createdPersonnesConstats) {
+        console.error('Error: Created vehicules or personnes are undefined.');
+        process.exit(1);
+    }
+
     const constatsDto = [...Array(2500)].map(() => ({
         agents: [
             createdAgents[Math.floor(Math.random() * 10)].insertedId,
             createdAgents[Math.floor(Math.random() * 10)].insertedId,
         ],
         date: faker.date.between({ from: '2022-01-01', to: new Date() }),
-        vehicule: {
-            marque: faker.vehicle.manufacturer(),
-            modele: faker.vehicle.model(),
-            couleur: faker.vehicle.color(),
-            type: faker.vehicle.type(),
-            immatriculation: faker.vehicle.vrm(),
-        },
-        personne: {
-            firstname: faker.person.firstName(),
-            lastname: faker.person.lastName(),
-            birthday: faker.date.past(),
-            nationalNumber: faker.finance.iban({ formatted: true, countryCode: 'BE' }),
-            tel: faker.string.octal({ length: 6, prefix: '+32 47' }), // '+48 91 463 61 70',
-            adresse: {
-                rue: faker.location.streetAddress(),
-                cp: faker.location.zipCode(),
-                localite: faker.location.city(),
-            },
-        },
-        adresse: {
-            rue: new ObjectId(
-                createdRues[Math.floor(Math.random() * 50)].insertedId
-            ),
-            numero: faker.string.numeric(2),
-        },
-        geolocation: {
-            latitude: faker.location.latitude().toString(),
-            longitude: faker.location.longitude().toString(),
-            horodatage: faker.date.recent(),
-        },
+        vehicule: createdVehiculesConstats[Math.floor(Math.random() * createdVehiculesConstats.length)],
+        personne: createdPersonnesConstats[Math.floor(Math.random() * createdPersonnesConstats.length)],
+        adresse_rue: createdRues[Math.floor(Math.random() * 50)].insertedId,
+        adresse_numero: faker.string.numeric(2),
+        geolocation_latitude: faker.location.latitude().toString(),
+        geolocation_longitude: faker.location.longitude().toString(),
+        geolocation_horodatage: faker.date.recent(),
         infractions: [
-            infractionsList[Math.floor(Math.random() * infractionsList.length)]
+            (infractionsList[Math.floor(Math.random() * infractionsList.length)]._id)
         ],
         pv: faker.datatype.boolean(),
         notes: faker.lorem.words(),
@@ -10872,8 +10928,8 @@ redisClient.flushall((err, reply) => {
         createdAt: new Date(),
         updatedAt: new Date(),
     }));
-    
-    
+
+    // Try-catch block for inserting constats
     try {
         await Promise.all(
             constatsDto.map(u => db.collection('constats').insertOne(u))
@@ -10883,6 +10939,7 @@ redisClient.flushall((err, reply) => {
         process.exit(1);
     }
     bar1.update(i++);
+
     
 
     const infractionsDto = [
@@ -11417,7 +11474,7 @@ redisClient.flushall((err, reply) => {
             createdAgents[Math.floor(Math.random() * 10)].insertedId,
         ],
         horaire: horairesDto[Math.floor(Math.random() * 4)].horaire,
-        vehicule: vehiculesDto[Math.floor(Math.random() * 3)].marque,
+        vehicule: vehiculesgdpDto[Math.floor(Math.random() * 3)].marque,
         quartiers: [
             createdMissionsQuartiers[Math.floor(Math.random() * 10)].insertedId,
         ],
@@ -11453,7 +11510,7 @@ redisClient.flushall((err, reply) => {
             createdAgents[Math.floor(Math.random() * 10)].insertedId,
             createdAgents[Math.floor(Math.random() * 10)].insertedId,
         ],
-        vehicule: vehiculesDto[Math.floor(Math.random() * 4)].marque,
+        vehicule: vehiculesgdpDto[Math.floor(Math.random() * 4)].marque,
         quartiers: [
             createdMissionsQuartiers[Math.floor(Math.random() * 10)].insertedId,
         ],
@@ -11472,6 +11529,7 @@ redisClient.flushall((err, reply) => {
             createdMissions[Math.floor(Math.random() * 20)].insertedId,
             createdMissions[Math.floor(Math.random() * 20)].insertedId,
         ],
+
         notes: faker.lorem.words(),
         annexes: faker.lorem.words(),
 

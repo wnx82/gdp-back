@@ -14,34 +14,12 @@ module.exports = {
                     },
                 },
                 vehicule: {
-                    bsonType: ['object', 'null'],
-                    description: ' must be an object and is not required',
-                    properties: {
-                        marque: { bsonType: ['string', 'null'] },
-                        modele: { bsonType: ['string', 'null'] },
-                        couleur: { bsonType: ['string', 'null'] },
-                        type: { bsonType: ['string', 'null'] },
-                        immatriculation: { bsonType: ['string', 'null'] },
-                    },
+                    bsonType: 'objectId',
+                    description: 'must be a objectId representing an objectId and references constatVehicule._id',
                 },
                 personne: {
-                    bsonType: ['object', 'null'],
-                    description: ' must be an object and is not required',
-                    properties: {
-                        firstname: { bsonType: ['string', 'null'] },
-                        lastname: { bsonType: ['string', 'null'] },
-                        birthday: { bsonType: ['date', 'null'] },
-                        nationalNumber: { bsonType: ['string', 'null'] },
-                        tel: { bsonType: ['string', 'null'] },
-                        adresse: {
-                            bsonType: ['object', 'null'],
-                            properties: {
-                                rue: { bsonType: ['string', 'null'] },
-                                cp: { bsonType: ['string', 'null'] },
-                                localite: { bsonType: ['string', 'null'] },
-                            },
-                        },
-                    },
+                    bsonType: 'objectId',
+                    description: 'must be a objectId representing an objectId and references constatPersonne._id',
                 },
                 date: {
                     bsonType: ['date', 'null'],

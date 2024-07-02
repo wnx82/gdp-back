@@ -1,5 +1,3 @@
-// ./controllers/constats.controller.js
-
 const { dbClient, redisClient } = require('../../utils');
 const { catchAsync, success } = require('../../helpers');
 const database = dbClient.db(process.env.MONGO_DB_DATABASE);
@@ -21,39 +19,12 @@ const schema = Joi.object({
         .min(1)
         .required(),
     date: Joi.date().required(),
-    vehicule: Joi.object()
-        .allow(null)
-        .keys({
-            marque: Joi.string().allow(null).optional().empty(''),
-            modele: Joi.string().allow(null).optional().empty(''),
-            couleur: Joi.string().allow(null).optional().empty(''),
-            type: Joi.string().allow(null).optional().empty(''),
-            immatriculation: Joi.string().allow(null).optional().empty(''),
-        }),
-    personne: Joi.object()
-        .allow(null)
-        .keys({
-            firstname: Joi.string().allow(null).optional().empty(''),
-            lastname: Joi.string().allow(null).optional().empty(''),
-            birthday: Joi.date().allow(null).optional().empty(''),
-            nationalNumber: Joi.string().allow(null).optional().empty(''),
-            tel: Joi.string().allow(null).optional().empty(''),
-            adresse: Joi.object()
-                .allow(null)
-                .keys({
-                    rue: Joi.string().allow(null).optional().empty(''),
-                    cp: Joi.string().allow(null).optional().empty(''),
-                    localite: Joi.string().allow(null).optional().empty(''),
-                }),
-        }),
-    adresse: {
-        rue: Joi.string()
-            .regex(/^[0-9a-fA-F]{24}$/)
-            .allow(null)
-            .optional()
-            .empty(''),
+    vehicule: Joi.string().regex(/^[0-9a-fA-F]{24}$/).required(),
+    personne: Joi.string().regex(/^[0-9a-fA-F]{24}$/).required(),
+    adresse: Joi.object({
+        rue: Joi.string().regex(/^[0-9a-fA-F]{24}$/).allow(null).optional().empty(''),
         numero: Joi.string().allow(null).optional().empty(''),
-    },
+    }).required(),
     geolocation: Joi.object()
         .allow(null)
         .keys({
@@ -68,7 +39,6 @@ const schema = Joi.object({
         )
         .optional()
         .allow(null),
-
     pv: Joi.boolean().allow(null),
     notes: Joi.string().allow(null).optional().empty(''),
     annexes: Joi.alternatives()
@@ -84,7 +54,7 @@ const pipeline = [
     {
         $lookup: {
             from: 'rues',
-            localField: 'adresse.rue',
+            localField: 'adresse_rue',
             foreignField: '_id',
             as: 'adresseData',
         },
@@ -98,70 +68,86 @@ const pipeline = [
         },
     },
     {
-        $group: {
-            _id: '$_id',
-            agents: {
-                $first: '$agentsData.matricule',
-            },
-            date: {
-                $first: '$date',
-            },
-            vehicule: {
-                $first: '$vehicule',
-            },
-            personne: {
-                $first: '$personne',
-            },
-            adresse: {
-                $first: {
-                    numero: '$adresse.numero',
-                    nom: {
-                        $first: '$adresseData.nom',
-                    },
-                    denomination: {
-                        $first: '$adresseData.denomination',
-                    },
-                    nomComplet: {
-                        $first: '$adresseData.nomComplet',
-                    },
-                    quartier: {
-                        $first: '$adresseData.quartier',
-                    },
-                    cp: {
-                        $first: '$adresseData.cp',
-                    },
-                    localite: {
-                        $first: '$adresseData.localite',
-                    },
-                },
-            },
-            geolocation: {
-                $first: '$geolocation',
-            },
-            infractions: {
-                $first: '$infractions',
-            },
-            pv: {
-                $first: '$pv',
-            },
-            notes: {
-                $first: '$notes',
-            },
-            annexes: {
-                $first: '$annexes',
-            },
-            createdAt: {
-                $first: '$createdAt',
-            },
-            updatedAt: {
-                $first: '$updatedAt',
-            },
-            deletedAt: {
-                $first: '$deletedAt',
-            },
+        $lookup: {
+            from: 'constatPersonne',
+            localField: 'personne',
+            foreignField: '_id',
+            as: 'personneData',
         },
     },
-];
+    {
+        $lookup: {
+            from: 'constatVehicule',
+            localField: 'vehicule',
+            foreignField: '_id',
+            as: 'vehiculeData',
+        },
+    },
+    {
+        $unwind: {
+            path: "$adresseData",
+            preserveNullAndEmptyArrays: true
+        }
+    },
+    {
+        $unwind: {
+            path: "$vehiculeData",
+            preserveNullAndEmptyArrays: true
+        }
+    },
+    {
+        $unwind: {
+            path: "$personneData",
+            preserveNullAndEmptyArrays: true
+        }
+    },
+    {
+        $addFields: {
+            adresse: {
+                numero: '$adresse_numero',
+                nom: '$adresseData.nom',
+                denomination: '$adresseData.denomination',
+                nomComplet: '$adresseData.nomComplet',
+                quartier: '$adresseData.quartier',
+                cp: '$adresseData.cp',
+                localite: '$adresseData.localite',
+            }
+        }
+    },
+    {
+        $project: {
+            _id: 1,
+            agents: '$agentsData.matricule',
+            date: 1,
+            vehicule: {
+                marque: '$vehiculeData.marque',
+                modele: '$vehiculeData.modele',
+                couleur: '$vehiculeData.couleur',
+                type: '$vehiculeData.type',
+                immatriculation: '$vehiculeData.immatriculation',
+            },
+            personne: {
+                firstname: '$personneData.firstname',
+                lastname: '$personneData.lastname',
+                birthday: '$personneData.birthday',
+                nationalNumber: '$personneData.nationalNumber',
+                tel: '$personneData.tel',
+                rue: '$personneData.rue',
+                cp: '$personneData.cp',
+                localite: '$personneData.localite',
+            },
+            adresse: 1,
+            geolocation: 1,
+            infractions: 1,
+            pv: 1,
+            notes: 1,
+            annexes: 1,
+            createdAt: 1,
+            updatedAt: 1,
+            deletedAt: 1
+        }
+    }
+]
 
 const findAll = catchAsync(async (req, res) => {
     const { immatriculation, rue, localite } = req.query;
@@ -303,6 +289,9 @@ const create = catchAsync(async (req, res) => {
         const agentsID = value.agents.map(p => new ObjectId(p));
         value.agents = agentsID;
         value.adresse.rue = new ObjectId(value.adresse.rue);
+        value.vehicule = new ObjectId(value.vehicule);
+        value.personne = new ObjectId(value.personne);
+
         const { ...rest } = value;
         const createdAt = new Date();
         const updatedAt = new Date();
@@ -315,10 +304,12 @@ const create = catchAsync(async (req, res) => {
         res.status(201).json(data);
         redisClient.del(`${collectionName}:all`);
     } catch (err) {
-        console.log(err);
-        res.status(500).json({ message: 'Internal server error' });
+        console.log('MongoDB Validation Error:', JSON.stringify(err.errInfo.details, null, 2));
+        res.status(500).json({ message: 'Internal server error', error: err.errInfo.details });
     }
 });
+
+
 
 const updateOne = catchAsync(async (req, res) => {
     const { id } = req.params;
@@ -357,7 +348,9 @@ const updateOne = catchAsync(async (req, res) => {
     }
 
     try {
-        value.adresse.rue = new ObjectId(value.adresse.rue);
+        updateValue.adresse.rue = new ObjectId(value.adresse.rue);
+        updateValue.vehicule = new ObjectId(value.vehicule);
+        updateValue.personne = new ObjectId(value.personne);
         const updatedAt = new Date();
         console.log('updateValue:', updateValue);
         console.log('updatedAt:', updatedAt);

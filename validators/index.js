@@ -13,5 +13,5 @@ module.exports = {
     rapports: require('./rapports'),
     rues: require('./rues'),
     validations: require('./validations'),
-    vehicules: require('./vehicules'),
+    vehicules: require('./vehiculesgdp'),
 };

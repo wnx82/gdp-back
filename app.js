@@ -39,10 +39,12 @@ const habitationsRouter = require('./routes/habitations');
 const horairesRouter = require('./routes/horaires');
 const infractionsRouter = require('./routes/infractions');
 const ruesRouter = require('./routes/rues');
+const personnesRouter = require('./routes/personnes');
 const quartiersRouter = require('./routes/quartiers');
 const missionsRouter = require('./routes/missions');
 const validationsRouter = require('./routes/validations');
 const vehiculesRouter = require('./routes/vehicules');
+const vehiculesgdpRouter = require('./routes/vehiculesgdp');
 
 // Importation des configurations nécessaires
 require('./utils/auth/passport');
@@ -87,12 +89,14 @@ app.use('/rapports', rapportsRouter);
 app.use('/habitations', habitationsRouter);
 app.use('/horaires', horairesRouter);
 app.use('/infractions', infractionsRouter);
+app.use('/personnes', personnesRouter);
 app.use('/quartiers', quartiersRouter);
 app.use('/rues', ruesRouter);
 app.use('/status', statusRouter);
 app.use('/missions', missionsRouter);
 app.use('/validations', validationsRouter);
 app.use('/vehicules', vehiculesRouter);
+app.use('/vehiculesgdp', vehiculesgdpRouter);
 
 // Route pour gérer les erreurs 404
 app.use((req, res, next) => {
